@@ -1,0 +1,23 @@
+name = "saved"
+description = "Saved settings: the CTPlay settings travel with the project (a block in the session record's tail); a project without them loads the defaults."
+sources = ["saved.c"]
+init = "saved_init"
+
+[budget]
+ram = 0                         # the pending flag is in the block itself
+stack = 96                      # saved_on_leds 84 B: slim_saved_fix -> chord_saved_fix (the copy and the checks out of line)
+
+[[hook]]
+point = "session_save"
+handler = "saved_on_save"
+priority = 50
+
+[[hook]]
+point = "session_applied"
+handler = "saved_on_applied"
+priority = 50
+
+[[hook]]
+point = "led_task"
+handler = "saved_on_leds"
+priority = 30                    # before the features that draw (countin 40, chord 50): they see the loaded settings

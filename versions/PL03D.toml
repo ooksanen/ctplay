@@ -1,0 +1,5 @@
+# Published and device-tested: rebuild PL03D from git tag PL03D (features/chord changed after it); at a later commit this
+# file builds the current sources under PL03D's marker, which is NOT the published PL03D.
+marker = "PL03D"
+description = "Diagnostic: PL03 (chord engine with strum and bass modes) plus a voice log read over USB SysEx (slim/pages/voice_log.html): how stock picks each synth voice."
+features = ["chord", "voice_log"]

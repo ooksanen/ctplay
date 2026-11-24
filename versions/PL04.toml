@@ -1,0 +1,5 @@
+# Published and device-tested: rebuild PL04 from git tag PL04 (features/chord changed after it); at a later commit this
+# file builds the current sources under PL04's marker, which is NOT the published PL04.
+marker = "PL04"
+description = "CTPlay chord engine with strum and bass modes; chord notes take a free voice when one more voice fits, and a strummed 5-note chord that would not fit leaves out its 5th (else its 9th)."
+features = ["chord"]

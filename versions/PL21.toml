@@ -1,0 +1,6 @@
+# Published: rebuild PL21 from git tag PL21 (CTPlay 1.0 beta 1); at a later commit this file builds the current sources
+# under PL21's marker, which is NOT the published PL21.
+marker = "PL21"
+description = "The first public beta: chords, strum and an arpeggiator on the note tracks; Euclid, Melody and Pattern tools; drum pages with note repeat; chords in step entry, pattern strum and trig conditions."
+features = ["chord", "countin", "saved", "link", "recfix"]
+release = "1.0 beta 1"

@@ -1,0 +1,3 @@
+marker = "SLT1"
+description = "Test only, never flashed: the voice log alone (PL04D rebuilds from its git tag; chord + log no longer fit in 240 B from PL06 on)."
+features = ["voice_log"]

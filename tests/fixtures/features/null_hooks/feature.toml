@@ -1,0 +1,17 @@
+name = "null_hooks"
+description = "Test only: SL00D's hook points with handlers that change nothing (transparency test)."
+sources = ["null_hooks.c"]
+
+[budget]
+ram = 0
+stack = 64
+
+[[hook]]
+point = "button_press"
+handler = "null_on_button"
+priority = 50
+
+[[hook]]
+point = "led_task"
+handler = "null_on_leds"
+priority = 50

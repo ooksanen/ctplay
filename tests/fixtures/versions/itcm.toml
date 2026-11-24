@@ -1,0 +1,4 @@
+marker = "SLT1"
+description = "Test only, never flashed: one feature with 8 B of ITCM data."
+feature_dirs = ["../features"]
+features = ["itcm_probe"]

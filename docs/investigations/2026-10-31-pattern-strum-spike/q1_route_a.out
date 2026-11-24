@@ -1,0 +1,47 @@
+-- Played
+OK   played qon speed 1 rising: order [48, 51, 55], first 7/0 start 42; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   played qon speed 1 falling: order [55, 51, 48], first 7/0 start 42; tasks ['main:note-off', 'main:note-off', 'main:note-off']
+OK   played qon speed 2 rising: order [48, 51, 55], first 7/0 start 42; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   played qon speed 2 falling: order [55, 51, 48], first 7/0 start 42; tasks ['main:note-off', 'main:note-off', 'main:note-off']
+OK   played qon speed 3 rising: order [48, 51, 55], first 7/0 start 42; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   played qon speed 3 falling: order [55, 51, 48], first 7/0 start 42; tasks ['main:note-off', 'main:note-off', 'main:note-off']
+OK   played qoff speed 1 rising: order [48, 51, 55], first 6/4 start 40; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   played qoff speed 1 falling: order [55, 51, 48], first 6/4 start 40; tasks ['main:note-off', 'main:note-off', 'main:note-off']
+OK   played qoff speed 2 rising: order [48, 51, 55], first 6/4 start 40; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   played qoff speed 2 falling: order [55, 51, 48], first 6/4 start 40; tasks ['main:note-off', 'main:note-off', 'main:note-off']
+OK   played qoff speed 3 rising: order [48, 51, 55], first 6/4 start 40; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   played qoff speed 3 falling: order [55, 51, 48], first 6/4 start 40; tasks ['main:note-off', 'main:note-off', 'main:note-off']
+OK   played q on slow, 9th + bass: order [48, 36, 51, 58, 62], first 7/0 start 42; tasks ['ui:note-off', 'main:note-off', 'main:note-off', 'main:note-off', 'main:note-off']; left out (step full) [62]
+OK   played q off slow falling, 9th + bass: order [62, 58, 51, 48, 36], first 6/4 start 40; tasks ['main:note-off', 'main:note-off', 'main:note-off', 'main:note-off', 'main:note-off']; left out (step full) [48]
+-- Written
+OK   written qon speed 1 rising: order [48, 51, 55], first 7/0 start 42; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   written qon speed 1 falling: order [55, 51, 48], first 7/0 start 42; tasks ['main:note-off', 'main:note-off', 'main:note-off']
+OK   written qon speed 2 rising: order [48, 51, 55], first 7/0 start 42; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   written qon speed 2 falling: order [55, 51, 48], first 7/0 start 42; tasks ['main:note-off', 'main:note-off', 'main:note-off']
+OK   written qon speed 3 rising: order [48, 51, 55], first 7/0 start 42; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   written qon speed 3 falling: order [55, 51, 48], first 7/0 start 42; tasks ['main:note-off', 'main:note-off', 'main:note-off']
+OK   written qoff speed 1 rising: order [48, 51, 55], first 6/4 start 40; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   written qoff speed 1 falling: order [55, 51, 48], first 6/4 start 40; tasks ['main:note-off', 'main:note-off', 'main:note-off']
+OK   written qoff speed 2 rising: order [48, 51, 55], first 6/4 start 40; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   written qoff speed 2 falling: order [55, 51, 48], first 6/4 start 40; tasks ['main:note-off', 'main:note-off', 'main:note-off']
+OK   written qoff speed 3 rising: order [48, 51, 55], first 6/4 start 40; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   written qoff speed 3 falling: order [55, 51, 48], first 6/4 start 40; tasks ['main:note-off', 'main:note-off', 'main:note-off']
+OK   written q on slow, 9th + bass: order [48, 36, 51, 58, 62], first 7/0 start 42; tasks ['ui:note-off', 'main:note-off', 'main:note-off', 'main:note-off', 'main:note-off']
+OK   written q off medium falling, 9th + bass: order [62, 58, 51, 48, 36], first 6/4 start 40; tasks ['main:note-off', 'main:note-off', 'main:note-off', 'main:note-off', 'main:note-off']
+-- Wrap, full step, short release
+OK   written q on slow, last step 7 (spill wraps to step 0): order [48, 51, 55], first 7/0 start 42; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   written q off slow, last step 7: order [48, 51, 55], first 6/4 start 40; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   written q on slow, step 8 full (G left out): order [48, 51, 55], first 7/0 start 42; tasks ['ui:note-off', 'main:note-off', 'main:note-off']; left out (step full) [55]
+OK   written q on slow, pressed at tick 40 (step 7), released at 170 ms: order [48, 51, 55], first 7/0 start 42; tasks ['ui:note-off', 'main:note-off', 'main:pass']; edges [('moved', 55, 2, 'latched', {'unit': 2, 'step': 8, 'pattern': 0, 'vel': 96, 'start': 48, 'micro': 0}, {'unit': 3, 'step': 8, 'pattern': 0, 'vel': 96, 'start': 47, 'micro': 2}, 'guard')]
+-- Naive (stock's unit kept)
+FAIL NAIVE played q on slow: order [48, 51, 55], first 7/0 start 42; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+        note 48: want (7, 0, 21), got []
+OK   NAIVE written q on slow: order [48, 51, 55], first 7/0 start 42; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+OK   NAIVE written q off medium: order [48, 51, 55], first 6/4 start 40; tasks ['ui:note-off', 'main:note-off', 'main:note-off']
+-- Mono record on (older notes cleared: not checked)
+OK   mono written q on medium falling 9th + bass: order [62, 58, 51, 48, 36], first 7/0 start 42; tasks ['main:note-off', 'main:note-off', 'main:note-off', 'main:note-off', 'main:note-off']
+        mono steps: {4: [30, 31], 5: [30, 31], 6: [30, 31], 7: [58, 51, 62], 8: [48, 36], 9: [30, 31], 10: [30, 31], 11: [30, 31]}
+OK   mono written q on slow rising 9th + bass: order [48, 36, 51, 58, 62], first 7/0 start 42; tasks ['ui:note-off', 'main:note-off', 'main:note-off', 'main:note-off', 'main:note-off']
+        mono steps: {4: [30, 31], 5: [30, 31], 6: [30, 31], 7: [36, 48], 8: [51], 9: [62, 58], 10: [30, 31], 11: [30, 31]}
+OK   mono played q on slow falling 9th + bass: order [62, 58, 51, 48, 36], first 7/0 start 42; tasks ['main:note-off', 'main:note-off', 'main:note-off', 'main:note-off', 'main:note-off']
+        mono steps: {4: [30, 31], 5: [30, 31], 6: [30, 31], 7: [58, 51, 62, 36, 48], 8: [30, 31], 9: [30, 31], 10: [30, 31], 11: [30, 31]}

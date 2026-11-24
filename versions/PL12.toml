@@ -1,0 +1,5 @@
+# Published: rebuild PL12 from git tag PL12 (features/chord changed after it); at a later commit this file builds
+# the current sources under PL12's marker, which is NOT the published PL12.
+marker = "PL12"
+description = "CTPlay PL11 + the CTCtrl link: CTCtrl reads and sets CTPlay's settings over USB SysEx."
+features = ["chord", "countin", "saved", "link"]

@@ -1,0 +1,5 @@
+# Published: rebuild PL10 from git tag PL10 (features/chord changed after it); at a later commit this file builds
+# the current sources under PL10's marker, which is NOT the published PL10.
+marker = "PL10"
+description = "CTPlay PL09 with every CTPlay setting saved with the project and loaded back with it."
+features = ["chord", "countin", "saved"]

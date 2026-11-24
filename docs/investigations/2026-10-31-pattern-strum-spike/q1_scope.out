@@ -1,0 +1,48 @@
+held, rising: moves [('main', 'note-off site', 51, 1, 7, 4), ('main', 'note-off site', 55, 2, 8, 2)]
+        steps (1-based: (note, microstep), older notes hidden) {8: [(48, 0), (51, 4)], 9: [(55, 2)]}
+        older units lost: none; empty units with a mask bit: none; diag none; tickets left 0
+held, falling: moves [('main', 'note-off site', 51, 1, 7, 4), ('main', 'note-off site', 48, 2, 8, 2)]
+        steps (1-based: (note, microstep), older notes hidden) {8: [(55, 0), (51, 4)], 9: [(48, 2)]}
+        older units lost: none; empty units with a mask bit: none; diag none; tickets left 0
+held, rising, quantise off: moves [('main', 'note-off site', 51, 1, 7, 2), ('main', 'note-off site', 55, 2, 8, 0)]
+        steps (1-based: (note, microstep), older notes hidden) {7: [(48, 4)], 8: [(51, 2)], 9: [(55, 0)]}
+        older units lost: none; empty units with a mask bit: none; diag none; tickets left 0
+played, held, rising: moves [('main', 'note-off site', 51, 1, 7, 0), ('main', 'note-off site', 55, 2, 7, 0)]
+        steps (1-based: (note, microstep), older notes hidden) {8: [(48, 0), (51, 0), (55, 0)]}
+        older units lost: none; empty units with a mask bit: none; diag none; tickets left 0
+tapped 100 ms (the pass commits): moves [('main', 'pass site', 51, 1, 7, 4)]
+        steps (1-based: (note, microstep), older notes hidden) {8: [(48, 0), (51, 4)]}
+        older units lost: none; empty units with a mask bit: none; diag none; tickets left 0
+stale latch: strum, then a G chord tapped 40 ms: moves [('main', 'note-off site', 51, 1, 7, 4), ('main', 'note-off site', 55, 2, 8, 2)]
+        steps (1-based: (note, microstep), older notes hidden) {8: [(48, 0), (51, 4)], 9: [(55, 2)], 10: [(55, 0)]}
+        older units lost: none; empty units with a mask bit: none; diag none; tickets left 0
+tap, then pad 25 takes the freed slot before the pass: moves [('main', 'pass site', 51, 1, 7, 4), ('main', 'note-off site', 53, 1, 7, 4), ('main', 'note-off site', 56, 2, 8, 2)]
+        steps (1-based: (note, microstep), older notes hidden) {8: [(48, 0), (53, 4), (50, 0), (51, 4)], 9: [(56, 2)]}
+        older units lost: none; empty units with a mask bit: none; diag none; tickets left 0; slot 0's latch now [50, 53, 56]
+tap, then pad 26 takes the freed slot before the pass: moves []
+        steps (1-based: (note, microstep), older notes hidden) {8: [(48, 0), (51, 0)], 9: [(55, 0), (58, 0)]}
+        older units lost: none; empty units with a mask bit: none; diag [('ui', 134477324, 51, 'a non-pass commit matches a ticket')]; tickets left 1; slot 0's latch now [51, 55, 58]
+two pads sharing G (pad 28 pressed 100 ms in): moves [('main', 'note-off site', 51, 1, 7, 4), ('main', 'note-off site', 55, 2, 8, 2), ('main', 'note-off site', 58, "first's word gone: pass"), ('main', 'note-off site', 62, "first's word gone: pass")]
+        steps (1-based: (note, microstep), older notes hidden) {8: [(48, 0), (51, 4), (55, 0)], 9: [(55, 2), (58, 0), (62, 0)], 12: [(55, 0)]}
+        older units lost: none; empty units with a mask bit: none; diag none; tickets left 0
+resound order: B takes G and is let go first, A gets G back: moves [('main', 'note-off site', 51, 1, 7, 1), ('main', 'note-off site', 55, 2, 7, 2)]
+        steps (1-based: (note, microstep), older notes hidden) {8: [(48, 0), (51, 1), (55, 2), (58, 0)]}
+        older units lost: none; empty units with a mask bit: none; diag none; tickets left 0; G placements [(1104, 'main', 42, 2), (1115, 'ui', 42, 3), (1135, 'ui', 42, 4)]
+resound order, quantise off: moves [('main', 'pass site', 58, 1, 7, 1), ('main', 'note-off site', 51, 1, 6, 5)]
+        steps (1-based: (note, microstep), older notes hidden) {7: [(48, 4), (51, 5), (55, 5)], 8: [(55, 0), (55, 1), (58, 1)]}
+        older units lost: none; empty units with a mask bit: none; diag none; tickets left 0; G placements [(1104, 'main', 41, 2), (1115, 'ui', 42, 0), (1135, 'ui', 43, 2)]
+quick re-press of pad 24 (tap 100 ms, again 20 ms later): moves [('main', 'pass site', 51, "first's word gone: pass")]
+        steps (1-based: (note, microstep), older notes hidden) {8: [(48, 0), (51, 0)], 9: [(51, 0), (55, 0)]}
+        older units lost: none; empty units with a mask bit: none; diag none; tickets left 0
+Stop while held: moves []
+        steps (1-based: (note, microstep), older notes hidden) {8: [(48, 0), (51, 0)], 9: [(55, 0)]}
+        older units lost: none; empty units with a mask bit: none; diag none; tickets left 0
+let go and Stop in the same ms: moves []
+        steps (1-based: (note, microstep), older notes hidden) {8: [(48, 0), (51, 0)], 9: [(55, 0)]}
+        older units lost: none; empty units with a mask bit: none; diag none; tickets left 0
+ticket expiry across takes: moves [('main', 'pass site', 51, 1, 7, 4)]
+        steps (1-based: (note, microstep), older notes hidden) {8: [(48, 0), (51, 0), (51, 4)]}
+        older units lost: none; empty units with a mask bit: none; diag [('ui', "flush's pass", 48, 'transport off: no ticket read'), ('ui', "flush's pass", 51, 'transport off: no ticket read')]; tickets left 0; tickets before Stop [(51, 42, 3)], after its first heartbeat 0
+arpeggiator on the track after a strum: moves [('main', 'note-off site', 51, 1, 7, 4), ('main', 'note-off site', 55, 2, 8, 2)]
+        steps (1-based: (note, microstep), older notes hidden) {8: [(48, 0), (51, 4)], 9: [(55, 2)], 11: [(48, 0)], 12: [(51, 0)], 13: [(55, 0)], 14: [(48, 0)]}
+        older units lost: none; empty units with a mask bit: none; diag none; tickets left 0

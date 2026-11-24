@@ -1,0 +1,23 @@
+name = "link"
+description = "The CTCtrl link (PL12): CTCtrl recognises CTPlay, reads its settings, sets them as the pads do and hears every change, over USB SysEx."
+depends = ["saved"]
+conflicts = ["voice_log"]        # voice_log claims the whole F0 7D 53 4C header, and both do not fit the RAM pool
+sources = ["link.c"]
+
+[budget]
+ram = 16                         # the mailbox: 15 B (saved2: two-byte offset, the writes' answer bits; the hello port moved to ITCM)
+itcm = 128                       # the last-sent image (118 B in PL20, byte 117 sent as 0; 117 B in PL19, 116 in PL18, 115 in PL17, 87 in PL16; PL15: 81, PL14: 77, PL13: 53) + the queue (6 B, saved2)
+stack = 472                      # link_on_leds 472 B (saved2: chunk messages, 118 B payload: the 140 B chunk message in place of the
+                                 # 244 B state); 576 B (PL20 / PL19, 118 / 117 B payload); 560 B (PL18, 116 B payload, as PL17 at
+                                 # 115 B; PL16: 448 at 87 B, PL15: 432, PL14: 416): the payload image, the outgoing message and the
+                                 # write's old / candidate images on the UI stack. UI >= 1.5 KB free (SL00D); sysex_out uncounted
+
+[[hook]]
+point = "sysex_in"
+handler = "link_on_sysex"
+priority = 50
+
+[[hook]]
+point = "led_task"
+handler = "link_on_leds"
+priority = 40                    # after saved (30): a load is applied before the change check; before chord's draw (50)

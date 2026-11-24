@@ -1,0 +1,5 @@
+# Published: rebuild PL14 from git tag PL14 (features/chord changed after it); at a later commit this file builds
+# the current sources under PL14's marker, which is NOT the published PL14.
+marker = "PL14"
+description = "CTPlay PL13 + melody variations: a cycle, a second rhythm with its combine and thinning (Pattern tools 2), ties and octave jumps (Phrasing), and two small fixes."
+features = ["chord", "countin", "saved", "link"]

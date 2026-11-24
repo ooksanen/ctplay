@@ -1,0 +1,4 @@
+# Published and device-tested 2026-10-12. Rebuild PL02 from git tag PL02 (this file at that commit); at later commits features/chord has bass modes, so building this file no longer gives PL02. Kept to reserve the marker.
+marker = "PL02"
+description = "CTPlay chord engine with strum: Note-view pads play chords in the project's scale; Shift + the bottom two rows pick shape and voicing, Shift + 1-16/17-32 the strum speed."
+features = ["chord"]

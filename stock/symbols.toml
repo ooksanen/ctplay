@@ -1,0 +1,864 @@
+# Named addresses of the official Circuit Tracks firmware 1.2.1 build 4486, checked against the stock image on every build.
+# [function.NAME]  addr, expect (hex bytes at addr), proto (C prototype; omit = not callable from C), tags
+#                  tag "takes_dsp_lock": takes the DSP-service lock directly or through anything it calls
+# [data.NAME]      addr, ctype
+# [hook.NAME]      kind = "entry" (addr, expect, displace) | "call" (target, sites); args (<= 4), ret, context = "ui" | "dsp_tick" | "main" | "dsp_locked" | "any"
+#                  | "mid" (addr, expect, displace; no args, ret "void": the handlers get slim_regs_t *, every register)
+
+[function.param_get]
+addr = 0x0803542C
+expect = "4268ca40"   # ldr r2, [r0, #4]; lsrs r2, r1
+proto = "volatile uint8_t *param_get(void *store, uint32_t index)"
+notes = "Pointer to parameter `index` of a parameter store; byte 0 is the value. Shift held = *param_get(*(ctrl + 0x0C), 0) != 0."
+source = "upstream tools/build_sc03.py PARAM_GET; tools/build_sc15.py c_shift"
+
+[function.led_task]
+addr = 0x08034196
+expect = "f0b589b0"   # push {r4, r5, r6, r7, lr}; sub sp, #0x24
+proto = "void led_task(void *ctrl, uint16_t *out)"
+notes = "Fills out[0..68] (one halfword per panel LED; 0-31 = pads) from the active view."
+source = "upstream tools/leds18.py LED_TASK; LED map table 0x08059438"
+
+[function.mark_group]
+addr = 0x08021FDC
+expect = "0228b8bf"   # cmp r0, #2; it lt
+proto = "void mark_group(uint32_t type, uint32_t index)"
+notes = "Marks a group for the DSP service without taking its lock: the safe alternative to mark_dirty from the DSP tick."
+source = "upstream CLAUDE.md rules; tools/persist19.py FIX_LOCK"
+
+[function.dsp_write]
+addr = 0x080292F8
+expect = "f8b50d46"   # push {r3, r4, r5, r6, r7, lr}; mov r5, r1
+proto = "void dsp_write(uint32_t core, uint32_t value_shl8, uint32_t addr)"
+notes = "ARM -> DSP write of one 24-bit word (value << 8)."
+source = "upstream CLAUDE.md 'Plataforma'"
+
+[function.dsp_read]
+addr = 0x08029344
+expect = "38b50446"   # push {r3, r4, r5, lr}; mov r4, r0
+proto = "uint32_t dsp_read(uint32_t core, uint32_t addr)"
+notes = "DSP -> ARM read; upstream reads Y memory with addr = 0x8000 | address."
+source = "upstream CLAUDE.md rules; tools/meter20.py"
+
+[function.mark_dirty]
+addr = 0x0803BDCC
+expect = "38b50d46"   # push {r3, r4, r5, lr}; mov r5, r1
+tags = ["takes_dsp_lock"]
+notes = "MARK_DIRTY: takes the DSP-service lock. Called from the DSP tick it hangs the device forever (upstream SC19). No prototype on purpose."
+source = "upstream CLAUDE.md rules; docs/NOTAS.md 'SC19.3'"
+
+[function.dsp_lock_take]
+addr = 0x08021064
+expect = "10b50446"   # push {r4, lr}; mov r4, r0
+tags = ["takes_dsp_lock"]
+notes = "Takes the DSP-service semaphore [ptr + 0xC]. No prototype on purpose."
+source = "upstream CLAUDE.md rules"
+
+[data.scb_vtor]
+addr = 0xE000ED08
+ctype = "uint32_t"
+notes = "Cortex-M7 SCB->VTOR (vector table offset). Stock sets 0x08010000 at start-up (0x0801BC78...)."
+
+[data.heap_start]
+addr = 0x20002B40
+ctype = "uint32_t"
+notes = "Block allocator start pointer; 0x20006A58 on the device and in the RAM dump."
+
+[data.heap_limit]
+addr = 0x20002B44
+ctype = "uint32_t"
+notes = "Block allocator limit; 0x20044E58 after boot. slim lowers it to reserve its RAM."
+
+[data.heap_cur]
+addr = 0x20002B48
+ctype = "uint32_t"
+notes = "Block allocator current pointer; 0x20044D68 after boot on the device and in the RAM dump."
+
+[hook.button_press]
+kind = "entry"
+addr = 0x08033320
+expect = "38b50446"   # push {r3, r4, r5, lr}; mov r4, r0
+displace = 4
+args = ["void *ctrl", "uint32_t id"]
+ret = "void"
+context = "ui"
+notes = "Button press handler (ctrl = 0x20040B10). Ids: 0-7 tracks, 8 Preset, 9 Note, 16 Record, 17 Play, 19 / 20 Octave, 23 Clear, 24 Duplicate, 27 Shift."
+
+[hook.led_task]
+kind = "call"
+target = "led_task"
+sites = [0x08033B46, 0x0803415A]
+args = ["void *ctrl", "uint16_t *out"]
+ret = "void"
+context = "ui"
+notes = "Both callers of the LED task; handlers run after stock and may overwrite out[]."
+
+[hook.main_ms]
+kind = "entry"
+addr = 0x0803C410
+expect = "10b50446"   # push {r4, lr}; mov r4, r0
+displace = 4
+args = ["uint32_t slot"]
+ret = "void"
+context = "main"
+notes = "Stock's 1 ms dispatcher, Main task: slot 0 every 1 ms (runs the sequencer clock 0x0802A3F8), slot 1 every 333 ms. Reached from Main's soft timer 0x080234EC, before Main takes the DSP lock; runs with the transport stopped too. Only reference: the callback word 0x0803C490."
+source = "event-queue spike 2026-10-12 (refs/archive/spike-event-queue, once branch spike/event-queue); spec 2026-10-12-strum-design.md"
+
+# ---- Note view (Synth 1 / 2, MIDI 1 / 2): pad notes. Evidence: chord spike (refs/archive/spike-chord-probe, once branch spike/chord-probe), chord v1 spec.
+[function.note_pad_index]
+addr = 0x0804B174
+expect = "38b50546"   # push {r3, r4, r5, lr}; mov r5, r0
+proto = "uint32_t note_pad_index(void *view, uint32_t pad)"
+notes = "Note view: pad 0-31 -> index into the keyboard table; pitch = [[view + 0x38] + 0x14 + idx] (root-relative, +12)."
+source = "re/app.asm 0x0804AEF2 (stock pad note start)"
+
+[function.kbd_pad_ignored]
+addr = 0x080523E8
+expect = "02690144"   # ldr r2, [r0, #0x10]; add r1, r0
+proto = "uint32_t kbd_pad_ignored(void *kbd, uint32_t idx)"
+notes = "Keyboard [view + 0x38]: non-zero when pitch + root is outside 12-139; stock then plays nothing for the pad."
+source = "re/app.asm 0x0804AF02"
+
+
+[function.cont_select_track]
+addr = 0x08043448
+expect = "7cb50446"   # push {r2, r3, r4, r5, r6, lr}; mov r4, r0
+proto = "void cont_select_track(void *cont, uint32_t track)"
+notes = "Track container [ctrl + 0x2C] (0x20040DB8) selects track 0-7: the first of the three calls stock's track-button case makes (0x08033400)."
+source = "arpeggiator spike 2026-10-14 (spec 2026-10-14-arpeggiator-design.md)"
+
+[function.cont_track_view]
+addr = 0x0804348C
+expect = "f8b50546"   # push {r3, r4, r5, r6, r7, lr}; mov r5, r0
+proto = "void *cont_track_view(void *cont, uint32_t one)"
+notes = "The selected track's view, as stock's track-button case asks it (second argument 1)."
+source = "arpeggiator spike 2026-10-14"
+
+[function.ctrl_set_view]
+addr = 0x0803390C
+expect = "f8b50446"   # push {r3, r4, r5, r6, r7, lr}; mov r4, r0
+proto = "void ctrl_set_view(void *ctrl, void *view, uint32_t id)"
+notes = "Makes `view` the controller's active view (id = the button). The three calls from a hook with Shift held leave the controller and every LED as a plain track press does (spike: from the Mixer, between all four tracks)."
+source = "arpeggiator spike 2026-10-14"
+[function.note_sink_on]
+addr = 0x0801D38E
+expect = "38b58468"   # push {r3, r4, r5, lr}; ldr r4, [r0, #8]
+proto = "void note_sink_on(void *sink, uint32_t note, uint32_t vel, uint32_t pad)"
+tags = ["takes_dsp_lock"]
+notes = "Slot 0 of the Note view's sink [view + 0x18] (vtable 0x0805BF54, [sink + 0x0C] = track 0-3): router note-on with the pad as source. Reaches the synth note-on 0x0803BD58, which takes the DSP lock."
+source = "re/app.asm 0x0804B07A; chord spike"
+
+[function.note_sink_off]
+addr = 0x0801D942
+expect = "38b58468"   # push {r3, r4, r5, lr}; ldr r4, [r0, #8]
+proto = "void note_sink_off(void *sink, uint32_t note, uint32_t pad)"
+tags = ["takes_dsp_lock"]
+notes = "Slot 1 of the Note view's sink: router note-off. Ignored unless `pad` still owns the note in the router."
+source = "re/app.asm 0x0804AF5A; chord spike"
+
+[function.track_of]
+addr = 0x0805011E
+expect = "80b5d0f8"   # push {r7, lr}; ldr.w r0, [r0, #0x188]
+proto = "uint32_t track_of(void *container)"
+notes = "Track-view container 0x20040DB8 -> selected track 0-7 (0-3 Synth 1, Synth 2, MIDI 1, MIDI 2)."
+source = "upstream tools/build_sc08.py TRACK_OF"
+
+[function.ctrl_press]
+addr = 0x08033320
+expect = "38b50446"   # push {r3, r4, r5, lr}; mov r4, r0
+proto = "void ctrl_press(void *ctrl, uint32_t id)"
+tags = ["takes_dsp_lock"]
+notes = "The controller's button press (the hook button_press is its entry: a press made here goes through slim's handlers too). Play (17) starts the sequencer, whose tick 0 sounds notes."
+source = "tests/harness.py BTN_PRESS; upstream tools/countin.py BTN_PRESS"
+
+[function.ctrl_release]
+addr = 0x0803381A
+expect = "38b50446"   # push {r3, r4, r5, lr}; mov r4, r0
+proto = "void ctrl_release(void *ctrl, uint32_t id)"
+notes = "The controller's button release, the press's pair."
+source = "tests/harness.py BTN_RELEASE; upstream tools/countin.py BTN_RELEASE"
+
+[function.metro_set]
+addr = 0x08031608
+expect = "70b50126"   # push {r4, r5, r6, lr}; movs r6, #1
+proto = "void metro_set(void *obj, uint32_t id, uint32_t value)"
+tags = ["takes_dsp_lock"]
+notes = "Stock's generic setting setter; (metro_obj, 0x64, 0 / 1) is Shift + Clear's metronome toggle: parameter 3 of the store [metro_obj + 0x38] (0x20010FAC), whose listener marks the master group 0x21:8 dirty."
+source = "upstream tools/countin.py (SC41.8); PL08 spike 2026-10-17"
+
+[function.synth_note_on]
+addr = 0x0803BD58
+expect = "7cb50d46"   # push {r2, r3, r4, r5, r6, lr}; mov r5, r1
+proto = "void synth_note_on(uint32_t group, uint32_t note, uint32_t vel)"
+tags = ["takes_dsp_lock"]
+notes = "The synth note-on (the sinks reach it). Group 0xFF is the metronome: (0xFF, 0, 0x60) is stock's click, sent by the clock (object 0x20011364, Main task) on its beats through 0x0802AB0E; it writes master parameter 0x21:9 into the DSP's click trigger. Takes the DSP lock: never from the DSP tick."
+source = "upstream tools/countin.py (SC41.8); tests/notes.py SYNTH_ON"
+
+[data.metro_obj]
+addr = 0x200109D8
+ctype = "uint8_t"
+notes = "Stock's settings object for metro_set (use its address); [+ 0x38] = the store whose parameter 3 is the metronome (0 / 1)."
+source = "upstream tools/countin.py SET_OBJ, METRO_STORE"
+
+[data.controller]
+addr = 0x20040B10
+ctype = "uint8_t"
+notes = "The controller MGR (use its address). Shift held = *param_get(*(ctrl + 0x0C), 0) != 0; active view [ctrl + 0x6C]."
+
+[data.track_container]
+addr = 0x20040DB8
+ctype = "uint8_t"
+notes = "Track-view container (use its address). [+0x18C] mode: 1 Note view, 6 Note view expanded, 5 the probability view (Shift + Pattern Settings), 3 a drum's micro-step view (Gate); [+0x18 + 4 t] Note view of track t. Note from mode 5 gives 1; on a drum Note toggles 1 and 6, and the drum's button gives 1 from every view (PL20 TEST.md, emulation). Stock's Gate view on a note track: a step held, pads 17-32 are its gate bar, pad 17 + k sets every note of the step to k + 1 steps (6 ticks a step at 1/16)."
+
+[data.drum_expanded_vt]
+addr = 0x0805AD44
+ctype = "uint32_t[]"
+notes = "Vtable of the expanded drum view (a drum, Note pressed again: track container mode 6), one view for all four drums: [track_container + 0xAC]; pads 29-32 play drums 1-4. Its live sink [view + 0x10] (vtable 0x0805BF54, as the Note view's; [sink + 0x0C] = 0x10) records hits in modes 1 and 6; the player's sink does not. A drum button always gives mode 1 (steps on top 0x0805AD0C, samples below 0x0805ABBC), from every view tried."
+source = "drums spike 2026-10-25: docs/investigations/2026-10-25-drums-emulation.md (spikes 1 and 2), 2026-10-25-drums-spike/drumlib.py VT, lib2.py, r4_sinks.py"
+
+[data.note_router]
+addr = 0x2003ECDC
+ctype = "uint8_t"
+notes = "Note router (vtable 0x0805B840; [+8] scale object, [+0xC] -> project root): one owner pad per note and track. Track t's pad notes: table [+0xD58 + 12 t], 2 B per note {pitch that took it, 0 = none; pad}, indexed by the scale-snapped pitch - [+0x98 + 3 t]. Note-on 0x080325AC ends a taken note, then writes both bytes; note-off 0x08032684 acts only when both match, then clears the pitch byte. Emulation probe, PL05 (2026-10-14)."
+
+[data.tempo_store]
+addr = 0x20011404
+ctype = "uint8_t"
+notes = "Project tempo parameter store ([[[0x200069E4] + 0x48] + 0x48], upstream): param_get(store, 0) = BPM (whole number), param 2 = swing (50 = straight). Double-buffered: read through param_get only. Swing is in the sequencer's tick timing: the first step of each pair takes s % of the pair."
+source = "upstream docs/NOTAS.md 'Tiempo y tempo'; arpeggiator spike 2026-10-14"
+
+[data.play_store]
+addr = 0x20011034
+ctype = "uint8_t"
+notes = "Play store: param_get(store, 0) != 0 while the sequencer plays; parameter 1 != 0 while Record is armed (also when stopped). Parameter 2: stock records only while p0 && p1 && p2 == 0 (its listener 0x0803FFDC-0x0804001A flushes the recorders when that ends; PL19 pstrum_rec.c reads the same condition); what p2 means is unconfirmed (the count-in suspected)."
+source = "event-queue spike 2026-10-12"
+
+[data.project_root]
+addr = 0x2003FA94
+ctype = "uint8_t"
+notes = "The project's root note 0-11 (the note router's [+0xC], the keyboard's [[kbd + 0x10]])."
+source = "chord v1 spike; PL05 router probe"
+
+[hook.pad_note_on]
+kind = "entry"
+addr = 0x0804AEF2
+expect = "70b50546"   # push {r4, r5, r6, lr}; mov r5, r0
+displace = 4
+args = ["void *view", "uint32_t pad", "uint32_t vel"]
+ret = "void"
+context = "ui"
+notes = "Note view: a key pad starts its note (both Note view modes). Only caller: the press handler 0x0804AB5A, after the fixed-velocity rule. Runs before stock's kbd_pad_ignored check."
+
+[hook.pad_release]
+kind = "entry"
+addr = 0x0804ACC4
+expect = "2de9f843"   # push.w {r3, r4, r5, r6, r7, r8, r9, lr}
+displace = 4
+args = ["void *view", "uint32_t pad"]
+ret = "void"
+context = "ui"
+notes = "Note view release handler (vtable 0x0805A064 slot 1): every pad release, and stock calls it for every held pad when the view is left (through the vtable at 0x0804394A on a track change; Mixer releases pads 0-31 through the controller pad release 0x080332CE at 0x08033A76). It reaches pad_note_off only when the pad still owns a note: it returns at once when [view + 0x40 + pad] == 0 (0x0804ACD4; cleared by the note start when another pad takes the same pitch, 0x0804AF2C, and by the step-edit press, 0x0804AC74), and with a step held (p0 of [view + 0x2C]) whose notes contain the pad's pitch it only clears [0x40 / 0x60 + pad] (0x0804AD2A) and leaves the note to the step's release."
+
+
+[hook.seq_tick]
+kind = "entry"
+addr = 0x0802C418
+expect = "2de9f041"   # push.w {r4, r5, r6, r7, r8, lr}
+displace = 4
+args = ["void *engine"]
+ret = "void"
+context = "main"
+notes = "Sequencer tick (24 PPQN, engine 0x20038EC0), only while playing; tail call from the clock listener 0x0802B8FC in the Main task's 1 ms service, after the main_ms dispatcher's entry. No position in its arguments. Tick 0 of a start is not here: seq_start."
+source = "event-queue spike 2026-10-12; arpeggiator spike 2026-10-14"
+
+[hook.seq_start]
+kind = "entry"
+addr = 0x0802C008
+expect = "2de9f34f"   # push.w {r0, r1, r4-r11, lr}
+displace = 4
+args = ["void *engine"]
+ret = "void"
+context = "ui"
+notes = "Plays tick 0 when Play starts the sequencer (Play handler 0x0802BBAA, after 0x0802BFE0), every start; stopping calls neither."
+source = "arpeggiator spike 2026-10-14"
+
+[hook.seq_place]
+kind = "entry"
+addr = 0x0802C240
+expect = "2de9f04f"   # push.w {r4-r11, lr}
+displace = 4
+args = ["void *engine", "uint32_t track", "uint32_t tick", "uint32_t from_start"]
+ret = "void"
+context = "any"
+notes = "Places track 0-7 (r1, uxtb at every caller) of the engine 0x20038EC0 at the song tick r2: its chain's pattern and step there. r3 = 1 from seq_start (it then updates the chain-done bits [E + 0xFC]), 0 from the engine listener. Callers: seq_start (lr 0x0802C1B0, all 8 tracks: Play from stop, the count-in's Play; also seq_tick's start path 0x0802C4DC when [E + 0xA5] is set, Main, static only), the listener's 'at once' call 0x0802B948 (Shift + a Patterns pad: the picked track; a load while playing: all 8), the stopped call 0x0802B9BA (a pick while stopped: the picked track; a scene or a load while stopped: all 8). Never reached by Shift + Play (continue), by a pick taken over at a pattern end or by a chain advancing by itself. Tasks: UI (the buttons and pads, the count-in's Play from the LED frame), the load's handler, Main (static)."
+source = "PL20 builder check 2026-11-01 (docs/investigations/2026-11-01-trig-conditions-spike/B-counting.md 2-3); PL20 spike 2026-11-07 (docs/investigations/2026-11-07-trig-conditions-spike.md Q1, Q3: q3_tasks.py)"
+
+[hook.track_advance]
+kind = "mid"
+addr = 0x0802CD42
+expect = "9df84410"   # ldrb.w r1, [sp, #0x44] (then orrs r4, r1; beq 0x0802CE12)
+displace = 4
+context = "main"
+notes = "The track advance 0x0802CB3C (called per track at each step's last tick or a scene change from seq_tick's loop via 0x0802C90C, fp = 0, and every tick for the look-ahead via 0x0802CA14, fp = 1) at its test 'the pattern ends or a scene changes'. After the displaced load r1 = the scene flag; the original sp = regs + 64: track = [sp + 0xC] (word), hand = [sp + 0x18] (the caller's r2: 1 while the track's chain-store hand flag (parameter 8 + t) is set and no scene waits, else the scene-change flag: so a waiting pick reads 1 at every step boundary, not only at its takeover), scene = [sp + 0x44]; r4 low byte = this step ends the pattern (count on it, not on the orrs: a scene cuts tracks mid-pattern with r4 = 0); sb = the pattern that ends (its index); fp (r11) = 1 for the look-ahead (it often has r4 = 1: ignore). Exactly one fp == 0 event with r4 or the scene flag per pass, before the next pass's first step (forward, reverse, ping-pong = there and back, random, every rate, chains, wrapping ranges, a 1-step pattern, muted tracks). A pick by hand takes over at the event with r4 = 1, hand 1, scene 0. A scene takes over for every track at once at Drum 1's pattern end (each track's event once, scene 1, hand 1 ended or cut); an advancing scene chain looks the same: the scene chain's parameter 1 ('picked by hand, waiting') is cleared at 0x0802C794 earlier in the same seq_tick, so read it at seq_tick's entry. Main only in every scenario (Q3)."
+source = "re/app.asm 0x0802C7A4-0x0802C7D6, 0x0802CB3C-0x0802CD48; PL20 builder check 2026-11-01 (B-counting.md 1, 3: b_1_pass.py, b_3_hand.py, b_3_scene.py); PL20 spike 2026-11-07 (Q3: q3_tasks.py)"
+
+[hook.player_tick]
+kind = "mid"
+addr = 0x0804A6C0
+expect = "06eb4602"   # add.w r2, r6, r6, lsl #1 (the step's tick table index; after the random draw and its store)
+displace = 4
+context = "main"
+notes = "A player's play pass 0x0804A684 (notes and drums, every player, muted ones too), every tick, before its microstep calls. r7 = the player (note track t: 0x20040200 + 0x184 t; drum d: 0x20040810 + 0x90 d), sb = the playing pattern, r8 = the step, r5 = the tick in the step (0 = tick 0), r6 = the sync rate; r1 is live (loaded at 0x0804A6BE). At tick 0 (r5 == 0) the step's random word is fresh in [r7 + 4] (drawn at 0x0804A6B8, stored at 0x0804A6BC; the probability tests compare against its low 3 bits). Tick 0 comes once per step, before every microstep call and probability test of that step (slot 1 at 0x0804A6DA, then 0x0804A714's slots 4 and 2) at every rate 0-7, both classes. 0x0804A6B8 itself cannot be a mid hook (a bl, then PC-relative code). Main only in every scenario (Play, count-in, loads, picks, scenes)."
+source = "re/app.asm 0x0804A684-0x0804A714; PL20 builder check 2026-11-01 (docs/investigations/2026-11-01-trig-conditions-spike/B-counting.md 4: b_4_tick0.py); PL20 spike 2026-11-07 (Q3: q3_tasks.py)"
+
+[hook.prob_view_note]
+kind = "entry"
+addr = 0x0804D0BC
+expect = "38b50c46"   # push {r3, r4, r5, lr}; mov r4, r1
+displace = 4
+args = ["void *view", "uint32_t pad"]
+ret = "void"
+context = "ui"
+notes = "A note track's probability view (class 0x0805ACD4, [track_container + 0x68 + 4 t], the bottom view in mode 5): its pad press, pad 0-15 of the view (0-7 row 3, 8-15 row 4 = the controller's 24-31; the container remaps). Row 4 returns at the bge (0x0804D112): nothing in stock (C-controls.md Q1). Row 3: accepted when a step pad is held ([[view + 0xC] + 0x10] p0), or stopped ([view + 0x10] p0 == 0, the play store), or the editors do not follow the playhead ([view + 0x14] p0 = 0x20039DE0's, set), and the edit store [[view + 0xC] + 8] (= [editor + 0x20], editor = [view + 0xC] - 0x18) has notes in word 0's byte 0; it writes the probability through param_wptr(store, 0) byte 1 and commits (the selected step: [editor + 0x24] p0 & 7 / p1). Shift changes nothing here."
+source = "re/app.asm 0x0804D0BC-0x0804D112; PL20 builder check 2026-11-01 (docs/investigations/2026-11-01-trig-conditions-spike/C-controls.md Q1: c_1_prob_row4.py, c_2_prob_row3.py); PL20 spike 2026-11-07 (Q4: q4_stores.py)"
+
+[hook.prob_view_drum]
+kind = "entry"
+addr = 0x0804F262
+expect = "2de9f845"   # push.w {r3, r4, r5, r6, r7, r8, sl, lr}
+displace = 4
+args = ["void *view", "uint32_t pad"]
+ret = "void"
+context = "ui"
+notes = "A drum's probability view (class 0x0805AB14, [track_container + 0xE0 + 4 d]): its pad press, pad 0-15 as the note class's. Row 4 returns at the bge (0x0804F31C). Row 3: the same accept rule with the held store at [[view + 0xC] + 0xC]; the step = [[view + 0xC] + 8] p1 (the drum editor's position store [editor + 0x20], editor = [view + 0xC] - 0x18), the pattern = the recorder's shown one ([[0x2003C184 + 4 d] + 0x14] p0 & 7); an empty step gets a hit (velocity 0x60) first, then the probability through the step store [[view + 0xC]]."
+source = "re/app.asm 0x0804F262-0x0804F31C; PL20 builder check 2026-11-01 (C-controls.md Q1); PL20 spike 2026-11-07 (Q4: q4_stores.py)"
+
+[hook.cont_release]
+kind = "entry"
+addr = 0x080435F0
+expect = "f8b50446"   # push {r3, r4, r5, r6, r7, lr}; mov r4, r0
+displace = 4
+args = ["void *cont", "uint32_t pad"]
+ret = "void"
+context = "ui"
+notes = "The track container's (0x20040DB8) pad release, pad 0-31 (the controller's): acts only when the pad's bit is set in [cont + 0x190] (cleared here), then the view under the pad (0x08043B6E) gets it in its slot 1 (the probability views: the shared no-op 0x0804759A). The hook runs before that bit test. Reached by the finger's release through ctrl_pad_release and by stock's release-alls at a view change while the old mode is still set: the container's half release-all 0x08043930 (Note, Velocity, Gate, Pattern Settings, Preset, a track button: [ctrl + 0x84] keeps the bit, so the finger's late release reaches this with the bit clear) and the controller's 0x08033A6C (Patterns, Mixer, FX: both bits cleared, the late release stops in ctrl_pad_release)."
+source = "re/app.asm 0x080435F0-0x08043634; PL20 builder check 2026-11-01 (C-controls.md Q2: c_4_release.py)"
+
+[hook.wide_drum_press]
+kind = "entry"
+addr = 0x0804ED50
+expect = "1c2938b5"   # cmp r1, #0x1c; push {r3, r4, r5, lr} (the blt after it reads the cmp's flags)
+displace = 4
+args = ["void *view", "uint32_t pad", "uint32_t vel"]
+ret = "void"
+context = "ui"
+notes = "The drum expanded view's pad press (class 0x0805AD44, [track_container + 0xAC]: one object for all four drums, mode 6 on a drum track; the drum shown = track_of(container) - 4), pad 0-31 (the controller's, not remapped). Pads < 28 return at the blt (0x0804ED66): nothing in stock (C-controls.md Q3); 28-31 = drums 1-4 through the view's sink [view + 0x10] (pad - 27). A CTPlay page open over the view takes every pad before this (page_on_pad on ctrl_pad_press)."
+source = "re/app.asm 0x0804ED50-0x0804ED66; PL20 builder check 2026-11-01 (C-controls.md Q3: c_5_expanded.py)"
+
+[hook.wide_drum_release]
+kind = "entry"
+addr = 0x0804ED68
+expect = "1c290a46"   # cmp r1, #0x1c; mov r2, r1 (flags kept for the bge)
+displace = 4
+args = ["void *view", "uint32_t pad"]
+ret = "void"
+context = "ui"
+notes = "The drum expanded view's pad release (slot 1 of class 0x0805AD44), from the container's release (0x080435F0) when its [cont + 0x190] bit was set. Exactly one per press: at a view change it comes from the release-all while the view is still set (Note, Velocity, Gate, Pattern Settings, Preset, a track button: the container's half release-all 0x08043930; Patterns, Mixer, FX: the controller's 0x08033A6C), and the finger's late release never reaches it. Pads < 28 return at 0x0804ED6E."
+source = "re/app.asm 0x0804ED68-0x0804ED82; PL20 builder check 2026-11-01 (C-controls.md Q2: c_4_release.py)"
+
+[hook.drum_duplicate]
+kind = "entry"
+addr = 0x0803E2AA
+expect = "2de9f84f"   # push.w {r3, r4, r5, r6, r7, r8, sb, sl, fp, lr}
+displace = 4
+args = ["void *editor", "const uint8_t *src", "uint32_t pattern"]
+ret = "void"
+context = "ui"
+notes = "Drum Duplicate's paste (the Patterns view: Duplicate held, a source pad, a target pad; through the pattern-command dispatcher 0x0802DBC0, caller 0x0802DC4C). r0 = the target drum's editor ([0x20039C5C + 0xA8 + 4 d]), r1 = the source pattern's address (any drum's), r2 = the target pattern index: target = [editor + 4] + 0x6A8 r2. Stopped, stock first makes the target the shown pattern ([editor + 0x20] p0, 0x0803E2BE-0x0803E2CC); when the target is the shown pattern (0x0803E2DC) it copies through the step store, the lanes and the settings store and leaves the target's +0x84..+0xA7 as they were; otherwise one memcpy of 0x6A8 (0x0803E3AC) copies them too. No stock writer touches +0x84..+0xA7 between the entry and the end, so a copy at the entry is right in every case (and a pattern onto itself)."
+source = "re/app.asm 0x0803E2AA-0x0803E3AC; PL20 builder check 2026-11-01 (A-storage.md Q1: a_q1_duplicate.py); PL20 spike 2026-11-07 (Q1: q1_drums.py, cases A-I)"
+
+[hook.drum_clear_step]
+kind = "entry"
+addr = 0x0803E18A
+expect = "70b50446"   # push {r4, r5, r6, lr}; mov r4, r0
+displace = 4
+args = ["void *editor"]
+ret = "void"
+context = "ui"
+notes = "Drum Clear step (the step view: Clear held + a step pad; dispatcher caller 0x0802E174). r0 = the drum's editor only: stock reads the pattern = [editor + 0x20] p0 (the shown one) and the step = p1 (0-31, the pad's: stock selects it first, on the 17-32 page too; playing, p1 at the entry is the pad's) itself (0x0803E18E-0x0803E1A0), then clears the step's velocity, micro, probability (7) and flip through the step store. +0x84..+0xA7 untouched."
+source = "re/app.asm 0x0803E18A-0x0803E1D0; PL20 builder check 2026-11-01 (A-storage.md Q2); PL20 spike 2026-11-07 (Q1: q1_drums.py)"
+
+[hook.drum_clear_pattern]
+kind = "entry"
+addr = 0x0803E3B0
+expect = "2de9f84f"   # push.w {r3, r4, r5, r6, r7, r8, sb, sl, fp, lr}
+displace = 4
+args = ["void *editor", "uint32_t pattern"]
+ret = "void"
+context = "ui"
+notes = "Drum Clear pattern (the Patterns view: Clear held + a pattern pad; dispatcher caller 0x0802DC66). r0 = that column's drum editor, r1 = the cleared pattern index (shown or not, stopped or playing): [editor + 4] + 0x6A8 r1. Stock clears the four arrays (through the step store when shown) and leaves +0x84..+0xA7."
+source = "re/app.asm 0x0803E3B0-0x0803E4A4; PL20 builder check 2026-11-01 (A-storage.md Q2); PL20 spike 2026-11-07 (Q1: q1_drums.py)"
+
+[hook.drum_copy_half]
+kind = "entry"
+addr = 0x0803E93A
+expect = "2de9f047"   # push.w {r4, r5, r6, r7, r8, sb, sl, lr}
+displace = 4
+args = ["void *editor"]
+ret = "void"
+context = "ui"
+notes = "Drum copy 1-16 -> 17-32 (the step view: Duplicate held + 1-16/17-32; dispatcher caller 0x0802E182). r0 = the drum's editor only; the pattern = [editor + 0x20] p0 (the shown one, which the step store mirrors). Always steps 0-15 -> 16-31, with 1-16 or 17-32 shown: the loop 0x0803E944-0x0803E9DA writes step sl + 16 from the store's step sl, sl 0-15. Stock has no 17-32 -> 1-16. +0x84..+0xA7 untouched."
+source = "re/app.asm 0x0803E93A-0x0803E9DA; PL20 builder check 2026-11-01 (A-storage.md Q2); PL20 spike 2026-11-07 (Q1: q1_drums.py)"
+
+[hook.drum_paste_step]
+kind = "entry"
+addr = 0x0803DFAE
+expect = "2de9f24f"   # push.w {r1, r4, r5, r6, r7, r8, sb, sl, fp, lr}
+displace = 4
+args = ["void *editor", "uint32_t vel", "uint32_t flip", "uint32_t micro"]
+ret = "void"
+context = "ui"
+notes = "Drum paste step (the step view: Duplicate held, step A, then step B, on another page or after another drum's button too; dispatcher caller 0x0802E12C-0x0802E166). r0 = the target drum's editor; target = [editor + 0x20] p0 (the shown pattern) / p1 (the step). r1-r3 = the source step's velocity, flip, micro; stack argument 5 [sp] = its probability, argument 6 [sp + 4] = the source pattern + 0xA8 (the caller's, before the hook's stub: an entry handler finds them above its slim_args_t, checks.ENTRY_STUB_STACK). The caller found the source through the shared copy record [editor + 0x54] = 0x20039C8C (byte 0 = 2 after a copy, 1 = the source track 4 + d, 2 = its pattern, 3 = its step), indexing the tracks' patterns [ip + 8 + 4 track] without checking the track's kind; stock reads the source step from the record's byte 3 again here (0x0803DFE4). A source velocity of 0 (an empty step) pastes a removal. +0x84..+0xA7 untouched."
+source = "re/app.asm 0x0802E12C-0x0802E166, 0x0803DFAE-0x0803DFE8; PL20 builder check 2026-11-01 (A-storage.md Q2); PL20 spike 2026-11-07 (Q1: q1_drums.py)"
+
+[hook.drum_mutate]
+kind = "mid"
+addr = 0x0803E78E
+expect = "0199019a"   # ldr r1, [sp, #4]; ldr r2, [sp, #4]
+displace = 4
+context = "ui"
+notes = "Drum Mutate 0x0803E6F0 (Shift + Duplicate) in its swap loop, once per swap (after the beq.w at 0x0803E78A that skips a step's swap with itself). After the displaced loads r1 = r2 = the pattern's address ([sp + 4] = [editor + 4] + 0x6A8 x the shown pattern), r4 = step a (the position, 0x0803E770), r3 = step b (its random partner, & 0x1F at 0x0803E784). Stock then swaps the two steps' velocity, micro, probability and flip; +0x84..+0xA7 untouched."
+source = "re/app.asm 0x0803E770-0x0803E812; PL20 spike 2026-11-07 (Q2: q2_mutate.py)"
+
+[hook.drum_step_off]
+kind = "entry"
+addr = 0x0804EC3E
+expect = "70b50446"   # push {r4, r5, r6, lr}; mov r4, r0
+displace = 4
+args = ["void *view", "uint32_t step"]
+ret = "void"
+context = "ui"
+notes = "The drum step view's step off (class 0x0805AD0C, one object per drum: 0x20043094 drum 1, 0x200431A4 drum 2): clears step `step`'s (0-31, absolute: 21 -> 20 on the 17-32 page) velocity, micro (0) and probability (7) and sets its flip to 0xFF through the drum's step store [view + 0xC] (= its editor's [+ 0x18]). Called from the toggle 0x0804EC8A on a step pad's release in mode 1 (0x0804E49E) when the step had a hit, also a held step's release after another step pad; a 600 ms hold does not toggle; the velocity, gate and probability views' step pads only select. The pattern is the drum's shown one. +0x84..+0xA7 untouched."
+source = "re/app.asm 0x0804EC3E-0x0804EC88, 0x0804EC8A; PL20 spike 2026-11-07 (Q1: q1_toggle.py; Q5: q5_removals.py)"
+
+[hook.drum_remove]
+kind = "entry"
+addr = 0x080500B2
+expect = "f8b50446"   # push {r3, r4, r5, r6, r7, lr}; mov r4, r0
+displace = 4
+args = ["void *listener", "uint32_t step"]
+ret = "void"
+context = "ui"
+notes = "Removes step `step`'s (0-31) hit: velocity 0, micro 0, probability 7, flip 0xFF, through the step store [listener + 8] (the drum's, = its editor's [+ 0x18]). r0 is the drum's flip listener (class 0x0805C150: 0x20043FC8 drum 1, 0x20043FE0 drum 2), not a view. Caller 0x0804FFBC in the listener 0x0804FF18: in the drum step view, a step pad held and a lower pad (16-31 = the samples) pressed whose sample is the step's flip sample (0x08052780); another lower pad sets the flip (on an empty step it adds a hit, velocity 96: 0x08050062). The pattern is the drum's shown one. +0x84..+0xA7 untouched."
+source = "re/app.asm 0x0804FF18-0x0804FFBC, 0x080500B2-0x080500F8; PL20 spike 2026-11-07 (Q1: q1_toggle.py; Q5: q5_removals.py)"
+
+[hook.drum_micro_off]
+kind = "mid"
+addr = 0x0804F104
+expect = "f8684146"   # ldr r0, [r7, #0xc]; mov r1, r8
+displace = 4
+context = "ui"
+notes = "The drum micro-step view (Gate on a drum, mode 3; class 0x0805AAA4: 0x2004364C drum 1, 0x20043690 drum 2), its pad press 0x0804F036 (pads 16-21 = micro bits 0-5 of the selected step [r7 + 0x10] p1): reached only when the press turned off the step's last micro bit (cbnz r5 at 0x0804F0FC falls through); stock then clears the step's velocity (0x0804F104-0x0804F118) and commits. At the site r7 = the view, sl (r10) = the step 0-31, [r7 + 0xC] = the drum's step store (its editor's [+ 0x18]); the pattern is the drum's shown one. Not reached for a press that leaves a bit or adds a hit. +0x84..+0xA7 untouched."
+source = "re/app.asm 0x0804F036-0x0804F122; PL20 spike 2026-11-07 (Q5: q5_micro.py)"
+
+[hook.note_step_fill]
+kind = "entry"
+addr = 0x0803D230
+expect = "00200722"   # movs r0, #0; movs r2, #7
+displace = 4
+args = ["void *editor", "uint8_t *step"]
+ret = "void"
+context = "ui"
+notes = "The note editor's empty-step fill (a leaf): writes a 28 B step as empty ([0] = 0, [1] = 7, the units' defaults), leaving [2] / [3]. Two callers: note Clear step 0x0803D1D4 (r1 = the edit store's write buffer, after touch-all 0x08035456; stock's commit then carries it into the selected step, the pad's) and note Clear pattern 0x0803D310 (r1 = pattern + 28 s, 32 calls, 0x0803D354-0x0803D364). r0 = the note editor."
+source = "re/app.asm 0x0803D1D4-0x0803D1E6, 0x0803D230-0x0803D27A, 0x0803D354-0x0803D364; PL20 builder check 2026-11-01 (A-storage.md Q2); PL20 spike 2026-11-07 (Q1: q1_notes.py)"
+
+[hook.prob_note]
+kind = "mid"
+addr = 0x08040D8A
+expect = "68787045"   # ldrb r0, [r5, #1]; cmp r0, lr (then blo 0x08040D98: the unit fails)
+displace = 4
+context = "main"
+notes = "seq_units_start's probability test, once per used unit (mask bit) per microstep call of the step (6 a step x units; not for microstep 0xFF): r0 = the step's probability byte, lr = the step's random word & 7, flags from the cmp; the `blo` after the displaced cmp skips the unit's mark (orreq r1, r2 at 0x08040D96), so a handler that clears APSR's C makes the unit fail as a failed roll. sb = the note player, r5 = the step's address, [sp] = the step, [sp + 4] / r3 = the microstep, r8 = the unit. Forcing the fail here is event for event a failed roll (ties, long notes and note-offs unchanged)."
+source = "re/app.asm 0x08040D80-0x08040D98; PL20 builder check 2026-11-01 (B-counting.md 5: b_5_prob.py)"
+
+[hook.prob_drum]
+kind = "mid"
+addr = 0x0804AA18
+expect = "91f820509d42"   # ldrb.w r5, [r1, #0x20]; cmp r5, r3 (then blo 0x0804AA30: no hit)
+displace = 6
+context = "main"
+notes = "The drum hit test 0x0804AA08 (one caller, slot 2 at 0x0804126C), once per microstep call when the step's velocity is not 0, only while the track is unmuted: r5 = the step's probability, r3 = the random word & 7, flags from the cmp; clearing APSR's C takes the `blo` (no hit at this microstep). r1 = the step's address in the pattern (r1 - the pattern = the step), r2 = the microstep; the player is at the original sp + 4 (regs + 64 + 4: the hit test pushed {r4, r5}, r5 = slot 2's player). 6 B displaced: with 4 a handler would see r5 overwritten before the cmp. Forcing this test alone still sends the flip sample: prob_drum_first is needed too."
+source = "re/app.asm 0x0804AA08-0x0804AA32; PL20 builder check 2026-11-01 (B-counting.md 5: b_5_prob.py)"
+
+[hook.prob_drum_first]
+kind = "mid"
+addr = 0x080411F6
+expect = "93f820e0be45"   # ldrb.w lr, [r3, #0x20]; cmp lr, r7 (then blo 0x08041208: the next microstep)
+displace = 6
+context = "main"
+notes = "Slot 4's test at tick 0 (0x080411CA, the drum player's flip sample), once per microstep k = 0..5 until the first microstep with a hit (6 times when the roll fails): lr = the step's probability, r7 = the random word & 7, flags from the cmp; clearing APSR's C takes the `blo` (no flip sample for this step). r4 = the drum player, r1 = the pattern, r2 = the step, r3 = the step's address, r6 = k. The loop's branch target 0x080411F4 is before the displaced bytes. With prob_drum forced as well, a silenced drum step is event for event a failed roll."
+source = "re/app.asm 0x080411F0-0x08041214; PL20 builder check 2026-11-01 (B-counting.md 5: b_5_prob.py)"
+
+[hook.ctrl_pad_press]
+kind = "entry"
+addr = 0x08033282
+expect = "70b50646"   # push {r4, r5, r6, lr}; mov r6, r0
+displace = 4
+args = ["void *ctrl", "uint32_t pad", "uint32_t vel"]
+ret = "void"
+context = "ui"
+notes = "Controller pad press: every pad 0-31 in every view (the 2-row Note view's step pads too). Sets the pad's bit in [ctrl + 0x84]."
+source = "tests/harness.py PAD_PRESS; arpeggiator spike 2026-10-14"
+
+[hook.ctrl_pad_release]
+kind = "entry"
+addr = 0x080332CE
+expect = "30b4d0f88420"   # push {r4, r5}; ldr.w r2, [r0, #0x84]
+displace = 6
+args = ["void *ctrl", "uint32_t pad"]
+ret = "void"
+context = "ui"
+notes = "Controller pad release; acts only when the pad's bit is set in [ctrl + 0x84] (a press stock never saw is skipped)."
+source = "tests/harness.py PAD_RELEASE; arpeggiator spike 2026-10-14"
+[hook.rec_commit]
+kind = "entry"
+addr = 0x0803F7BE
+expect = "034603eb81002de9f04e"   # mov r3, r0; add.w r0, r3, r1, lsl #2; push.w {r4-r7, sb, sl, fp, lr}
+displace = 6
+args = ["void *rec", "uint32_t note", "uint32_t end"]
+ret = "uint32_t"
+context = "any"
+notes = "Tasks (PL19 spike q1_tasks): UI (stock's pad note-off; the flush at Stop and Record off, 0x0803F6A2) and Main (the heartbeat's note-offs, the tick pass 0x0803F78C). The recorder's commit (rec = [0x2003C174 + 4 t]): writes the note's unit into its step at the note's end, from the pending word [rec + 0x9C + 4 note] (bits 0-2 unit, 7 = nothing pending: returns 0 at once; 3-7 step, 8-10 pattern, 11-17 velocity, 18-28 start = the note-on's tick, counted from Play mod 2048 (a pass later it differs: 768 for 8 x 16 steps), 29-31 microstep). Reuses the step's unit with the same note and microstep, else unit bits 0-2; length = end - start in ticks. Then sets bits 0-2 to 7, so after it a write and a no-op look the same: hence an entry hook. Callers: the recorder's tick processing (0x0803F78C, Main task: notes placed and released), its note-off path (0x0803F60C) and its flush of notes 1-139 (0x0803F6A2, mostly no-ops). Notes not yet placed wait in rec + 0x54 (6 x 12 B: [0] note, 0 = empty; [3] bit 0 released; [4] bits 0-10 start, 11-21 end). The commit's store touch after it (0x0803F8D4: write pointer, commit) copies the live pattern through the store's staging buffer, so an edit made before stock's write is kept; no editing copy writes a note track's steps back (PL08 spike: step edit, view round trip, playback). Record quantise: the note-on's placement (0x0803F298) reads [rec + 0x35]; set (quantise on, the default) = the note goes on a whole step, microstep 0 (which way an off-grid note rounds: not traced); 0 = start keeps the note's offset in the step and the microstep comes from it (0x0803F8F6 -> 0x0804A314: tick offset -> 0-5 for the track's sync rate). [rec + 0x35] = !(bit 12 of parameter 2 of the store [rec + 0x24] = the settings store 0x200111CC), set by the constructor (0x0803FBC4) and the recorder's store listener (0x0803FE90). Shift + Record flips that bit (0x08045A44, the Record / Play object [ctrl + 0x4C], its [+ 0x1C]) and Record's LED with Shift reads it (0x08045B0E): stock's Shift + Record = record quantise (on Circuit since its firmware 1.8: Record bright = on, dim = off; saved with the device settings)."
+source = "re/app.asm; PL08 mono record spike 2026-10-17 (emulation); record quantise: re/app.asm 2026-10-17, device RAM snapshot (all four recorders: [+ 0x24] = 0x200111CC, [+ 0x35] = 1)"
+
+[function.rec_write]
+addr = 0x0803F7BE
+expect = "034603eb81002de9f04e"   # mov r3, r0; add.w r0, r3, r1, lsl #2; push.w {r4-r7, sb, sl, fp, lr}
+proto = "uint32_t rec_write(void *rec, uint32_t note, uint32_t end)"
+notes = "The recorder's commit as a function (hook rec_commit is its entry, hook rec_committed its callers): returns non-zero when it wrote into the pattern the recorder's store shows (its callers then make the store touch 0x0803F8D4). Gate: steps held = ((end - start) & 0x7FF) / ticks a step (step_ticks[[pattern + 0x382]], 0x0803F848-0x0803F856); 16 or more -> a flat 96 sixths (0x0803F85A), else 6 x steps + the sixths of the rest (at least 1). A call through its veneer runs the entry hook too."
+source = "re/app.asm 0x0803F7BE-0x0803F8C8; slim emulation 2026-10-23 (tests/test_recfix.py::test_stock_cuts_at_16_steps)"
+
+[hook.rec_committed]
+kind = "call"
+target = "rec_write"
+sites = [0x0803F60C, 0x0803F6A2, 0x0803F78C]
+args = ["void *rec", "uint32_t note", "uint32_t end"]
+ret = "uint32_t"
+context = "any"
+notes = "Every caller of the commit (re/app.asm has no other reference): the note-off path 0x0803F60C (non-zero: it tail-jumps to the store touch 0x0803F8D4), the flush of notes 1-139 at Stop or Record off 0x0803F6A2 (every recorder; with a note still held it commits it) and the recorder's tick 0x0803F78C (Main task); the last two OR the result into their own touch flag. Handlers run after the commit (and its entry hook rec_commit), before the caller's store touch. After the commit the pending word reads 'nothing pending' either way (bits 0-2 = 7, the rest stale), so a handler that needs it latches it at rec_commit. The note-off path's and the flush's tasks are not identified."
+source = "re/app.asm; slim emulation 2026-10-23 (Stop with a note held: the flush commits it, tests/test_recfix.py::test_stop_while_held_writes_the_whole_note)"
+
+[data.step_ticks]
+addr = 0x0805B8B8
+ctype = "uint32_t[]"
+notes = "Stock's ticks a step by a pattern's sync rate [pattern + 0x382], 8 words: 2 3 4 6 8 12 16 24 (the commit's literal 0x0803F8D0). 1/16 (rate 3, the default) = 6 ticks = 6 sixths of a step."
+source = "re/app.asm 0x0803F848-0x0803F850; slim emulation 2026-10-23 (tests/test_recfix.py::test_stock_cuts_at_16_steps)"
+
+[hook.pad_note_off]
+kind = "entry"
+addr = 0x0804AF5A
+expect = "70b54418"   # push {r4, r5, r6, lr}; adds r4, r0, r1
+displace = 4
+args = ["void *view", "uint32_t pad"]
+ret = "void"
+context = "ui"
+notes = "Note view: a pad ends its note. Only caller: the release handler 0x0804ACC4 (hook pad_release, a tail branch at 0x0804AD24), which skips it in the cases listed there."
+
+# ---- Sequencer playback (Synth 1 / 2, MIDI 1 / 2). Evidence: upstream SEQWD (RC0.5 era, DWT watchpoint on the device
+#      2026-10-12: the player reads a step's note only while playing) and SC39 random-mutate; upstream docs/NOTAS.md.
+#      Callable from C since PL19 (seq_note_on, seq_end_entry: the pattern strum's late notes, features/chord/pstrum.c);
+#      hooks seq_play_step, seq_end_all (PL19). Pattern of track t = [player + 0x48] + 0xCA8 × pattern; step =
+#      + 28 × step: [0] note-slot mask, [1] probability, then 6 slots of (note, length | tie << 7, microstep, velocity).
+[function.seq_units_start]
+addr = 0x08040D4C
+expect = "062b2de9"   # cmp r3, #6; push.w {...}
+notes = "Player (this, pattern, step, tick): marks which note slots start this microstep in [this + 0x13C + microstep] ([step + 1] probability against [this + 4] & 7, [slot + 6] microstep), then ends those already sounding (active-note tables this + 0x54 / 0x128, looked up with the step's own note)."
+source = "upstream NOTAS.md SEQWD (device)"
+
+[function.seq_play_step]
+addr = 0x08040E5A
+expect = "2de9f84f"   # push.w {r3, r4, r5, r6, r7, r8, r9, sl, fp, lr}
+notes = "Player (this, pattern, step, microstep): plays the slots marked by seq_units_start. First releases their live notes (0x08041078), then per slot reads the note at 0x08040EFC (`ldrb r5, [r4, #4]`, r4 = slot) and velocity at 0x08040EFE, and calls seq_note_on. Upstream's random-mutate replaces those two loads with a call (mutated note in r5); with Record it writes the mutated note back to [slot + 4]."
+source = "upstream NOTAS.md SEQWD (device: 23 reads from here while playing, none stopped), SC39"
+
+[hook.seq_play_step]
+kind = "entry"
+addr = 0x08040E5A
+expect = "2de9f84f"   # push.w {r3, r4, r5, r6, r7, r8, r9, sl, fp, lr}
+displace = 4
+args = ["void *player", "uint32_t pattern", "uint32_t step", "uint32_t micro"]
+ret = "void"
+context = "any"
+notes = "The player's step (function seq_play_step), at its entry: pattern is an index ([player + 0x48] + 0xCA8 × pattern), step 0-31, micro the microstep 0-5. The marks [player + 0x13C + micro] are a unit mask (bit u = unit u of the step, from seq_units_start: used, microstep = micro, probability passed); every marked unit is played in slot order, so a handler that clears a mark makes stock skip that unit entirely (its live pitch is not ended, no length-list entry, no note-on). A marked unit whose note's bit is set in [player + 0x128 + 4 (note >> 5)] (bit note & 31) is a held tie: it gets a new length-list entry and no sound. Stock's length (0x08040F02-0x08040F58): rate = *param_get([player + 0x10], 1) (> 7 -> 7), g = gate & 0x7F (0 -> 1, > 96 -> 96), ticks = g × step_ticks[rate] / 6 (0 -> 1); tie = gate bit 7. Task: Main in every call seen in emulation, step 0 too (the first heartbeat after Play, PL19 spike q4_tick0); context any, as the spec allowed tick 0 from the Play handler (UI). Only the note players' (vtable 0x0805B750) calls reach it; the drums' player is another class."
+source = "re/app.asm 0x08040E5A-0x08040F6C; PL19 spike 2026-10-31 (docs/investigations/2026-10-31-pattern-strum-spike.md, q4_player, q4_tick0); features/chord/pstrum.c"
+
+[function.seq_note_on]
+addr = 0x08040FA2
+expect = "2de9f041"   # push.w {r4, r5, r6, r7, r8, lr}
+proto = "void seq_note_on(void *player, uint32_t note, uint32_t vel, uint32_t length, uint32_t tie)"
+tags = ["takes_dsp_lock"]   # through the note interface: the router, the synth note-on 0x0803BD58
+notes = "Player note-on (this, note, vel, length, tie): unless the note is a held tie (mask this + 0x128) calls slot 0 of the note interface [this + 0x4C] (vtable 0x0805BF54, the class of note_sink_on: playback and live pads meet in the router) and stores the note it was given in the length list this + 0x68 / 0x7C, so the note-off ends that note, not the step's. It takes the list's free head without checking (0x080410AC): never call it with [this + 0x78] == 0xFF. It stores length - 1, so the note ends at the length-th tick countdown after it; with tie it sets the note's bit in the tie-on mask [this + 0x54 ..]. PL19's late notes call it from the Main task (features/chord/pstrum.c)."
+source = "upstream NOTAS.md SEQWD, SC39"
+
+[function.seq_end_entry]
+addr = 0x08041078
+expect = "70b50446"   # push {r4, r5, r6, lr}; mov r4, r0
+proto = "void seq_end_entry(void *player, uint32_t i)"
+tags = ["takes_dsp_lock"]   # seq_note_off: slot 1 of the note interface, the synth note-off 0x0803BD94
+notes = "Note-off of length-list entry i (seq_note_off: the note interface's slot 1, the tie-on bit cleared, [player + 0x9B + note] = 0xFF, the entry back on the free list) and its removal: the next entry's delta grows by its time, so the others keep their ends. [player + 0x9B + note] = the note's entry, 0xFF = none; length list links [player + 0x68 + 2 i] (i 0-7; free head at + 0x78 = link 8, used head at + 0x7A = link 9, sorted by end), times [+ 0x7C + 4 i] (deltas), notes [+ 0x7E + 4 i]. seq_play_step calls it for a marked unit's pitch still sounding (0x08040EAA) and for the used head when it needs room (0x08040F2A)."
+source = "re/app.asm 0x08041078-0x080410AA, 0x080410CA; PL19 spike 2026-10-31"
+
+[hook.seq_end_all]
+kind = "entry"
+addr = 0x08040D36
+expect = "10b50446"   # push {r4, lr}; mov r4, r0
+displace = 4
+args = ["void *player"]
+ret = "void"
+context = "any"
+notes = "Slot 3 of the note players' vtable 0x0805B750 (0x0805B75C): ends every length-list entry of the player. Only call: the listener's reset 0x0804A79C (blx at 0x0804A7A4), from the UI task in every case seen: Stop (all four players: the play store [player + 0x1C] = 0x20011034, parameter 0 to 0), the Mixer's mute on (that player: [player + 0x28] = the track's mute store, parameter 0 set). A pattern change does not reset. [player + 0x24], a store every player shares, was not seen committed (a project load: untested)."
+source = "re/app.asm 0x08040D36, 0x0804A79C-0x0804A7A6; PL19 spike 2026-10-31 (q4_resets)"
+
+[function.seq_note_off]
+addr = 0x0804104A
+expect = "f8b50446"   # push {r3, r4, r5, r6, r7, lr}; mov r4, r0
+notes = "Player note-off (this, i): slot 1 of the note interface [this + 0x4C] for length-list entry i. 0x08041078 frees one entry."
+source = "upstream NOTAS.md SEQWD"
+
+[function.stock_random]
+addr = 0x08049908
+expect = "f0b42449"   # push {r4, r5, r6, r7}; ldr r1, [pc, #0x90]
+notes = "Stock's random generator, no arguments: an LCG (multiplier 0x0019660D, mod 2^31 - 1) behind a 32-entry Bays-Durham shuffle, seeded on first use. Global state: callers share it (stock's Mutate, upstream's random-mutate)."
+source = "upstream NOTAS.md SEQWD / SC39; re/app.asm"
+
+[data.seq_players]
+addr = 0x20040200
+ctype = "uint8_t"
+notes = "Pattern players (use its address): track t = 0-3 at + 0x184 × t (vtable 0x0805B750; 0x20040810 = drums, another class). [+ 0x48] patterns (Synth 1 0x20011B20, the recorder's), [+ 0x4C] note interface (+ 0x144 of the object), [+ 0x9B + note] != 0xFF while the note sounds. Checked in the device RAM snapshot."
+source = "upstream NOTAS.md SEQWD / SC39; ctre RAM dump"
+
+[data.keyboard]
+addr = 0x20041044
+ctype = "uint8_t"
+notes = "The Note views' keyboard [view + 0x38], one object for all four tracks (use its address). [+ 0x0C] scale object 0x2003FA8C, shared by every track: [0] lowest, [1] highest, [4] 2 bits per semitone over the root, 0 = in the scale. Root = *[+ 0x10]."
+source = "upstream NOTAS.md SC39; chord.c VIEW_KBD / KBD_SCALE; ctre RAM dump"
+
+# ---- Voice decision and USB SysEx (voice log, PL03D). Evidence: re/app.asm, upstream SC35D8 (SysEx, device),
+#      slim emulation probe 2026-10-13 (spec 2026-10-13-voice-log-design.md, "Findings").
+[function.voice_decide]
+addr = 0x080217B4
+expect = "f8b5874c"   # push {r3, r4, r5, r6, r7, lr}; ldr r4, [pc, #0x21c]
+proto = "void voice_decide(void)"
+notes = "Picks the voice for the note in voice_state: reads the spare time X:$36 + synth (>= 0x14000: the ARM picks by polyphony mode; below: the DSP picks a sounding voice, [S+0xE] = 1). Only caller: 0x080219E8 at 0x080219F0."
+source = "re/app.asm; investigations/2026-10-12-chord-voice-dropouts.md"
+
+[function.sysex_out]
+addr = 0x08020C90
+expect = "2de9f047"   # push.w {r4-r10, lr}
+proto = "void sysex_out(void *router, uint32_t port_mask, void *msg)"
+notes = "Stock's SysEx output: msg = {uint8_t *buf, uint32_t len}; router = *midi_router; port_mask = 1 << port (0 USB, 1 DIN). Stock's identity responder 0x0801EC54 calls it with a {buf, len} on its stack."
+source = "re/app.asm 0x0801EC7A; upstream tools/rdiag.py ROUTER"
+
+[data.voice_state]
+addr = 0x200067FC
+ctype = "uint8_t"
+notes = "Voice decision state S (use its address): [4] synth, [5] voice, [7] polyphony mode (ARM path), [0xA] note, [0xB] velocity, [0xE] 1 = the DSP picked, [0x10] / [0x11] first / last voice of the synth."
+
+[data.voice_slots]
+addr = 0x20005F64
+ctype = "uint8_t"
+notes = "12 voices x 16 B (Synth 1 0-5, Synth 2 6-11); state word at + 4: 0x8000FFFF when allocated, top bits cleared at note-off."
+
+[data.midi_router]
+addr = 0x200069F4
+ctype = "uint32_t"
+notes = "The MIDI router object's address (0x20009B7C in the RAM dump); stock loads it through the literal at 0x0801EDD0."
+
+[hook.voice_headroom]
+kind = "call"
+target = "dsp_read"
+sites = [0x080217EA]
+args = ["uint32_t core", "uint32_t addr"]
+ret = "uint32_t"
+context = "dsp_locked"
+notes = "voice_decide reads X:$36 + synth (the spare-time reading) here; handlers get the value before any voice is picked."
+
+[hook.voice_picked]
+kind = "call"
+target = "voice_decide"
+sites = [0x080219F0]
+args = []
+ret = "void"
+context = "dsp_locked"
+notes = "After the voice decision: voice_state holds the synth, note, voice and path."
+
+[hook.sysex_in]
+kind = "entry"
+addr = 0x0801EB30
+expect = "2de9f041"   # push.w {r4, r5, r6, r7, r8, lr}
+displace = 4
+args = ["uint32_t port", "void *msg", "uint32_t x"]
+ret = "void"
+context = "main"
+notes = "Incoming SysEx dispatcher (called through a pointer): msg = {uint8_t *buf, uint32_t len}, port 0 USB / 1 DIN. HANDLED swallows the message. Task not identified; upstream's rdiag hook ran here on the device (SC35D8)."
+
+# ---- Saved settings (PL10, spec 2026-10-17-saved-settings-design.md "How load and save hook in"). The session record
+#      [session + 0x14] (0x2001183C, 0x2740C B) is the live project; its last 1000 B (record + 0x27024) are not read by
+#      stock, saved and loaded with it (upstream SC402D / SC403D) and cleared by the new-project init (0x0802AF34).
+[function.session_blobs]
+addr = 0x0802F63C
+expect = "38b50446"   # push {r3, r4, r5, lr}; mov r4, r0
+proto = "void session_blobs(void *obj)"
+notes = "Copies the four live blobs into the session record (obj = session). Only caller: the save 0x0802FDF8 at 0x0802FE5E, which then posts the file write to the storage task (0x0803C946): the file is written later, from the record."
+source = "re/app.asm; slim emulation 2026-10-17 (Save, Save: 0x08030502 -> 0x0802FDF8(obj, 3, 0) -> here, inside the button press)"
+
+[function.session_refresh]
+addr = 0x08029A00
+expect = "08461146"   # mov r0, r1; mov r1, r2 (then b.w 0x0803BDF2)
+proto = "void session_refresh(void *obj, uint32_t what, uint32_t arg)"
+tags = ["takes_dsp_lock"]
+notes = "Thunk: 0x0803BDF2(what, arg), which takes the DSP-service semaphore (0x08021064). The load's apply 0x0802EEFE ends with it (0x0802F5B4, what = 0x10000 | flags, arg = 1)."
+source = "re/app.asm"
+
+[data.session]
+addr = 0x2003D71C
+ctype = "uint8_t"
+notes = "The session object (use its address): [+ 0x14] = the session record (0x2001183C in the RAM snapshot); 0 before it exists."
+source = "upstream tools/persist19.py SESSION_OBJ, tools/taildiag.py; slim emulation 2026-10-17"
+
+[hook.session_save]
+kind = "call"
+target = "session_blobs"
+sites = [0x0802FE5E]
+args = ["void *obj"]
+ret = "void"
+context = "ui"
+notes = "Stock's save, after the record's header is stamped and the blobs are in the record, before the write is posted: handlers may add bytes to the record's tail. UI task (the Save press, synchronously)."
+source = "re/app.asm; slim emulation 2026-10-17"
+
+[hook.session_applied]
+kind = "call"
+target = "session_refresh"
+sites = [0x0802F5B4]
+args = ["void *obj", "uint32_t what", "uint32_t arg"]
+ret = "void"
+context = "any"
+notes = "The last call of the load's apply 0x0802EEFE (then its pop at 0x0802F5B8): after a project file was read into the record (0x08030076 -> 0x0802FD5C: fix-up 0x0802F5FE, or new-project 0x0802F5BC) and after every new-project path (the four callers of 0x0802F5BC each run the apply). Task not identified."
+source = "re/app.asm; slim emulation 2026-10-17 (0x0802FD5C -> 0x0802F5FE -> 0x0802EEFE -> here, to 0x0802F5B8)"
+
+# ---- Pattern writers (PL11 Euclidean fills): telling stock a note track's pattern changed.
+[function.rec_touch]
+addr = 0x0803F8D4
+expect = "38b50446"   # push {r3, r4, r5, lr}; mov r4, r0
+proto = "void rec_touch(void *rec)"
+notes = "Track t's recorder (rec = [recorders + 4 t]): rewrites parameter 0 of its store [rec + 0x4C] with its own value and commits it (0x080354FA, 0x080353C0), so the store's listeners refresh. The recorder calls it after each commit. Without it the Note view's step pads keep showing the old steps after a direct write (until a project load); playback reads the steps directly either way. UI task from slim; took no DSP lock in emulation."
+source = "re/app.asm; slim emulation 2026-10-18 (PL11 device step 9: Euclid-written steps not lit in the Note view until a restart)"
+
+# ---- PL17: the drum Write through the drum editor's step store (stock's generic double-buffered parameter store).
+[function.store_commit]
+addr = 0x080353C0
+expect = "f8b504460026"   # push {r3-r7, lr}; mov r4, r0; movs r6, #0
+proto = "void store_commit(void *store)"
+notes = "A parameter store's commit: flips the read buffer of every dirty parameter, calls each listener whose mask meets the dirty mask, clears it. On a drum's step store ([drum recorder + 0x4C]) listener 0 is the drum editor (0x0803EA1C), which writes every step of the store's read view into the pattern it shows (all 128 B), and the other four are the drum views (step LEDs, velocity, microstep, probability): too long to run masked. UI task from slim."
+source = "docs/investigations/2026-10-25-drums-pattern.md §2 (re/app.asm 0x08035324-0x080355D4, the dump's listeners); drums spike 1 (2026-10-25-drums-emulation.md, q1_write.py)"
+
+[function.store_touch_all]
+addr = 0x08035456
+expect = "f8b50446a068"   # push {r3-r7, lr}; mov r4, r0; ldr r0, [r4, #8]
+proto = "void *store_touch_all(void *store)"
+notes = "Marks every parameter of a store written (each one's read buffer copied to its write buffer first, through the write pointer 0x080354FA, from 0x0803545A) and returns the write buffer, so the next store_commit refreshes every listener. PL17's drum Write calls it unmasked after writing both buffers: a recorder commit in between is copied through, not lost."
+source = "docs/investigations/2026-10-25-drums-pattern.md §2 (re/app.asm 0x08035456); drums spike 1 (q1_write.py)"
+
+# ---- PL18: chords in step entry (spec 2026-10-26-step-entry-chords-design.md, "How stock does it").
+[function.param_wptr]
+addr = 0x080354FA
+expect = "f0b44368"   # push {r4-r7}; ldr r3, [r0, #4]
+proto = "volatile uint8_t *param_wptr(void *store, uint32_t index)"
+notes = "A parameter store's write pointer: the write buffer of parameter `index` (the first call after a commit copies the read buffer into it), marked dirty; store_commit then flips it in. param_get keeps reading the read buffer until that commit."
+source = "re/app.asm 0x080354FA; tests/notes.py PARAM_WPTR"
+
+[hook.preview_end]
+kind = "entry"
+addr = 0x0804B00C
+expect = "2de9f041"   # push.w {r4, r5, r6, r7, r8, lr}
+displace = 4
+args = ["void *view"]
+ret = "void"
+context = "ui"
+notes = "Note view: ends the held step's preview. For each used unit of the edit store [view + 0x24] whose note no pad slot [view + 0x40 + 0-31] holds: note_sink_off(sink [view + 0x18], note, [view + 0x80 + note]) (0x20 when the preview sounded it), so the router ends the note only when that source still owns it. Only caller: the Note view's store listener 0x0804B272 at 0x0804B604, on two triggers: the held step is let go (p0 of [view + 0x2C] back to 0, with step_sounds), and, with a step held, a change of the play store 0x20011034 or the track's mute store ([view + 0x1C] / [view + 0x20]) that stops the step's notes sounding (step_sounds = stopped or muted): e.g. Play started with a step held. The task of the second trigger on an external MIDI Start is not established. The preview (0x0804B456 on an add's commit, 0x0804B4E0 on a step's load) sounds a unit no pad slot holds with source 0x20 and sets [view + 0x80 + note] = 0x20."
+source = "re/app.asm 0x0804B00C-0x0804B076, 0x0804B2DC-0x0804B2F2, 0x0804B456-0x0804B4DE; tests/test_step_entry.py (pad first, the step let go first)"
+
+[hook.step_add]
+kind = "entry"
+addr = 0x0804B094
+expect = "2de9f84f"   # push.w {r3, r4, r5, r6, r7, r8, sb, sl, fp, lr}
+displace = 4
+args = ["void *view", "uint32_t note", "uint32_t vel"]
+ret = "void"
+context = "ui"
+notes = "Note view: adds `note` (a keyboard pitch) at `vel` to the held step's edit store [view + 0x24] (parameter 0 byte 0 = the mask of used units, byte 1 = the step's probability; parameters 1-6 = the units: note, gate | tie << 7, microstep, velocity). Takes the longest gate of the used units (tie bit stripped), the first free unit (all six used: adds nothing, no commit), writes note, velocity, the gate (none, i.e. longest 0: 6 = one step, and the probability byte becomes 7), microstep 0, the mask bit, through the write pointer 0x080354FA, then commits (0x080353C0); the commit's listeners write the step into the pattern and preview the step's notes. Two callers: the Note view's pad press 0x0804AB5A tail-calls it at 0x0804ACB2 (a step held and the pad's pitch not removed from it; vel after the fixed-velocity rule, 96), and the held-step listener 0x0804B1F2 (thunk 0x0804B1F0) calls it at 0x0804B246 for each held key pad 17-32 ([view + 0x50 + i] its pitch, [view + 0x70 + i] its velocity) whose pitch is not in the step. Confirmed in emulation 2026-10-28 (both routes, the gate and tie rule, the preview)."
+source = "re/app.asm 0x0804B094-0x0804B170; PL18 spec; tests/test_step_entry.py"
+
+[hook.note_pad_press]
+kind = "entry"
+addr = 0x0804AB5A
+expect = "2de9f84f"   # push.w {r3, r4, r5, r6, r7, r8, sb, sl, fp, lr}
+displace = 4
+args = ["void *view", "uint32_t pad", "uint32_t vel"]
+ret = "void"
+context = "ui"
+notes = "The Note view's pad press, before the fixed-velocity rule (vel becomes 96 at 0x0804AB74). No step held (p0 of [view + 0x2C] == 0): tail-calls pad_note_on (0x0804ACBE). A step held: for each used unit of the edit store [view + 0x24] whose note snapped by scale_snap([kbd + 0x0C], note) equals the pad's pitch [kbd + 0x14 + note_pad_index] it removes the unit: clears its mask bit only through param_wptr (0x0804ABD6; the unit's bytes stay), commits, and when step_sounds(view) ends the pitch through the sink's slot 1 (note_sink_off(sink, pitch, [view + 0x80 + pitch]), the source the pitch last sounded from: 0x20 = the step's preview, 0x0804AFF8) and clears the first key pad 16-31 whose [view + 0x40 + pad] holds the pitch ([+ 0x40] and [+ 0x60] = 0). Nothing removed and the pitch non-zero: tail-calls step_add (0x0804ACB2)."
+source = "re/app.asm 0x0804AB5A-0x0804ACC2; PL18 spec; tests/test_step_entry.py (removal)"
+
+[function.scale_snap]
+addr = 0x080408C6
+expect = "0b460246"   # mov r3, r1; mov r2, r0
+proto = "uint32_t scale_snap(void *scale, uint32_t note)"
+notes = "The keyboard's scale object [kbd + 0x0C] (mask at + 4): a note outside the scale moved to a neighbour in it, clamped to the scale's range bytes. Stock's step removal compares a unit's note snapped this way with the pad's pitch (0x0804ABBC)."
+source = "re/app.asm 0x080408C6"
+
+[function.step_sounds]
+addr = 0x0804AD50
+expect = "10b50446"   # push {r4, lr}; mov r4, r0
+proto = "uint32_t step_sounds(void *view)"
+notes = "Note view: non-zero when the held step's notes sound (p0 of [view + 0x1C] == 0, or p0 of [view + 0x20] == 0). Stock's test before ending a removed unit's sound (0x0804ABE4) and in the release handler (0x0804ACE4)."
+source = "re/app.asm 0x0804AD50"
+
+[data.recorders]
+addr = 0x2003C174
+ctype = "uint32_t"
+notes = "The tracks' recorders (use its address): [recorders + 4 t] = note track t's recorder (rec_commit's rec), t = 0-3; [recorders + 4 (4 + d)] = [0x2003C184 + 4 d] = drum d's recorder (vtable 0x0805A578; [+ 0x48] its patterns, 0x6A8 B each; [+ 0x14] the drum editor's position store, parameter 0 bits 0-2 = the pattern the editor shows, the drum's shown pattern, which its step pads and stock's edits act on: PL17's drum_target; [+ 0x4C] the drum editor's step store, its editing copy of that pattern: [+ 0x0C] and [+ 0x10] its two buffers of 32 parameter words (parameter k = steps 4 (k % 8) .. + 3 of the velocity, probability, micro, flip arrays for k / 8 = 0-3), [+ 0x18] = + 0xA8 of the pattern it mirrors; PL17's drum Write writes both buffers, then store_touch_all and store_commit). [+ 0x35] = record quantise, 1 = on, for both kinds: a cache of !(bit 12 of parameter 2 of settings_store) that stock refreshes once per step at the step's tick 0 while the clock runs (hook rec_quant), so it reads 1 after Shift + Record turned quantise off until the next step boundary; the drum recorder reads nothing else for it. A hit through the expanded drum view's live sink (drum_expanded_vt) reaches it as a finger's does."
+source = "tests/notes.py RECORDERS; hook rec_commit; drums spike 2026-10-25 (docs/investigations/2026-10-25-drums-spike/lib2.py DREC = 0x2003C184, r1_finger.py, r2_repeat.py; quantise: u1_refresh.py, u2_override.py, u3_window.py); position store: docs/investigations/2026-10-25-drums-pattern.md (asm 0x0803E18A, the dump)"
+
+[data.settings_store]
+addr = 0x200111CC
+ctype = "uint32_t"
+notes = "The device settings' parameter store (use its address; [recorders + 4 t] + 0x24 for every recorder): parameter 2 bit 12 set = record quantise off. Shift + Record flips the bit at once (0x08045A44) and Record's LED with Shift shows it (0x08045B0E); the recorders' [+ 0x35] follows at their next step boundary (hook rec_quant). Bit 1 of parameter 2 = fixed velocity (tests/drums.py ROUTER)."
+source = "hook rec_commit notes; drums spike 2026-10-25 (docs/investigations/2026-10-25-drums-spike/u1_refresh.py, u2_override.py)"
+
+[hook.rec_off_commit]
+kind = "mid"
+addr = 0x0803F606
+expect = "0a460146"   # mov r2, r1; mov r1, r0 (then mov r0, r4; bl 0x0803F7BE at 0x0803F60C)
+displace = 4
+context = "any"
+notes = "The recorder's note-off path 0x0803F5B0 for a converted note (its word's list entry does not hold it, 0x0803F5D6: the branch lands here) commits it: bl 0x0803F7BE at 0x0803F60C. After the displaced instructions r4 = rec, r1 = note, r2 = end (r0 = note). Handlers run before the commit and its entry hook rec_commit (whose handlers see a word changed here). Tasks: UI (stock's pad note-off, a router hand-over inside a press) or Main (the heartbeat's note-offs)."
+source = "re/app.asm 0x0803F5B0-0x0803F61A; PL19 spike 2026-10-31 (q1_scope: the note-off site, r4 / r1 / r2)"
+
+[hook.rec_pass_commit]
+kind = "mid"
+addr = 0x0803F786
+expect = "c0f3ca22"   # ubfx r2, r0, #11, #11 (then mov r0, r8; bl 0x0803F7BE at 0x0803F78C)
+displace = 4
+context = "any"
+notes = "The recorder's tick pass 0x0803F6C6 commits a released list entry it has just converted (the word written at 0x0803F770; the entry's note byte cleared at 0x0803F77E): bl at 0x0803F78C. After the displaced instruction r8 = rec, r1 = note, r2 = end (the entry's, bits 11-21 of its word + 4), r0 = that word. Handlers run before the commit and its entry hook rec_commit. Tasks: Main (the tick pass from the recorder's tick, slot 5) or UI (the flush's pass 0x0803F68A at Stop and Record off: the play store reads not recording there)."
+source = "re/app.asm 0x0803F6C6-0x0803F7B6; PL19 spike 2026-10-31 (q1_scope: the pass site, r8 / r1 / r2; q1_tasks)"
+
+[hook.rec_quant]
+kind = "mid"
+addr = 0x0803FE8C
+expect = "80f00100"   # eor.w r0, r0, #1 (then strb r0, [r7, #1] at 0x0803FE90: [rec + 0x35])
+displace = 4
+context = "any"
+notes = "The recorders' store listener 0x0803FE24 (r5 = the recorder, note or drum: one listener for both; r7 = rec + 0x34) refreshes the record-quantise cache [rec + 0x35] here: r0 = bit 12 of parameter 2 of [rec + 0x24] (settings_store), the eor makes it stock's value (1 = quantise), the strb after it stores it. Reached only when the tick within the step ([[rec + 0xC]] parameter 2, r4) is 0 and [[rec + 0x20] = 0x2001150C] parameter 0 != 0: once per step at its tick 0 while the clock runs, each drum on its own sync. The listener's slot 5 (blx at 0x0803FEC8), later in the same call, reads the fresh value, so a byte written from the heartbeat alone loses to this refresh for a hit in the tick-0 window (placed a tick late). A handler sees stock's value in r0 and may change it. Main task while the clock runs; the task of every caller not identified."
+source = "re/app.asm 0x0803FE24-0x0803FEC8; drums spike 2026-10-25 (docs/investigations/2026-10-25-drums-spike/u1_refresh.py: the refresh trace; u2_override.py, u3_window.py: the override at this instruction against stock's own quantise off)"

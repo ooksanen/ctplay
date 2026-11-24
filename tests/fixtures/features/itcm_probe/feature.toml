@@ -1,0 +1,14 @@
+name = "itcm_probe"
+description = "Test only: 8 B of ITCM data, set by init(); a led_task handler that changes nothing (the first hook call)."
+sources = ["itcm_probe.c"]
+init = "probe_init"
+
+[budget]
+ram = 0
+stack = 16
+itcm = 8
+
+[[hook]]
+point = "led_task"
+handler = "probe_on_leds"
+priority = 50

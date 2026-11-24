@@ -1,0 +1,87 @@
+{
+  "base": "circuittracks-firmware-4486 (1.2.1)",
+  "slim_version": "SL00D",
+  "marker": "SL00D",
+  "description": "Diagnostic: proves the slim C pipeline on the device. Shift + Drum 4 maps the ITCM, Shift + Drum 3 shows the unused RTOS stack space.",
+  "features": [
+    "diag_ram"
+  ],
+  "toolchain": "arm-none-eabi-gcc (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
+  "image_size": "0x4d268",
+  "image_sha256": "0cfca553cfaff52bfaed3f77884f919871e2a703eb44ad93e60c2dfadbef1eef",
+  "syx_sha256": "0b1679bb0e3c4f221a3a389695ed367d577b9291d1ee2447ccc48399ed9c7bf3",
+  "crc32": "0xe683a0b8",
+  "flash": {
+    "start": "0x805cde0",
+    "end": "0x805d268",
+    "used": 1160,
+    "size": 143904
+  },
+  "ram": {
+    "start": "0x20044df0",
+    "end": "0x20044e58",
+    "used": 104,
+    "size": 240
+  },
+  "stack": {
+    "diag_ram_on_button": 56,
+    "diag_ram_on_leds": 32,
+    "diag_ram_init": 32
+  },
+  "stack_uncounted_callees": {
+    "diag_ram_on_button": [
+      "param_get"
+    ],
+    "diag_ram_on_leds": [],
+    "diag_ram_init": []
+  },
+  "entry_stub_stack": 32,
+  "patches": [
+    {
+      "addr": "0x8033320",
+      "bytes": "29f05ebd"
+    },
+    {
+      "addr": "0x8033b46",
+      "bytes": "29f061f9"
+    },
+    {
+      "addr": "0x803415a",
+      "bytes": "28f057fe"
+    }
+  ],
+  "symbols": {
+    "__slim_bss_end": "0x20044e58",
+    "__slim_bss_start": "0x20044df0",
+    "__slim_data_end": "0x20044df0",
+    "__slim_data_start": "0x20044df0",
+    "__slim_ram_end": "0x20044e58",
+    "__slim_ram_start": "0x20044df0",
+    "__slim_ram_top": "0x20044e58",
+    "block_sum": "0x805cf24",
+    "boot_sum": "0x20044e18",
+    "changed_mask": "0x20044df2",
+    "diag_ram_init": "0x805cf48",
+    "diag_ram_on_button": "0x805cfd0",
+    "diag_ram_on_leds": "0x805d154",
+    "layout_bad": "0x20044df5",
+    "led_task": "0x805cef0",
+    "memcpy": "0x805ce48",
+    "memset": "0x805ce38",
+    "page": "0x20044e06",
+    "param_get": "0x805cef8",
+    "run_bytes": "0x20044df6",
+    "scan_block": "0x20044df4",
+    "slim_call_led_task": "0x805ce0c",
+    "slim_dispatch_button_press": "0x805cf00",
+    "slim_entry_button_press": "0x805cde0",
+    "slim_features_init": "0x805cf1e",
+    "slim_inited": "0x20044df0",
+    "slim_irq_restore": "0x805ce32",
+    "slim_irq_save": "0x805ce2a",
+    "slim_ready": "0x805ce60",
+    "stack_base": "0x805d244",
+    "state": "0x20044e07",
+    "state_colour": "0x805d264"
+  }
+}

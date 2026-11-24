@@ -1,0 +1,6 @@
+# Published as CTPlay 1.0 beta 2: rebuild PL22 from tag v1.0.0-beta.2 in the public repo (tag PL22 in the dev repo); at a later commit this file builds the current sources
+# under PL22's marker, which is NOT the published PL22.
+marker = "PL22"
+description = "The second public beta: PL21 with two fixes. A Circuit Rhythm's trim toggle (CC 27) no longer crashes the Circuit Tracks, and a Written roll entered outside the pattern's steps carries straight on."
+features = ["chord", "countin", "saved", "link", "recfix", "stockfix"]
+release = "1.0 beta 2"

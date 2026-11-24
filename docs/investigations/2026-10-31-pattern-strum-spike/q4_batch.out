@@ -1,0 +1,7 @@
+  playback (Main task): [(('0x803bd82', 'read', '0x20006a50', 'main'), 9), (('0x803bd8a', 'write', '0x20006a48', 'main'), 9), (('0x803bdb8', 'write', '0x20006a50', 'main'), 108), (('0x803bdc0', 'write', '0x20006a50', 'main'), 108), (('0x803bdc4', 'write', '0x20006a48', 'main'), 108)]
+  a live pad (UI task): [(('0x803bd82', 'read', '0x20006a50', 'ui'), 1)]
+  step 3 held: stock's step preview: [(('0x803bd82', 'read', '0x20006a50', 'ui'), 1), (('0x803bd8a', 'write', '0x20006a48', 'ui'), 1), (('0x803bdb8', 'write', '0x20006a50', 'main'), 1), (('0x803bdb8', 'write', '0x20006a50', 'ui'), 1), (('0x803bdc0', 'write', '0x20006a50', 'main'), 1), (('0x803bdc0', 'write', '0x20006a50', 'ui'), 1), (('0x803bdc4', 'write', '0x20006a48', 'main'), 1), (('0x803bdc4', 'write', '0x20006a48', 'ui'), 1)]
+  seq_note_on with the flag 0: synth note-on path ['0x803bd7a', '0x803bd7c', '0x803bd7e', '0x803bd80', '0x803bd82', '0x803bd84', '0x803bd8c', '0x803bd8e', '0x803bd92']; 0x20006A48 after = 0
+     accesses (flag 0): [(('0x803bd82', 'read', '0x20006a50', 'ui'), 1)]
+  seq_note_on with the flag 1: synth note-on path ['0x803bd7a', '0x803bd7c', '0x803bd7e', '0x803bd80', '0x803bd82', '0x803bd84', '0x803bd86', '0x803bd88', '0x803bd8a', '0x803bd8c', '0x803bd8e', '0x803bd92']; 0x20006A48 after = 1
+     accesses (flag 1): [(('0x803bd82', 'read', '0x20006a50', 'ui'), 1), (('0x803bd8a', 'write', '0x20006a48', 'ui'), 1)]

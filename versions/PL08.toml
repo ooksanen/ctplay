@@ -1,0 +1,5 @@
+# Published: rebuild PL08 from git tag PL08 (features/chord changed after it); at a later commit this
+# file builds the current sources under PL08's marker, which is NOT the published PL08.
+marker = "PL08"
+description = "CTPlay PL07 + falling strum and strum speeds 20 / 40 / 80 ms, mono record on a Keys page, and a count-in on Shift + Clear."
+features = ["chord", "countin"]

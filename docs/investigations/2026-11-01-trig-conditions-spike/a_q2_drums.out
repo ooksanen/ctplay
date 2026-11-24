@@ -1,0 +1,60 @@
+[Clear step 3 (hit)] route: ['drum editor write-back (store listener)', 'drum Clear step']
+   step  2:     v90/m03/p5/fff ->              empty; condition kept, bit kept
+   other steps' conditions changed: none; other patterns kept: True
+[  then step pad 3 (adds a hit)] route: ['drum editor write-back (store listener)']
+   step  2:     v90/m03/p5/fff ->     v96/m01/p7/fff; condition kept, bit kept
+   other steps' conditions changed: none; other patterns kept: True
+[Clear pattern 1, stopped (shown)] route: ['drum Clear pattern', 'drum editor write-back (store listener)']
+   hits after: []; codes kept 32/32, zero 0/32; bit bytes 35 9c a5 0f (before 35 9c a5 0f)
+[  then step pad 3 (adds a hit)] route: ['drum editor write-back (store listener)']
+   step  2:     v90/m03/p5/fff ->     v96/m01/p7/fff; condition kept, bit kept
+   other steps' conditions changed: none; other patterns kept: True
+   (playing 2, shown 2)
+[Clear pattern 1, playing pattern 3 (not shown)] route: ['drum editor write-back (store listener)', 'drum Clear pattern']
+   hits after: []; codes kept 32/32, zero 0/32; bit bytes 35 9c a5 0f
+[copy 1-16 -> 17-32] route: ['drum copy 1-16>17-32', 'drum editor write-back (store listener)']
+   steps 17-32 arrays = steps 1-16: True
+   steps 17-32 condition: ['kept, bit kept']
+   steps 1-16 condition: ['kept, bit kept']
+[  then step pad 3 (the view shows 17-32 after the copy?)] route: ['drum editor write-back (store listener)']
+   step  2:     v90/m03/p5/fff ->     v90/m03/p5/fff; condition kept, bit kept
+   step 18:              empty ->              empty; condition kept, bit kept
+   other steps' conditions changed: none; other patterns kept: True
+[paste step 3 -> 8] route: ['drum editor write-back (store listener)', 'drum copy step (source)', 'drum paste step']
+   step  2:     v90/m03/p5/fff ->     v90/m03/p5/fff; condition kept, bit kept
+   step  7:              empty ->     v90/m03/p5/fff; condition kept, bit kept
+   other steps' conditions changed: none; other patterns kept: True
+[  then step pad 8] route: ['drum editor write-back (store listener)']
+   step  7:              empty ->              empty; condition kept, bit kept
+   other steps' conditions changed: none; other patterns kept: True
+[Mutate] route: ['drum Mutate']
+   hits moved (from->to): [(0, 1), (15, 4), (12, 10), (8, 12), (2, 14), (4, 16), (5, 25)]
+     0->1: code kept, bit kept
+     15->4: code kept, bit kept
+     12->10: code kept, bit kept
+     8->12: code kept, bit kept
+     2->14: code kept, bit kept
+     4->16: code kept, bit kept
+     5->25: code kept, bit kept
+   all codes in place: True; bit bytes 35 9c a5 0f
+[  then step pad 2] route: ['drum editor write-back (store listener)']
+   step  1:              empty ->              empty; condition kept, bit kept
+   other steps' conditions changed: none; other patterns kept: True
+[add a hit: step pad 7] route: ['drum editor write-back (store listener)']
+   step  6:              empty ->     v96/m01/p7/fff; condition kept, bit kept
+   other steps' conditions changed: none; other patterns kept: True
+[remove a hit: step pad 5] route: ['drum editor write-back (store listener)']
+   step  4:     v80/m01/p7/f02 ->              empty; condition kept, bit kept
+   other steps' conditions changed: none; other patterns kept: True
+[probability view: step 6, probability pad 4] route: ['drum editor write-back (store listener)']
+   step  5:     v70/m01/p7/fff ->     v70/m01/p3/fff; condition kept, bit kept
+   other steps' conditions changed: none; other patterns kept: True
+[  probability on empty step 7 (stock makes a hit)] route: ['drum editor write-back (store listener)']
+   step  6:              empty ->     v96/m01/p2/fff; condition kept, bit kept
+   other steps' conditions changed: none; other patterns kept: True
+[velocity view: step 13, velocity pad 6] route: ['drum editor write-back (store listener)']
+   step 12:     v50/m01/p6/fff ->     v48/m01/p6/fff; condition kept, bit kept
+   other steps' conditions changed: none; other patterns kept: True
+[live recording, 32 hits] route: ['drum editor write-back (store listener)', 'drum recorder write', 'note recorder commit']
+   steps whose hit changed: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+   conditions: ['kept, bit kept']

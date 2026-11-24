@@ -1,0 +1,5 @@
+# Published: rebuild PL20 from git tag PL20 (the chord sources changed after it); at a later commit this file builds
+# the current sources under PL20's marker, which is NOT the published PL20.
+marker = "PL20"
+description = "CTPlay PL19 + trig conditions (probability view row 4; FILL on the drum expanded view's pads 21-24); Played strums release at once."
+features = ["chord", "countin", "saved", "link", "recfix"]

@@ -1,0 +1,3 @@
+marker = "SL00D"
+description = "Diagnostic: proves the slim C pipeline on the device. Shift + Drum 4 maps the ITCM, Shift + Drum 3 shows the unused RTOS stack space."
+features = ["diag_ram"]

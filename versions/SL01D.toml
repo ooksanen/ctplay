@@ -1,0 +1,4 @@
+# Published 2026-10-20: pinned by test_published_versions_rebuild_identically; changing features/diag_upper changes what this file builds.
+marker = "SL01D"
+description = "Diagnostic: Shift + Drum 4 shows whether the RAM above the heap stays as slim filled it, how deep the main stack reaches, and whether the fill survived a power-off."
+features = ["diag_upper"]

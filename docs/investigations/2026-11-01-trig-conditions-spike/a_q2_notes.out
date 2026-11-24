@@ -1,0 +1,62 @@
+(selected step before: 0, store word 0 01 07 80 01)
+[Clear step 3 (notes)] route: ['note Clear step', 'note step fill']
+   step  2: notes [] prob 7; [2]/[3] kept
+   other steps changed: none; other patterns kept: True
+   (selected step now 2, store word 0 00 07 80 03)
+[  then step entry: step 3 + key C] route: ['note step add']
+   step  2: notes [48] prob 7; [2]/[3] kept
+   other steps changed: none; other patterns kept: True
+[  then probability view: step 3, probability 4] route: ['drum editor write-back (store listener)']
+   step  2: notes [48] prob 3; [2]/[3] kept
+   other steps changed: none; other patterns kept: True
+[Clear step 1 (the selected step)] route: ['note Clear step', 'note step fill']
+   step  0: notes [] prob 7; [2]/[3] kept
+   other steps changed: none; other patterns kept: True
+[Clear pattern 1, stopped] route: ['note Clear pattern', 'note step fill']; [2]/[3] kept 32/32; notes left []; store word 0 00 07 80 01
+[  then step entry: step 3 + key C] route: ['drum editor write-back (store listener)', 'note step add']
+   step  2: notes [48] prob 7; [2]/[3] kept
+   other steps changed: none; other patterns kept: True
+[Clear pattern 1, playing 3] route: ['drum editor write-back (store listener)', 'note Clear pattern', 'note step fill']; [2]/[3] kept 32/32; notes left []
+[step entry: add key 31 to step 5 (has a note)] route: ['note step add']
+   step  4: notes [64, 58] prob 7; [2]/[3] kept
+   other steps changed: none; other patterns kept: True
+[step entry: add key C to empty step 7] route: ['note step add']
+   step  6: notes [48] prob 7; [2]/[3] kept
+   other steps changed: none; other patterns kept: True
+[step entry: key C again on step 7 (removes it)] route: []
+   step  6: notes [] prob 7; [2]/[3] kept
+   other steps changed: none; other patterns kept: True
+[  then probability view: step 5, probability 3] route: ['drum editor write-back (store listener)']
+   step  4: notes [64, 58] prob 2; [2]/[3] kept
+   other steps changed: none; other patterns kept: True
+   (steps whose notes changed: [4]; started at tick 0)
+[recording key C over the playhead] route: ['drum editor write-back (store listener)', 'drum recorder write', 'note recorder commit']
+   step  4: notes [64, 48] prob 7; [2]/[3] kept
+   other steps changed: none; other patterns kept: True
+[  then probability view: step 5, probability 5] route: ['drum editor write-back (store listener)']
+   step  4: notes [64, 48] prob 4; [2]/[3] kept
+   other steps changed: none; other patterns kept: True
+[paste step 3 -> 8] route: ['note copy step (source)', 'note paste step']
+   step  2: notes [62, 65] prob 7; [2]/[3] kept
+   step  7: notes [62, 65] prob 7; [2]/[3] = step 2's
+   other steps changed: none; other patterns kept: True
+[  then probability view: step 8, probability 2] route: ['drum editor write-back (store listener)']
+   step  7: notes [62, 65] prob 1; [2]/[3] = step 2's
+   other steps changed: none; other patterns kept: True
+[copy 1-16 -> 17-32] route: ['note copy 1-16>17-32']
+   steps 17-32: ["= step 0's", "= step 1's", "= step 10's", "= step 11's"] ...; all = steps 1-16: True
+   steps 1-16 kept: True
+[Mutate] route: ['note Mutate']
+   steps moved (from->to, by their [2]/[3]): [(13, 0), (7, 1), (10, 2), (4, 3), (15, 4), (0, 5), (5, 6), (14, 7), (2, 9), (1, 10), (12, 11), (11, 12), (9, 13), (6, 14), (3, 15)]
+   [2]/[3] travel with the step's notes everywhere: True
+[raw write, store not synced] selected step 0, store word 0 01 07 00 00, pattern 01 07 80 01
+[  probability view (no step pad): probability 5] route: ['drum editor write-back (store listener)']
+   step  0: notes [60] prob 4; [2]/[3] zeroed
+   other steps changed: none; other patterns kept: True
+[raw write, store not synced] selected step 0, store word 0 01 07 00 00, pattern 01 07 80 01
+[  probability view (step pad 1 pressed first): probability 5] route: ['drum editor write-back (store listener)']
+   step  0: notes [60] prob 4; [2]/[3] kept
+   other steps changed: none; other patterns kept: True
+[[raw write + store synced] probability view (no step pad): probability 5] route: ['drum editor write-back (store listener)']
+   step  0: notes [60] prob 4; [2]/[3] kept
+   other steps changed: none; other patterns kept: True

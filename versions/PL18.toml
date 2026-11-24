@@ -1,0 +1,5 @@
+# Published: rebuild PL18 from git tag PL18 (the chord sources changed after it); at a later commit this file builds
+# the current sources under PL18's marker, which is NOT the published PL18.
+marker = "PL18"
+description = "CTPlay PL17 + chords in step entry (Keys page pad 2); the Keys page as one toggle per setting."
+features = ["chord", "countin", "saved", "link", "recfix"]

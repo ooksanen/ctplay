@@ -1,0 +1,104 @@
+# Regions slim may use. kind: flash | ram | saved | dsp.  confidence: verified (tested on a device) | static (code
+# analysis only) | unknown | excluded.  Features are placed only in verified regions unless they opt in to static.
+
+[region.flash]
+kind = "flash"
+start = 0x0805CDE0
+end = 0x08080000
+confidence = "verified"
+source = "Bootloader accepts images up to 0x70000 B; no stock literal points past the stock image end 0x0805CDDC (upstream docs/NOTAS.md 'Espacio para funciones nuevas'); used by every upstream build."
+
+[region.heap_tail]
+kind = "ram"
+start = 0x20044D68
+end = 0x20044E58
+confidence = "verified"
+source = "Between the heap's current pointer after boot ([0x20002B48] = 0x20044D68 on the device and in the RAM dump) and its limit ([0x20002B44] = 0x20044E58). Stock allocates only at boot; upstream SC14+ reserves it the same way on the device."
+
+[region.itcm_block0]
+kind = "ram"
+start = 0x00000000
+end = 0x00000400
+confidence = "excluded"
+source = "SL00D on the device (2026-10-11, firmware/SL00D/TEST.md): changed after boot once (magenta in the first session after flashing, while a pattern played). Stock writes it at times, most likely through a null pointer."
+
+[region.itcm]
+kind = "ram"
+start = 0x00000400
+end = 0x00004000
+confidence = "verified"
+auto = false
+source = "SL00D on the device (2026-10-11, firmware/SL00D/TEST.md): 3 boots, light and heavy use (pack loads, a Components transfer): never changed after boot, never red. Contents are non-zero, so the probe never write-tested it on the device. No stock literal uses it as data (slim analysis 2026-10-10). Not picked automatically: a feature that uses it asks for it by name and write-tests its block at power-on. From PL09 slim writes it: features ask with [budget] itcm; slim_ready checks MPU_CTRL, then write-tests and zeroes slim's span (top-down, PL09 0x3F58-0x4000). PL09 on the device (2026-10-17, firmware/PL09/TEST.md): the write test passed on every boot and the chord engine ran from it through 3 power cycles and a heavy session."
+
+[region.above_heap]
+kind = "ram"
+start = 0x20044E58
+end = 0x2004F000
+confidence = "verified"
+auto = false
+source = "Above the stock heap's limit, below the main stack. Upstream SC44.2: stock's memory report 0x0801D426 counts it as remaining (heap pointer to 0x2004FE00, 512 B stack above); two RAM dumps show it never written; no PC-relative literal or MOVW / MOVT pair points into it (tests/test_upper_ram_static.py). SL01D on the device (2026-10-28, firmware/SL01D/TEST.md): filled with a pattern and watched through light and heavy use, two power cycles and a session after them: never changed, never red. The main stack stayed in the top 512 B (0x2004FE00-0x20050000); the top stays 0x2004F000 (upstream's limit, 3 KB of margin). The fill did not survive a power-off, but RAM is not cleared on every reset: a block kept here carries a signature or is cleared at power-on. Not picked automatically: a feature asks for it by name."
+
+[region.backup_sram]
+kind = "ram"
+start = 0x40024000
+end = 0x40025000
+confidence = "excluded"
+source = "Stock passes 0x40024000 as a USB transfer buffer (literals at 0x08026F18 and 0x0803B788; 0x1000-byte chunks)."
+
+[region.project_reserved]
+kind = "saved"
+fixed_size = 65
+confidence = "verified"
+source = "Reserved bytes of the session blocks: upstream SC182D / SC183D on the device; used by upstream persist19."
+
+[region.project_tail]
+kind = "saved"
+fixed_size = 1000
+confidence = "verified"
+source = "The session record's last 1000 B (record = [0x2003D71C + 0x14], tail = record + 0x27024 .. + 0x2740B): saved and loaded with the project on the device (upstream SC402D / SC403D, docs/NOTAS.md 'el fichero de sesión'); no stock read or write on save or load, and cleared by the new-project init (0x0802AF34: 0x0801BC58(record + 0x27024, 0x3E8)) (slim emulation 2026-10-17). Upstream builds use most of it (tools/arp.py, stepgate.py, scdrum.py, ...); foreign bytes are possible (the 02_Shadow Child pack). CTPlay uses all of it: the format-2 block from tail + 0, room 988 B (PL21); alpha builds PL10-PL20 used tail + 768 / + 832."
+
+[region.settings_tail]
+kind = "saved"
+fixed_size = 75
+confidence = "verified"
+source = "Last 75 B of the device settings record: upstream SC20+."
+
+[region.dsp_core0_program]
+kind = "dsp"
+space = "core0:P"
+start = 0x2A5E
+end = 0x4000
+confidence = "verified"
+source = "Stock loads 0x2A5E words; program RAM reaches P:$3FFF (upstream SC21D)."
+
+[region.dsp_core0_data]
+kind = "dsp"
+space = "core0:X/Y"
+start = 0x3339
+end = 0x3C00
+confidence = "verified"
+source = "Verified free X / Y:$3339-$3BFF (upstream docs/RECURSOS.md)."
+
+[region.dsp_core1_program]
+kind = "dsp"
+space = "core1:P"
+start = 0x016C
+end = 0x0800
+confidence = "verified"
+source = "Core 1 has 2,048 program words, stock loads 364 (upstream SC35D.1)."
+
+[region.dsp_ext_a]
+kind = "dsp"
+space = "ext:Y"
+start = 0x337000
+end = 0x57F000
+confidence = "verified"
+source = "Real memory, no mirror, nobody writes it (upstream SC35D2 / SC35D3). 16 useful bits per word."
+
+[region.dsp_ext_b]
+kind = "dsp"
+space = "ext:Y"
+start = 0xE80000
+end = 0xFFF000
+confidence = "verified"
+source = "Real memory, no mirror, nobody writes it (upstream SC35D3)."

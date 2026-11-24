@@ -1,0 +1,6 @@
+Play: playing pattern 0; [('commit', 'ui', 'play store [p+0x1C]')]
+Patterns view, pattern 1 for track 0 (pad 8), one loop: playing pattern 1; []
+Mixer pad 0 (track 0 mute on): playing pattern 1; [('commit', 'ui', 'track 0 [p+0x28]'), ('end-all', 'ui', '0x804a7a6', 0)]
+Mixer pad 0 again (off): playing pattern 1; [('commit', 'ui', 'track 0 [p+0x28]')]
+Stop: playing pattern 1; [('commit', 'ui', 'play store [p+0x1C]'), ('end-all', 'ui', '0x804a7a6', 0), ('end-all', 'ui', '0x804a7a6', 1), ('end-all', 'ui', '0x804a7a6', 2), ('end-all', 'ui', '0x804a7a6', 3)]
+stopped: Patterns view, pattern 2 (pad 16): playing pattern 2; []

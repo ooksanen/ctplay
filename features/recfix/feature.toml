@@ -1,0 +1,18 @@
+name = "recfix"
+description = "Recording: a note held past 16 steps goes on 16 steps later (tied), within the pattern's first .. last step (upstream SC45.3 / RC2.04)."
+sources = ["recfix.c"]
+
+[budget]
+itcm = 36                       # the latch: 4 tracks x (note and end, pending word); PL19: recfix_picking 4
+ram = 0
+stack = 80                      # recfix_after_commit 80 B (carry_on, claimed inlined; no stock callees); PL19: 72 B before recfix_picking
+
+[[hook]]
+point = "rec_commit"
+handler = "recfix_on_commit"
+priority = 60                    # after mono's (50): latches only a commit stock will run
+
+[[hook]]
+point = "rec_committed"
+handler = "recfix_after_commit"
+priority = 50

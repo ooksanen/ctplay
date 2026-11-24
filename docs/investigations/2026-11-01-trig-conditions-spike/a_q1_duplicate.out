@@ -1,0 +1,51 @@
+== drums (drum 1, track 4)
+[drum A: snapshot's shown pattern] stopped before {'playing': 0, 'shown': 0} after {'playing': 0, 'shown': 1}
+   paste calls: [('drum Duplicate paste', '0x2001e5b0', 1)]
+   arrays 0..0x83 copied: True; lanes 0xA8.. copied: True
+   +0x84..+0xA7: NOT COPIED (target's own bytes kept)
+   source unchanged: True; other patterns' bytes kept: True
+[drum B: chain 3 (pattern 3 shown before)] stopped before {'playing': 2, 'shown': 2} after {'playing': 2, 'shown': 1}
+   paste calls: [('drum Duplicate paste', '0x2001e5b0', 1)]
+   arrays 0..0x83 copied: True; lanes 0xA8.. copied: True
+   +0x84..+0xA7: NOT COPIED (target's own bytes kept)
+   source unchanged: True; other patterns' bytes kept: True
+[drum C: chain 1 (source shown, playing)] playing before {'playing': 0, 'shown': 0} after {'playing': 0, 'shown': 0}
+   paste calls: [('drum Duplicate paste', '0x2001e5b0', 1)]
+   arrays 0..0x83 copied: True; lanes 0xA8.. copied: True
+   +0x84..+0xA7: COPIED (= source)
+   source unchanged: True; other patterns' bytes kept: True
+[drum D: chain 2 (target shown, playing)] playing before {'playing': 1, 'shown': 1} after {'playing': 1, 'shown': 1}
+   paste calls: [('drum Duplicate paste', '0x2001e5b0', 1)]
+   arrays 0..0x83 copied: True; lanes 0xA8.. copied: True
+   +0x84..+0xA7: NOT COPIED (target's own bytes kept)
+   source unchanged: True; other patterns' bytes kept: True
+[drum E: chain 3 (neither shown)] playing before {'playing': 2, 'shown': 2} after {'playing': 2, 'shown': 2}
+   paste calls: [('drum Duplicate paste', '0x2001e5b0', 1)]
+   arrays 0..0x83 copied: True; lanes 0xA8.. copied: True
+   +0x84..+0xA7: COPIED (= source)
+   source unchanged: True; other patterns' bytes kept: True
+== note tracks (Synth 1)
+[Synth 1 A: snapshot's shown pattern] stopped before {'playing': 0, 'shown': 0, 'sel': 0} after {'playing': 0, 'shown': 1, 'sel': 0}
+   paste calls: [('note Duplicate paste', '0x20011b20', 1)]
+   whole pattern copied: True
+   steps [2]/[3]: COPIED (= source); store word 0 01 07 80 01 = shown step 01 07 80 01
+[Synth 1 B: chain 3] stopped before {'playing': 2, 'shown': 2, 'sel': 0} after {'playing': 2, 'shown': 1, 'sel': 0}
+   paste calls: [('note Duplicate paste', '0x20011b20', 1)]
+   whole pattern copied: True
+   steps [2]/[3]: COPIED (= source); store word 0 01 07 80 01 = shown step 01 07 80 01
+[Synth 1 C: chain 1 (source shown)] playing before {'playing': 0, 'shown': 0, 'sel': 0} after {'playing': 0, 'shown': 0, 'sel': 0}
+   paste calls: [('note Duplicate paste', '0x20011b20', 1)]
+   whole pattern copied: True
+   steps [2]/[3]: COPIED (= source); store word 0 01 07 80 01 = shown step 01 07 80 01
+[Synth 1 D: chain 2 (target shown)] playing before {'playing': 1, 'shown': 1, 'sel': 0} after {'playing': 1, 'shown': 1, 'sel': 0}
+   paste calls: [('note Duplicate paste', '0x20011b20', 1)]
+   whole pattern copied: True
+   steps [2]/[3]: COPIED (= source); store word 0 01 07 80 01 = shown step 01 07 80 01
+[Synth 1 E: chain 3 (neither shown)] playing before {'playing': 2, 'shown': 2, 'sel': 0} after {'playing': 2, 'shown': 2, 'sel': 0}
+   paste calls: [('note Duplicate paste', '0x20011b20', 1)]
+   whole pattern copied: True
+   steps [2]/[3]: COPIED (= source); store word 0 01 07 90 01 = shown step 01 07 90 01
+== across tracks (Patterns view: source pad in one column, target pad in another)
+[drum 1 P1 -> drum 2 P2, stopped; drum 2 showed 2, now 1] paste [('drum Duplicate paste', '0x2003b1bc')]; arrays copied True; +0x84..: NOT COPIED (target's own bytes kept)
+[drum 1 P1 -> drum 2 P2, playing; drum 2 showed 2, now 2] paste [('drum Duplicate paste', '0x2003b1bc')]; arrays copied True; +0x84..: COPIED (= source)
+[Synth 1 P1 -> Synth 2 P2, stopped] paste ['note Duplicate paste']; [2]/[3]: COPIED (= source)

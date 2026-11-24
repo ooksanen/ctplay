@@ -1,0 +1,5 @@
+# Published: rebuild PL09 from git tag PL09 (features/chord and features/countin changed after it); at a later commit
+# this file builds the current sources under PL09's marker, which is NOT the published PL09.
+marker = "PL09"
+description = "CTPlay PL08 with the chord engine's state in ITCM (164 B), freeing slim's RAM pool."
+features = ["chord", "countin"]

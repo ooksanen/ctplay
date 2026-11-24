@@ -1,0 +1,16 @@
+name = "stockfix"
+description = "Fixes in stock's own code, as byte patches (beta 2). No code, no RAM, no hooks."
+sources = []
+
+[budget]
+ram = 0
+stack = 0
+
+# CC 27 (or NRPN 1:27) on the project channel crashed stock 1.2.1: the main loop's master-group send 0x08021578 takes a
+# fourth word from a 3-entry table for bit 3 (set by 0x08022094 for type 0x21 index 12) and jumps into code. A Circuit
+# Rhythm sends it when its -12 dB trim is toggled. Upstream RC4.20 tools/cc27fix.py; spec 2026-11-22-beta2-fixes-design.md.
+[[patch]]
+addr = 0x080215B2
+stock = "EA D4"                  # bmi 0x0802158A: the call through the table
+new = "EF D4"                    # bmi 0x08021594: clear the bit, no call
+why = "CC 27 on the project channel: no call through the 3-entry master-group table"

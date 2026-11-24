@@ -1,0 +1,329 @@
+{
+  "base": "circuittracks-firmware-4486 (1.2.1)",
+  "slim_version": "PL06",
+  "marker": "PL06",
+  "description": "CTPlay chord engine with strum, bass modes, voice room and an arpeggiator: Shift + a track's button opens its play page (pattern, rate, octaves, gate, latch, strum).",
+  "features": [
+    "chord"
+  ],
+  "toolchain": "arm-none-eabi-gcc (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
+  "image_size": "0x4e928",
+  "image_sha256": "2e39501bad08254f3a09a84d7f1ba891ce19c9a60a2161fb319c70bdf4fead8d",
+  "syx_sha256": "e246979ee2518b661e822ab7e670f544ba61835bbec3cbb5e121e48f609fc2fe",
+  "crc32": "0x67d69709",
+  "flash": {
+    "start": "0x805cde0",
+    "end": "0x805e928",
+    "used": 6984,
+    "size": 143904
+  },
+  "ram": {
+    "start": "0x20044d88",
+    "end": "0x20044e58",
+    "used": 204,
+    "size": 240
+  },
+  "stack": {
+    "chord_on_pad": 192,
+    "chord_on_release": 128,
+    "chord_off_pad": 120,
+    "chord_on_leds": 120,
+    "chord_on_ms": 328,
+    "chord_on_button": 56,
+    "chord_on_headroom": 12,
+    "page_on_pad": 48,
+    "page_on_release": 8,
+    "arp_on_seq_tick": 264,
+    "arp_on_seq_start": 0,
+    "chord_init": 16
+  },
+  "stack_uncounted_callees": {
+    "chord_on_pad": [
+      "kbd_pad_ignored",
+      "note_pad_index",
+      "note_sink_off",
+      "note_sink_on",
+      "param_get"
+    ],
+    "chord_on_release": [
+      "note_sink_off",
+      "note_sink_on"
+    ],
+    "chord_off_pad": [
+      "note_sink_off",
+      "note_sink_on"
+    ],
+    "chord_on_leds": [
+      "kbd_pad_ignored",
+      "note_pad_index",
+      "param_get",
+      "track_of"
+    ],
+    "chord_on_ms": [
+      "note_sink_off",
+      "note_sink_on",
+      "param_get"
+    ],
+    "chord_on_button": [
+      "cont_select_track",
+      "cont_track_view",
+      "ctrl_set_view",
+      "param_get",
+      "track_of"
+    ],
+    "chord_on_headroom": [],
+    "page_on_pad": [
+      "track_of"
+    ],
+    "page_on_release": [],
+    "arp_on_seq_tick": [
+      "note_sink_off",
+      "note_sink_on",
+      "param_get"
+    ],
+    "arp_on_seq_start": [],
+    "chord_init": []
+  },
+  "entry_stub_stack": 32,
+  "hook_stack": {
+    "button_press": {
+      "bytes": 96,
+      "uncounted": [
+        "cont_select_track",
+        "cont_track_view",
+        "ctrl_set_view",
+        "param_get",
+        "track_of"
+      ]
+    },
+    "ctrl_pad_press": {
+      "bytes": 88,
+      "uncounted": [
+        "track_of"
+      ]
+    },
+    "ctrl_pad_release": {
+      "bytes": 72,
+      "uncounted": []
+    },
+    "led_task": {
+      "bytes": 136,
+      "uncounted": [
+        "kbd_pad_ignored",
+        "led_task",
+        "note_pad_index",
+        "param_get",
+        "track_of"
+      ]
+    },
+    "main_ms": {
+      "bytes": 368,
+      "uncounted": [
+        "note_sink_off",
+        "note_sink_on",
+        "param_get"
+      ]
+    },
+    "pad_note_off": {
+      "bytes": 160,
+      "uncounted": [
+        "note_sink_off",
+        "note_sink_on"
+      ]
+    },
+    "pad_note_on": {
+      "bytes": 232,
+      "uncounted": [
+        "kbd_pad_ignored",
+        "note_pad_index",
+        "note_sink_off",
+        "note_sink_on",
+        "param_get"
+      ]
+    },
+    "pad_release": {
+      "bytes": 168,
+      "uncounted": [
+        "note_sink_off",
+        "note_sink_on"
+      ]
+    },
+    "seq_start": {
+      "bytes": 72,
+      "uncounted": []
+    },
+    "seq_tick": {
+      "bytes": 304,
+      "uncounted": [
+        "note_sink_off",
+        "note_sink_on",
+        "param_get"
+      ]
+    },
+    "voice_headroom": {
+      "bytes": 48,
+      "uncounted": [
+        "dsp_read"
+      ]
+    }
+  },
+  "stack_uncounted_libgcc": [],
+  "patches": [
+    {
+      "addr": "0x8033320",
+      "bytes": "29f05ebd"
+    },
+    {
+      "addr": "0x8033282",
+      "bytes": "29f0c3bd"
+    },
+    {
+      "addr": "0x80332ce",
+      "bytes": "29f0b3bd00bf"
+    },
+    {
+      "addr": "0x8033b46",
+      "bytes": "29f011fa"
+    },
+    {
+      "addr": "0x803415a",
+      "bytes": "28f007ff"
+    },
+    {
+      "addr": "0x803c410",
+      "bytes": "20f028bd"
+    },
+    {
+      "addr": "0x804af5a",
+      "bytes": "11f099bf"
+    },
+    {
+      "addr": "0x804aef2",
+      "bytes": "11f0e3bf"
+    },
+    {
+      "addr": "0x804acc4",
+      "bytes": "12f010b9"
+    },
+    {
+      "addr": "0x802c008",
+      "bytes": "30f084bf"
+    },
+    {
+      "addr": "0x802c418",
+      "bytes": "30f092bd"
+    },
+    {
+      "addr": "0x80217ea",
+      "bytes": "3bf0cefb"
+    }
+  ],
+  "symbols": {
+    "BASE": "0x805e91c",
+    "PCT.0": "0x805e924",
+    "SHAPES": "0x805e8ec",
+    "STRUM_GAP": "0x805e920",
+    "__slim_bss_end": "0x20044e54",
+    "__slim_bss_start": "0x20044d88",
+    "__slim_data_end": "0x20044d88",
+    "__slim_data_start": "0x20044d88",
+    "__slim_ram_end": "0x20044e54",
+    "__slim_ram_start": "0x20044d88",
+    "__slim_ram_top": "0x20044e58",
+    "add": "0x805e3b0",
+    "arp_acc": "0x20044e0c",
+    "arp_free": "0x805d8ac",
+    "arp_index": "0x805d448",
+    "arp_init": "0x805e434",
+    "arp_on_ms": "0x805e7ac",
+    "arp_on_seq_start": "0x805e8c4",
+    "arp_on_seq_tick": "0x805e8d4",
+    "arp_on_tick": "0x805e46c",
+    "arp_rate_ticks": "0x805d418",
+    "arp_rng": "0x20044e0a",
+    "arp_sounding": "0x805e89c",
+    "arp_start": "0x20044e09",
+    "arp_tick": "0x20044e10",
+    "chord_arp": "0x20044def",
+    "chord_degree_class": "0x805d3f4",
+    "chord_init": "0x805d5e4",
+    "chord_note_sink": "0x805d678",
+    "chord_notes": "0x805d208",
+    "chord_off_pad": "0x805dbfc",
+    "chord_on_button": "0x805de70",
+    "chord_on_headroom": "0x805dd88",
+    "chord_on_leds": "0x805de74",
+    "chord_on_ms": "0x805dc14",
+    "chord_on_pad": "0x805d8cc",
+    "chord_on_release": "0x805dbc8",
+    "chord_order": "0x20044df7",
+    "chord_page": "0x20044e08",
+    "chord_room_last": "0x20044dea",
+    "chord_room_n": "0x20044de4",
+    "chord_room_prev": "0x20044de6",
+    "chord_rootless": "0x20044dfc",
+    "chord_send_on": "0x805d6c4",
+    "chord_sending": "0x20044dee",
+    "chord_settings": "0x20044dfd",
+    "chord_shift_held": "0x805d8b0",
+    "chord_strum": "0x20044dfb",
+    "chord_track_sink": "0x805d6a4",
+    "chord_visible_view": "0x805de2c",
+    "consumed": "0x20044d8c",
+    "cont_select_track": "0x805d074",
+    "cont_track_view": "0x805d07c",
+    "ctrl_set_view": "0x805d084",
+    "degrees_up": "0x805d1dc",
+    "dsp_read": "0x805d08c",
+    "end": "0x805e340",
+    "held": "0x20044d90",
+    "kbd_pad_ignored": "0x805d094",
+    "led_task": "0x805d09c",
+    "memcpy": "0x805cfcc",
+    "memset": "0x805cfbc",
+    "note_pad_index": "0x805d0a4",
+    "note_sink_off": "0x805d0ac",
+    "note_sink_on": "0x805d0b4",
+    "owned": "0x805d540",
+    "owns": "0x805d4f0",
+    "page_draw": "0x805e234",
+    "page_init": "0x805e050",
+    "page_on_button": "0x805e068",
+    "page_on_pad": "0x805e0e8",
+    "page_on_release": "0x805e20c",
+    "page_taken": "0x20044e04",
+    "page_visible": "0x805e02c",
+    "param_get": "0x805d0bc",
+    "release": "0x805d79c",
+    "resound": "0x805d6e4",
+    "run": "0x20044e14",
+    "slim_call_led_task": "0x805cf6c",
+    "slim_call_voice_headroom": "0x805cf8a",
+    "slim_dispatch_button_press": "0x805d0cc",
+    "slim_dispatch_ctrl_pad_press": "0x805d0ea",
+    "slim_dispatch_ctrl_pad_release": "0x805d10a",
+    "slim_dispatch_main_ms": "0x805d128",
+    "slim_dispatch_pad_note_off": "0x805d144",
+    "slim_dispatch_pad_note_on": "0x805d162",
+    "slim_dispatch_pad_release": "0x805d182",
+    "slim_dispatch_seq_start": "0x805d1a0",
+    "slim_dispatch_seq_tick": "0x805d1bc",
+    "slim_entry_button_press": "0x805cde0",
+    "slim_entry_ctrl_pad_press": "0x805ce0c",
+    "slim_entry_ctrl_pad_release": "0x805ce38",
+    "slim_entry_main_ms": "0x805ce64",
+    "slim_entry_pad_note_off": "0x805ce90",
+    "slim_entry_pad_note_on": "0x805cebc",
+    "slim_entry_pad_release": "0x805cee8",
+    "slim_entry_seq_start": "0x805cf14",
+    "slim_entry_seq_tick": "0x805cf40",
+    "slim_features_init": "0x805d1d8",
+    "slim_inited": "0x20044d88",
+    "slim_irq_restore": "0x805cfb6",
+    "slim_irq_save": "0x805cfae",
+    "slim_ready": "0x805cfe4",
+    "sort_rising": "0x805d56e",
+    "track_of": "0x805d0c4",
+    "unlatch": "0x805d594"
+  }
+}

@@ -1,0 +1,12 @@
+none      pattern 0 step first: empty step 6 + spill: pad 5 LED 0x14 (a step with notes 0x13, empty 0x14); after the step's release 0x14  A: step 5 [40, 41, 58, 60], step 6 [58, 60]  B: step 5 [40, 41, 58, 60], step 6 [58, 60]  D: 60 sounds True
+none      pattern 0 pad first: empty step 6 + spill: pad 5 LED 0x14 (a step with notes 0x13, empty 0x14); after the step's release 0x14  A: step 5 [40, 41, 58, 60], step 6 [58, 60]  B: step 5 [40, 41, 58, 60], step 6 [58, 60]  D: 60 sounds True
+none      pattern 2 step first: empty step 6 + spill: pad 5 LED 0x14 (a step with notes 0x13, empty 0x14); after the step's release 0x14  A: step 5 [40, 41, 58, 60], step 6 [58, 60]  B: step 5 [40, 41, 58, 60], step 6 [58, 60]  D: 60 sounds True
+C none     : pad 5 LED 0x14; step 4 [48, 55], step 6 {2: (60, 6, 2, 100)}, LED 0x14
+rec_touch pattern 0 step first: empty step 6 + spill: pad 5 LED 0x13 (a step with notes 0x13, empty 0x14); after the step's release 0x13  A: step 5 [40, 41, 58, 60], step 6 [58, 60]  B: step 5 [40, 41, 58, 60], step 6 [58, 60]  D: 60 sounds True
+rec_touch pattern 0 pad first: empty step 6 + spill: pad 5 LED 0x13 (a step with notes 0x13, empty 0x14); after the step's release 0x13  A: step 5 [40, 41, 58, 60], step 6 [58, 60]  B: step 5 [40, 41, 58, 60], step 6 [58, 60]  D: 60 sounds True
+rec_touch pattern 2 step first: empty step 6 + spill: pad 5 LED 0x13 (a step with notes 0x13, empty 0x14); after the step's release 0x13  A: step 5 [40, 41, 58, 60], step 6 [58, 60]  B: step 5 [40, 41, 58, 60], step 6 [58, 60]  D: 60 sounds True
+C rec_touch: pad 5 LED 0x13; step 4 [48, 55], step 6 {2: (60, 6, 2, 100)}, LED 0x13
+touch_all pattern 0 step first: empty step 6 + spill: pad 5 LED 0x13 (a step with notes 0x13, empty 0x14); after the step's release 0x13  A: step 5 [40, 41, 58, 60], step 6 [58, 60]  B: step 5 [40, 41, 58, 60], step 6 [58, 60]  D: 60 sounds True
+touch_all pattern 0 pad first: empty step 6 + spill: pad 5 LED 0x13 (a step with notes 0x13, empty 0x14); after the step's release 0x13  A: step 5 [40, 41, 58, 60], step 6 [58, 60]  B: step 5 [40, 41, 58, 60], step 6 [58, 60]  D: 60 sounds True
+touch_all pattern 2 step first: empty step 6 + spill: pad 5 LED 0x13 (a step with notes 0x13, empty 0x14); after the step's release 0x13  A: step 5 [40, 41, 58, 60], step 6 [58, 60]  B: step 5 [40, 41, 58, 60], step 6 [58, 60]  D: 60 sounds True
+C touch_all: pad 5 LED 0x13; step 4 [48, 55], step 6 {2: (60, 6, 2, 100)}, LED 0x13

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CTPlay voice log</title>
+<style>
+  body { font: 14px/1.4 system-ui, sans-serif; margin: 16px; background: #fff; color: #111; }
+  button { margin: 4px 4px 4px 0; }
+  table { border-collapse: collapse; margin-top: 12px; }
+  th, td { border: 1px solid #ccc; padding: 2px 8px; text-align: right; font-variant-numeric: tabular-nums; }
+  th { background: #f2f2f2; }
+  #state { margin-left: 8px; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #111; color: #eee; } th { background: #222; } th, td { border-color: #444; }
+  }
+</style>
+</head>
+<body>
+<h1>CTPlay voice log (PL03D)</h1>
+<p>Chrome or Edge, the Circuit Tracks connected over USB with <b>PL03D</b> installed. Play, then <b>Read</b>: one row per
+synth note, oldest first (the device keeps the last 12). <b>Copy as text</b> puts the table on the clipboard to paste.</p>
+<p><b>took</b> = what the chosen voice was doing: <b>free</b>, <b>sounding</b> (a note still playing or fading: the loss we
+are looking for) or <b>starting</b> (allocated by this same press, not started yet). <b>x threshold</b> below 1.00 means
+the DSP picked the voice, unless the path says <b>ARM (floor)</b>: CTPlay let a chord note take a free voice.
+<b>voices before</b>: the synth's 6 voices just before (- free, r sounding, H starting).</p>
+<button id="connect">Allow MIDI access</button><span id="state"></span><br>
+<button id="read" disabled>Read</button><button id="clear" disabled>Clear</button><button id="copy" disabled>Copy as text</button>
+<table id="log"><thead></thead><tbody></tbody></table>
+<script>
+// <decode> pure functions, no DOM: unit-tested in Node (tests/test_voice_log_page.py)
+const VL_SIG = [0xF0, 0x7D, 0x53, 0x4C];
+const VL_PAD = 232;
+const VL_THRESHOLD = 0x1400;                       // stock's 0x14000, in the record's units (>> 4)
+const VL_COLUMNS = ["ms", "seq", "synth", "note", "reading", "x threshold", "path", "voice", "took", "voices before"];
+const VL_TOOK = ["free", "sounding", "starting", "?"];
+const VL_NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+function vlRequest(cmd, seq, payload) {
+  const m = [...VL_SIG, cmd, seq, ...payload];
+  while (m.length < VL_PAD - 1) m.push(0);
+  m.push(0xF7);
+  return m;
+}
+
+function vlReply(bytes) {
+  const b = Array.from(bytes);
+  if (b.length < 9 || b[b.length - 1] !== 0xF7) return null;
+  for (let k = 0; k < 4; k++) if (b[k] !== VL_SIG[k]) return null;
+  const body = [];
+  for (let i = 6; i + 1 < b.length - 1; i += 2) body.push((b[i] << 4) | b[i + 1]);
+  return { cmd: b[4] & 0x3F, seq: b[5], status: body[0], data: body.slice(1) };
+}
+
+function vlRecords(data) {                         // read data: count, then count x 10 bytes (little-endian fields)
+  const recs = [];
+  for (let i = 0; i < data[0]; i++) {
+    const r = data.slice(1 + 10 * i, 11 + 10 * i);
+    const flags = r[3], synth = flags & 1, voice = r[5], before = r[6] | (r[7] << 8);
+    const first = 6 * synth, rel = voice >= first && voice < first + 6 ? voice - first : voice;
+    const states = before === 0xFFFF ? null : [0, 1, 2, 3, 4, 5].map(v => (before >> (2 * v)) & 3);
+    recs.push({ t: r[0] | (r[1] << 8), seq: r[2], synth, dsp: (flags >> 1) & 1, mode: (flags >> 2) & 7, note: r[4],
+                voice, rel, before: states, headroom: r[8] | (r[9] << 8),
+                took: states && rel < 6 ? VL_TOOK[states[rel]] : "?" });
+  }
+  return recs;
+}
+
+function vlNote(n) { return VL_NOTES[n % 12] + (Math.floor(n / 12) - 1) + " (" + n + ")"; }
+
+function vlRows(recs) {
+  const t0 = recs.length ? recs[0].t : 0;
+  return recs.map(r => [
+    String((r.t - t0 + 65536) % 65536), String(r.seq), "Synth " + (r.synth + 1), vlNote(r.note),
+    "0x" + r.headroom.toString(16).toUpperCase(), (r.headroom / VL_THRESHOLD).toFixed(2),
+    r.dsp ? "DSP" : r.headroom < VL_THRESHOLD ? "ARM (floor)" : "ARM (mode " + r.mode + ")", String(r.voice), r.took,
+    r.before ? r.before.map(s => "-rH?"[s]).join("") : "?"]);
+}
+
+function vlText(rows) { return [VL_COLUMNS, ...rows].map(r => r.join("\t")).join("\n"); }
+
+// The device shows several ports: as the uploader's score(), MIDI 2 / 3, DIN and DAW ones are not the SysEx port.
+function vlPortScore(name) {
+  if (!/circuit tracks/i.test(name)) return -1;
+  return /midi ?[23]|midiin2|midiout2|midiin3|midiout3|din|daw/i.test(name) ? 0 : 2;
+}
+function vlPickPort(names) {                        // index of the best port, -1 when none is a Circuit Tracks
+  let best = -1;
+  names.forEach((n, i) => { if (vlPortScore(n) >= 0 && (best < 0 || vlPortScore(n) > vlPortScore(names[best]))) best = i; });
+  return best;
+}
+// </decode>
+
+const $ = id => document.getElementById(id);
+let out = null, inp = null, seq = 0, pending = null, rows = [];
+
+function say(msg) { $("state").textContent = msg; }
+function port(map) { const ps = [...map.values()], i = vlPickPort(ps.map(p => p.name || "")); return i < 0 ? null : ps[i]; }
+
+function ask(cmd, payload) {                      // one request; resolves with its reply, rejects after 1 s
+  return new Promise((resolve, reject) => {
+    seq = (seq + 1) & 0x7F;
+    const want = seq;
+    const timer = setTimeout(() => { pending = null; reject(new Error("No reply on " + out.name + " / " + inp.name + ": is PL03D installed?")); }, 1000);
+    pending = r => { if (r.cmd === cmd && r.seq === want) { clearTimeout(timer); pending = null; resolve(r); } };
+    out.send(vlRequest(cmd, want, payload));
+  });
+}
+
+function show(rs) {
+  const table = $("log"), head = table.tHead, body = table.tBodies[0];
+  head.textContent = ""; body.textContent = "";
+  const hr = head.insertRow();
+  for (const c of VL_COLUMNS) { const th = document.createElement("th"); th.textContent = c; hr.appendChild(th); }
+  for (const row of rs) { const tr = body.insertRow(); for (const c of row) tr.insertCell().textContent = c; }
+}
+
+async function readAll() {
+  const stored = (await ask(1, [])).data[3];
+  let recs = [];
+  for (let start = 0; start < stored; start += 8) {
+    const r = await ask(2, [start, Math.min(8, stored - start)]);
+    if (r.status) throw new Error("Read refused (status " + r.status + ")");
+    recs = recs.concat(vlRecords(r.data));
+  }
+  return recs;
+}
+
+$("connect").onclick = async () => {
+  let midi;
+  try { midi = await navigator.requestMIDIAccess({ sysex: true }); }
+  catch (e) { say("MIDI access denied: " + e.message); return; }
+  out = port(midi.outputs); inp = port(midi.inputs);
+  if (!out || !inp) { say("Circuit Tracks not found: connect it over USB, then try again."); return; }
+  inp.onmidimessage = ev => { const r = vlReply(ev.data); if (r && pending) pending(r); };
+  try {
+    const d = (await ask(1, [])).data;
+    say("Connected (" + out.name + " / " + inp.name + "): voice log v" + ((d[0] << 8) | d[1]) + ", " + d[3] + " of " + d[2] + " records stored.");
+    $("read").disabled = $("clear").disabled = false;
+  } catch (e) { say(e.message); }
+};
+$("read").onclick = async () => {
+  try {
+    rows = vlRows(await readAll()); show(rows); $("copy").disabled = !rows.length;
+    say(rows.length ? rows.length + " records." : "No records yet: play some notes, then Read.");
+  } catch (e) { say(e.message); }
+};
+$("clear").onclick = async () => {
+  try { await ask(3, []); rows = []; show(rows); $("copy").disabled = true; say("Cleared."); }
+  catch (e) { say(e.message); }
+};
+$("copy").onclick = async () => {
+  try { await navigator.clipboard.writeText(vlText(rows)); say("Copied."); }
+  catch (e) { say("Copy failed: " + e.message); }
+};
+</script>
+</body>
+</html>

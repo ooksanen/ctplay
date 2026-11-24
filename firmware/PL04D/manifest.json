@@ -1,0 +1,272 @@
+{
+  "base": "circuittracks-firmware-4486 (1.2.1)",
+  "slim_version": "PL04D",
+  "marker": "PL04D",
+  "description": "Diagnostic: PL04 plus the voice log read over USB SysEx (slim/pages/voice_log.html).",
+  "features": [
+    "chord",
+    "voice_log"
+  ],
+  "toolchain": "arm-none-eabi-gcc (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
+  "image_size": "0x4dedc",
+  "image_sha256": "3a161cc4076a6e037d34a5ea33b38f34b7c3f187667f7d6492aa5ce10d1013ed",
+  "syx_sha256": "26bd7d7beb5237ce7130cc06da38b1f4fc9480c71ddf886c468513165355e1df",
+  "crc32": "0x54642191",
+  "flash": {
+    "start": "0x805cde0",
+    "end": "0x805dedc",
+    "used": 4348,
+    "size": 143904
+  },
+  "ram": {
+    "start": "0x20044d68",
+    "end": "0x20044e58",
+    "used": 236,
+    "size": 240
+  },
+  "stack": {
+    "chord_on_pad": 156,
+    "chord_on_release": 48,
+    "chord_off_pad": 40,
+    "chord_on_leds": 56,
+    "chord_on_ms": 32,
+    "chord_on_button": 32,
+    "chord_on_headroom": 12,
+    "chord_init": 8,
+    "vl_on_headroom": 20,
+    "vl_on_picked": 20,
+    "vl_on_ms": 0,
+    "vl_on_sysex": 72,
+    "vl_init": 8
+  },
+  "stack_uncounted_callees": {
+    "chord_on_pad": [
+      "kbd_pad_ignored",
+      "note_pad_index",
+      "note_sink_off",
+      "note_sink_on",
+      "param_get"
+    ],
+    "chord_on_release": [
+      "note_sink_off"
+    ],
+    "chord_off_pad": [
+      "note_sink_off"
+    ],
+    "chord_on_leds": [
+      "kbd_pad_ignored",
+      "note_pad_index",
+      "param_get",
+      "track_of"
+    ],
+    "chord_on_ms": [
+      "note_sink_off",
+      "note_sink_on"
+    ],
+    "chord_on_button": [
+      "param_get",
+      "track_of"
+    ],
+    "chord_on_headroom": [],
+    "chord_init": [],
+    "vl_on_headroom": [],
+    "vl_on_picked": [],
+    "vl_on_ms": [],
+    "vl_on_sysex": [
+      "sysex_out"
+    ],
+    "vl_init": []
+  },
+  "entry_stub_stack": 32,
+  "hook_stack": {
+    "button_press": {
+      "bytes": 72,
+      "uncounted": [
+        "param_get",
+        "track_of"
+      ]
+    },
+    "led_task": {
+      "bytes": 72,
+      "uncounted": [
+        "kbd_pad_ignored",
+        "led_task",
+        "note_pad_index",
+        "param_get",
+        "track_of"
+      ]
+    },
+    "main_ms": {
+      "bytes": 80,
+      "uncounted": [
+        "note_sink_off",
+        "note_sink_on"
+      ]
+    },
+    "pad_note_off": {
+      "bytes": 80,
+      "uncounted": [
+        "note_sink_off"
+      ]
+    },
+    "pad_note_on": {
+      "bytes": 196,
+      "uncounted": [
+        "kbd_pad_ignored",
+        "note_pad_index",
+        "note_sink_off",
+        "note_sink_on",
+        "param_get"
+      ]
+    },
+    "pad_release": {
+      "bytes": 88,
+      "uncounted": [
+        "note_sink_off"
+      ]
+    },
+    "sysex_in": {
+      "bytes": 112,
+      "uncounted": [
+        "sysex_out"
+      ]
+    },
+    "voice_headroom": {
+      "bytes": 48,
+      "uncounted": [
+        "dsp_read"
+      ]
+    },
+    "voice_picked": {
+      "bytes": 40,
+      "uncounted": [
+        "voice_decide"
+      ]
+    }
+  },
+  "stack_uncounted_libgcc": [],
+  "patches": [
+    {
+      "addr": "0x8033320",
+      "bytes": "29f05ebd"
+    },
+    {
+      "addr": "0x8033b46",
+      "bytes": "29f0cff9"
+    },
+    {
+      "addr": "0x803415a",
+      "bytes": "28f0c5fe"
+    },
+    {
+      "addr": "0x803c410",
+      "bytes": "20f0fcbc"
+    },
+    {
+      "addr": "0x804af5a",
+      "bytes": "11f06dbf"
+    },
+    {
+      "addr": "0x804aef2",
+      "bytes": "11f0b7bf"
+    },
+    {
+      "addr": "0x804acc4",
+      "bytes": "12f0e4b8"
+    },
+    {
+      "addr": "0x801eb30",
+      "bytes": "3ef0c4b9"
+    },
+    {
+      "addr": "0x80217ea",
+      "bytes": "3bf08cfb"
+    },
+    {
+      "addr": "0x80219f0",
+      "bytes": "3bf0a0fa"
+    }
+  ],
+  "symbols": {
+    "SHAPES": "0x805dea4",
+    "STRUM_COL": "0x805ded4",
+    "STRUM_GAP": "0x805ded8",
+    "__slim_bss_end": "0x20044e54",
+    "__slim_bss_start": "0x20044d68",
+    "__slim_data_end": "0x20044d68",
+    "__slim_data_start": "0x20044d68",
+    "__slim_ram_end": "0x20044e54",
+    "__slim_ram_start": "0x20044d68",
+    "__slim_ram_top": "0x20044e58",
+    "chord_degree_class": "0x805d338",
+    "chord_init": "0x805d454",
+    "chord_notes": "0x805d160",
+    "chord_off_pad": "0x805d7a4",
+    "chord_on_button": "0x805d9c0",
+    "chord_on_headroom": "0x805d91c",
+    "chord_on_leds": "0x805da14",
+    "chord_on_ms": "0x805d7bc",
+    "chord_on_pad": "0x805d4c0",
+    "chord_on_release": "0x805d770",
+    "chord_room_last": "0x20044dc4",
+    "chord_room_n": "0x20044dbe",
+    "chord_room_prev": "0x20044dc0",
+    "chord_rootless": "0x20044dca",
+    "chord_sending": "0x20044dc8",
+    "chord_settings": "0x20044dcb",
+    "chord_strum": "0x20044dc9",
+    "consumed": "0x20044d6c",
+    "degrees_up": "0x805d132",
+    "dsp_read": "0x805d010",
+    "held": "0x20044d70",
+    "kbd_pad_ignored": "0x805d018",
+    "led_task": "0x805d020",
+    "memcpy": "0x805cf68",
+    "memset": "0x805cf58",
+    "note_pad_index": "0x805d028",
+    "note_sink": "0x805d35c",
+    "note_sink_off": "0x805d030",
+    "note_sink_on": "0x805d038",
+    "param_get": "0x805d040",
+    "pend_before": "0x20044dd2",
+    "pend_headroom": "0x20044dd0",
+    "pend_ok": "0x20044dcf",
+    "put": "0x805db9c",
+    "release": "0x805d3a4",
+    "shift_held": "0x805d388",
+    "slim_call_led_task": "0x805cee8",
+    "slim_call_voice_headroom": "0x805cf06",
+    "slim_call_voice_picked": "0x805cf34",
+    "slim_dispatch_button_press": "0x805d060",
+    "slim_dispatch_main_ms": "0x805d07e",
+    "slim_dispatch_pad_note_off": "0x805d0a8",
+    "slim_dispatch_pad_note_on": "0x805d0c6",
+    "slim_dispatch_pad_release": "0x805d0e6",
+    "slim_dispatch_sysex_in": "0x805d104",
+    "slim_entry_button_press": "0x805cde0",
+    "slim_entry_main_ms": "0x805ce0c",
+    "slim_entry_pad_note_off": "0x805ce38",
+    "slim_entry_pad_note_on": "0x805ce64",
+    "slim_entry_pad_release": "0x805ce90",
+    "slim_entry_sysex_in": "0x805cebc",
+    "slim_features_init": "0x805d124",
+    "slim_inited": "0x20044d68",
+    "slim_irq_restore": "0x805cf52",
+    "slim_irq_save": "0x805cf4a",
+    "slim_ready": "0x805cf80",
+    "sysex_out": "0x805d048",
+    "track_of": "0x805d050",
+    "visible_note_view": "0x805d410",
+    "vl_head": "0x20044dd8",
+    "vl_init": "0x805dbc8",
+    "vl_now": "0x20044dd4",
+    "vl_on_headroom": "0x805dc14",
+    "vl_on_ms": "0x805dd30",
+    "vl_on_picked": "0x805dc84",
+    "vl_on_sysex": "0x805dd44",
+    "vl_ring": "0x20044dda",
+    "vl_seq": "0x20044dd6",
+    "vl_stored": "0x20044dd7",
+    "voice_decide": "0x805d058"
+  }
+}

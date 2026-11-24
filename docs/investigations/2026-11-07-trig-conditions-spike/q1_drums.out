@@ -1,0 +1,108 @@
+[editor table] dispatcher ip=0x20039c5c: [ip+0xA8+4d] = drum d's editor True; [ip+0x98+4t] = note editor t True; drum editors' [+0x54] = ['0x20039c8c', '0x20039c8c', '0x20039c8c', '0x20039c8c'] (ip+0x30 = 0x20039c8c)
+
+== drum_duplicate (Patterns view, Duplicate + source pad + target pad)
+[Duplicate A: drum 1 P1 -> P2, shown P1] stopped, before {'shown_src': 0, 'shown_dst': 0, 'playing_dst': 0}
+   drum_duplicate [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x2001e5b0 r2=0x1 r3=0x4 stack=['0x1', '0x1']; [r0+0x20] p0=0 p1=0; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 00 00 00; r1 = drum 0 pattern 0 + 0x0; r2 = target pattern index 1
+   handler saw (src, dst) [('0x2001e5b0', (0, 0, 0), '0x2001ec58', (0, 1, 0))]
+   target: arrays = source True; lanes = source True; +0x84..+0xA7 = source's True (target's own False); source unchanged True
+   other patterns' condition bytes changed: none
+[Duplicate B: drum 1 P1 -> P2, chain P3] stopped, before {'shown_src': 2, 'shown_dst': 2, 'playing_dst': 2}
+   drum_duplicate [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x2001e5b0 r2=0x1 r3=0x4 stack=['0x1', '0x1']; [r0+0x20] p0=0 p1=0; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 00 00 00; r1 = drum 0 pattern 0 + 0x0; r2 = target pattern index 1
+   handler saw (src, dst) [('0x2001e5b0', (0, 0, 0), '0x2001ec58', (0, 1, 0))]
+   target: arrays = source True; lanes = source True; +0x84..+0xA7 = source's True (target's own False); source unchanged True
+   other patterns' condition bytes changed: none
+[Duplicate C: source shown (playing P1)] playing, before {'shown_src': 0, 'shown_dst': 0, 'playing_dst': 0}
+   drum_duplicate [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x2001e5b0 r2=0x1 r3=0x4 stack=['0x1', '0x1']; [r0+0x20] p0=0 p1=0; [r0+0x10] p0 (playing)=1; [[r0+0x54]]=00 00 00 00; r1 = drum 0 pattern 0 + 0x0; r2 = target pattern index 1
+   handler saw (src, dst) [('0x2001e5b0', (0, 0, 0), '0x2001ec58', (0, 1, 0))]
+   target: arrays = source True; lanes = source True; +0x84..+0xA7 = source's True (target's own False); source unchanged True
+   other patterns' condition bytes changed: none
+[Duplicate D: target shown (playing P2)] playing, before {'shown_src': 1, 'shown_dst': 1, 'playing_dst': 1}
+   drum_duplicate [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x2001e5b0 r2=0x1 r3=0x4 stack=['0x1', '0x1']; [r0+0x20] p0=1 p1=0; [r0+0x10] p0 (playing)=1; [[r0+0x54]]=00 00 00 00; r1 = drum 0 pattern 0 + 0x0; r2 = target pattern index 1
+   handler saw (src, dst) [('0x2001e5b0', (0, 0, 0), '0x2001ec58', (0, 1, 0))]
+   target: arrays = source True; lanes = source True; +0x84..+0xA7 = source's True (target's own False); source unchanged True
+   other patterns' condition bytes changed: none
+[Duplicate E: neither shown (playing P3)] playing, before {'shown_src': 2, 'shown_dst': 2, 'playing_dst': 2}
+   drum_duplicate [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x2001e5b0 r2=0x1 r3=0x4 stack=['0x1', '0x1']; [r0+0x20] p0=2 p1=0; [r0+0x10] p0 (playing)=1; [[r0+0x54]]=00 00 00 00; r1 = drum 0 pattern 0 + 0x0; r2 = target pattern index 1
+   handler saw (src, dst) [('0x2001e5b0', (0, 0, 0), '0x2001ec58', (0, 1, 0))]
+   target: arrays = source True; lanes = source True; +0x84..+0xA7 = source's True (target's own False); source unchanged True
+   other patterns' condition bytes changed: none
+[Duplicate F: drum 1 P1 -> drum 2 P2] stopped, before {'shown_src': 0, 'shown_dst': 0, 'playing_dst': 0}
+   drum_duplicate [ui] r0=0x2003b1bc (drum 1, [r0+4]=patterns True) r1=0x2001e5b0 r2=0x1 r3=0x4 stack=['0x1', '0x1']; [r0+0x20] p0=0 p1=0; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 00 00 00; r1 = drum 0 pattern 0 + 0x0; r2 = target pattern index 1
+   handler saw (src, dst) [('0x2001e5b0', (0, 0, 0), '0x20022198', (1, 1, 0))]
+   target: arrays = source True; lanes = source True; +0x84..+0xA7 = source's True (target's own False); source unchanged True
+   other patterns' condition bytes changed: none
+[Duplicate G: drum 1 P1 -> drum 2 P2 (drum 2 playing P3)] playing, before {'shown_src': 0, 'shown_dst': 2, 'playing_dst': 2}
+   drum_duplicate [ui] r0=0x2003b1bc (drum 1, [r0+4]=patterns True) r1=0x2001e5b0 r2=0x1 r3=0x4 stack=['0x1', '0x1']; [r0+0x20] p0=2 p1=0; [r0+0x10] p0 (playing)=1; [[r0+0x54]]=00 00 00 00; r1 = drum 0 pattern 0 + 0x0; r2 = target pattern index 1
+   handler saw (src, dst) [('0x2001e5b0', (0, 0, 0), '0x20022198', (1, 1, 0))]
+   target: arrays = source True; lanes = source True; +0x84..+0xA7 = source's True (target's own False); source unchanged True
+   other patterns' condition bytes changed: none
+[Duplicate H: drum 1 P1 -> drum 2 P2 (drum 2 playing P2: target shown)] playing, before {'shown_src': 0, 'shown_dst': 1, 'playing_dst': 1}
+   drum_duplicate [ui] r0=0x2003b1bc (drum 1, [r0+4]=patterns True) r1=0x2001e5b0 r2=0x1 r3=0x4 stack=['0x1', '0x1']; [r0+0x20] p0=1 p1=0; [r0+0x10] p0 (playing)=1; [[r0+0x54]]=00 00 00 00; r1 = drum 0 pattern 0 + 0x0; r2 = target pattern index 1
+   handler saw (src, dst) [('0x2001e5b0', (0, 0, 0), '0x20022198', (1, 1, 0))]
+   target: arrays = source True; lanes = source True; +0x84..+0xA7 = source's True (target's own False); source unchanged True
+   other patterns' condition bytes changed: none
+[Duplicate I: a pattern onto itself (P1 -> P1)] stopped, before {'shown_src': 0, 'shown_dst': 0, 'playing_dst': 0}
+   drum_duplicate [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x2001e5b0 r2=0x0 r3=0x4 stack=['0x1', '0x0']; [r0+0x20] p0=0 p1=0; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 00 00 00; r1 = drum 0 pattern 0 + 0x0; r2 = target pattern index 0
+   handler saw (src, dst) [('0x2001e5b0', (0, 0, 0), '0x2001e5b0', (0, 0, 0))]
+   target: arrays = source True; lanes = source True; +0x84..+0xA7 = source's True (target's own True); source unchanged True
+   other patterns' condition bytes changed: none
+
+== drum_clear_step (step view, Clear held + step pad)
+[Clear step: 1-16 shown, stopped] pad 3; shown 0, selected now 3
+   drum_clear_step [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x20039c5c r2=0x20039d68 r3=0x3 stack=['0x2', '0x0']; [r0+0x20] p0=0 p1=3; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 00 00 00
+   steps whose arrays changed in pattern 0: [3]
+[Clear step: 17-32 shown, stopped] pad 4; shown 0, selected now 20
+   drum_clear_step [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x20039c5c r2=0x20039d68 r3=0x3 stack=['0x2', '0x0']; [r0+0x20] p0=0 p1=20; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 00 00 00
+   steps whose arrays changed in pattern 0: [20]
+[Clear step: 1-16, playing (follow)] pad 6; shown 0, selected now 0
+   drum_clear_step [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x20039c5c r2=0x20039d68 r3=0x3 stack=['0x2', '0x0']; [r0+0x20] p0=0 p1=6; [r0+0x10] p0 (playing)=1; [[r0+0x54]]=00 00 00 00
+   steps whose arrays changed in pattern 0: [6]
+
+== drum_clear_pattern (Patterns view, Clear held + pattern pad)
+[Clear pattern: shown, stopped] stopped, drum 0 pattern 0, shown 0
+   drum_clear_pattern [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x0 r2=0x4 r3=0x0 stack=['0x2', '0x0']; [r0+0x20] p0=0 p1=0; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 00 00 00; [r0+4] + 0x6A8 r1 = drum (0, 0)
+   patterns whose hits changed: [0]
+[Clear pattern: not shown, playing P3] playing, drum 0 pattern 1, shown 2
+   drum_clear_pattern [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x1 r2=0x4 r3=0x1 stack=['0x2', '0x1']; [r0+0x20] p0=2 p1=0; [r0+0x10] p0 (playing)=1; [[r0+0x54]]=00 00 00 00; [r0+4] + 0x6A8 r1 = drum (0, 1)
+   patterns whose hits changed: [1]
+[Clear pattern: shown = playing] playing, drum 0 pattern 1, shown 1
+   drum_clear_pattern [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x1 r2=0x4 r3=0x1 stack=['0x2', '0x1']; [r0+0x20] p0=1 p1=0; [r0+0x10] p0 (playing)=1; [[r0+0x54]]=00 00 00 00; [r0+4] + 0x6A8 r1 = drum (0, 1)
+   patterns whose hits changed: [1]
+[Clear pattern: drum 2's column] stopped, drum 1 pattern 2, shown 0
+   drum_clear_pattern [ui] r0=0x2003b1bc (drum 1, [r0+4]=patterns True) r1=0x2 r2=0x5 r3=0x2 stack=['0x2', '0x2']; [r0+0x20] p0=0 p1=0; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 00 00 00; [r0+4] + 0x6A8 r1 = drum (1, 2)
+   patterns whose hits changed: [2]
+
+== drum_copy_half (step view, Duplicate held + 1-16/17-32)
+[copy half: 1-16 shown] shown 0
+   drum_copy_half [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x20039d68 r2=0x20039d68 r3=0x3 stack=['0x3', '0x0']; [r0+0x20] p0=0 p1=0; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 00 00 00
+   steps changed: [16, 19, 20, 22, 28]; 16-31 = 0-15 of before: True; 0-15 unchanged True
+[copy half: 17-32 shown] shown 0
+   drum_copy_half [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x20039d68 r2=0x20039d68 r3=0x3 stack=['0x3', '0x0']; [r0+0x20] p0=0 p1=16; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 00 00 00
+   steps changed: [16, 19, 20, 22, 28]; 16-31 = 0-15 of before: True; 0-15 unchanged True
+
+== drum_paste_step (step view, Duplicate held + step A, step B)
+[paste step: same page, 4 -> 8] pads 3 then 7
+   drum_copy_step(source) [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x20039c5c r2=0x20039d68 r3=0x3 stack=['0x0', '0x0']; [r0+0x20] p0=0 p1=3; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 04 00 00
+   drum_paste_step [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x5a r2=0x2 r3=0x3 stack=['0x5', '0x2001e658']; [r0+0x20] p0=0 p1=7; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=02 04 00 03
+   handler: source (0, 0, 3) (stack [sp+4]-0xA8 = (0, 0, 0)), target (0, 0, 7); r1 (vel) 90 = source's velocity 90
+   target code now = source's code: True; target velocity = source's True
+[paste step: 17-32 page, 21 -> 26] pads 4 then 9
+   drum_copy_step(source) [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x20039c5c r2=0x20039d68 r3=0x3 stack=['0x0', '0x0']; [r0+0x20] p0=0 p1=20; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 04 00 00
+   drum_paste_step [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x41 r2=0xff r3=0x1 stack=['0x7', '0x2001e658']; [r0+0x20] p0=0 p1=25; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=02 04 00 14
+   handler: source (0, 0, 20) (stack [sp+4]-0xA8 = (0, 0, 0)), target (0, 0, 25); r1 (vel) 65 = source's velocity 65
+   target code now = source's code: True; target velocity = source's True
+[paste step: page switched between: 4 (1-16) -> 26 (17-32)] pads 3 then 9
+   drum_copy_step(source) [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x20039c5c r2=0x20039d68 r3=0x3 stack=['0x0', '0x0']; [r0+0x20] p0=0 p1=3; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 04 00 00
+   drum_paste_step [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x5a r2=0x2 r3=0x3 stack=['0x5', '0x2001e658']; [r0+0x20] p0=0 p1=25; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=02 04 00 03
+   handler: source (0, 0, 3) (stack [sp+4]-0xA8 = (0, 0, 0)), target (0, 0, 25); r1 (vel) 90 = source's velocity 90
+   target code now = source's code: True; target velocity = source's True
+[paste step: drum switched between: drum 1 step 4 -> drum 2 step 8] pads 3 then 7
+   drum_copy_step(source) [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x20039c5c r2=0x20039d68 r3=0x3 stack=['0x0', '0x0']; [r0+0x20] p0=0 p1=3; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 04 00 00
+   drum_paste_step [ui] r0=0x2003b1bc (drum 1, [r0+4]=patterns True) r1=0x5a r2=0x2 r3=0x3 stack=['0x5', '0x2001e658']; [r0+0x20] p0=0 p1=7; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=02 04 00 03
+   handler: source (0, 0, 3) (stack [sp+4]-0xA8 = (0, 0, 0)), target (1, 0, 7); r1 (vel) 90 = source's velocity 90
+   target code now = source's code: True; target velocity = source's True
+[paste step: an empty step onto a hit: 3 -> 1] pads 2 then 0
+   drum_copy_step(source) [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x20039c5c r2=0x20039d68 r3=0x3 stack=['0x0', '0x0']; [r0+0x20] p0=0 p1=2; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=00 04 00 00
+   drum_paste_step [ui] r0=0x2003acd0 (drum 0, [r0+4]=patterns True) r1=0x0 r2=0xff r3=0x0 stack=['0x7', '0x2001e658']; [r0+0x20] p0=0 p1=0; [r0+0x10] p0 (playing)=0; [[r0+0x54]]=02 04 00 02
+   handler: source (0, 0, 2) (stack [sp+4]-0xA8 = (0, 0, 0)), target (0, 0, 0); r1 (vel) 0 = source's velocity 0
+   target code now = source's code: True; target velocity = source's True

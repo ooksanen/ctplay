@@ -1,0 +1,42 @@
+stock: ids {'active': '0x20040db8', 'mode': 6, 'track': 4, 'sub152': 42, 'bottom': '0x200434d4', 'bottom_class': '0x805ad44', 'top_class': '0x805ad44'}; expanded view 0x200434d4 = [cont + 0xAC] True, view for pad 0 = for pad 28 True
+   view buffer [[view+4]] 0x200434fc: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+   pads 0-31 stopped     : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+   pads 0-31 Shift held  : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+   pads 0-31 pad 28 held : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 2d 49 4d
+   pads 0-31 playing     : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+   drum 2: ids {'active': '0x20040db8', 'mode': 6, 'track': 5, 'sub152': 50, 'bottom': '0x200434d4', 'bottom_class': '0x805ad44', 'top_class': '0x805ad44'}, pads 0-31 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+   drum 3: ids {'active': '0x20040db8', 'mode': 6, 'track': 6, 'sub152': 58, 'bottom': '0x200434d4', 'bottom_class': '0x805ad44', 'top_class': '0x805ad44'}, pads 0-31 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+   drum 4: ids {'active': '0x20040db8', 'mode': 6, 'track': 7, 'sub152': 66, 'bottom': '0x200434d4', 'bottom_class': '0x805ad44', 'top_class': '0x805ad44'}, pads 0-31 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+PL18: ids {'active': '0x20040db8', 'mode': 6, 'track': 4, 'sub152': 42, 'bottom': '0x200434d4', 'bottom_class': '0x805ad44', 'top_class': '0x805ad44'}; expanded view 0x200434d4 = [cont + 0xAC] True, view for pad 0 = for pad 28 True
+   view buffer [[view+4]] 0x200434fc: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+   pads 0-31 stopped     : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+   pads 0-31 Shift held  : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+   pads 0-31 pad 28 held : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 2d 49 4d
+   pads 0-31 playing     : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+   drum 2: ids {'active': '0x20040db8', 'mode': 6, 'track': 5, 'sub152': 50, 'bottom': '0x200434d4', 'bottom_class': '0x805ad44', 'top_class': '0x805ad44'}, pads 0-31 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+   drum 3: ids {'active': '0x20040db8', 'mode': 6, 'track': 6, 'sub152': 58, 'bottom': '0x200434d4', 'bottom_class': '0x805ad44', 'top_class': '0x805ad44'}, pads 0-31 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+   drum 4: ids {'active': '0x20040db8', 'mode': 6, 'track': 7, 'sub152': 66, 'bottom': '0x200434d4', 'bottom_class': '0x805ad44', 'top_class': '0x805ad44'}, pads 0-31 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+PL18 Shift + Drum 1 on the expanded view: {'active': '0x20040db8', 'mode': 6, 'track': 4, 'sub152': 42, 'bottom': '0x200434d4', 'bottom_class': '0x805ad44', 'top_class': '0x805ad44'}
+   pad 20 with the page open: the view's handler reached [] sinks [] LEDs 16-31 00 00 00 00 00 00 00 00 00 00 00 00 45 2d 49 4d
+   then Note: {'active': '0x20040db8', 'mode': 1, 'track': 4, 'sub152': 37, 'bottom': '0x20042d14', 'bottom_class': '0x805abbc', 'top_class': '0x805ad0c'} pad 20 reaches the view: []
+stock drum 1 playing 0 shift 0: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 0 vs 0, endpoints 0 vs 0, state diff none
+stock drum 1 playing 0 shift 1: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 0 vs 0, endpoints 0 vs 0, state diff none
+stock drum 1 playing 1 shift 0: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 6 vs 6, endpoints 2 vs 2, state diff none
+stock drum 1 playing 1 shift 1: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 6 vs 6, endpoints 2 vs 2, state diff none
+stock drum 4 playing 0 shift 0: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 0 vs 0, endpoints 0 vs 0, state diff none
+stock drum 4 playing 0 shift 1: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 0 vs 0, endpoints 0 vs 0, state diff none
+stock drum 4 playing 1 shift 0: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 6 vs 6, endpoints 2 vs 2, state diff none
+stock drum 4 playing 1 shift 1: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 6 vs 6, endpoints 2 vs 2, state diff none
+PL18 drum 1 playing 0 shift 0: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 0 vs 0, endpoints 0 vs 0, state diff none
+PL18 drum 1 playing 0 shift 1: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 0 vs 0, endpoints 0 vs 0, state diff none
+PL18 drum 1 playing 1 shift 0: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 6 vs 6, endpoints 2 vs 2, state diff none
+PL18 drum 1 playing 1 shift 1: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 6 vs 6, endpoints 2 vs 2, state diff none
+PL18 drum 4 playing 0 shift 0: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 0 vs 0, endpoints 0 vs 0, state diff none
+PL18 drum 4 playing 0 shift 1: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 0 vs 0, endpoints 0 vs 0, state diff none
+PL18 drum 4 playing 1 shift 0: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 6 vs 6, endpoints 2 vs 2, state diff none
+PL18 drum 4 playing 1 shift 1: NOTHING; view press args 0-27 True, release args 0-27 True, early returns 28 / 28, sinks 6 vs 6, endpoints 2 vs 2, state diff none
+cases with a difference: 0
+Q4 stock 28 held, 20 tapped: same as without pad 20; sinks ['on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1'] vs ['on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1']; state diff none
+Q4 stock 20 held, 28 tapped: same as without pad 20; sinks ['on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1'] vs ['on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1']; state diff none
+Q4 PL18 28 held, 20 tapped: same as without pad 20; sinks ['on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1'] vs ['on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1']; state diff none
+Q4 PL18 20 held, 28 tapped: same as without pad 20; sinks ['on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1'] vs ['on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'on1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1', 'off1']; state diff none

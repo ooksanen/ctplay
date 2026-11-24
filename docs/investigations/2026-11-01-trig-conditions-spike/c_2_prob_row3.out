@@ -1,0 +1,24 @@
+Shift + Patterns:
+  0x20039DE0 p0 -> 1 ; LEDs changed: []
+  with Shift held, LED 45 (Patterns) = 74 ; Shift-held LEDs differing from Shift-held before: [(45, '55->74')]
+Playing with follow on / off, no step held: the selected step and the playhead over 400 ms (every 50 ms):
+  follow 0: (selected, playhead) [(1, 1), (1, 1), (1, 1), (2, 2), (2, 2), (2, 2), (3, 3), (3, 3)]
+  follow 1: (selected, playhead) [(6, 1), (6, 1), (6, 1), (6, 2), (6, 2), (6, 2), (6, 3), (6, 3)]
+Row 3 (pad index 19 = value 3); selected = step 6, held = step 3:
+  notes playing 0 follow 0 held 0: accepted True, steps changed [6] (to [3]), selected before 6, playhead 1; with Shift: same
+  notes playing 0 follow 0 held 1: accepted True, steps changed [3] (to [3]), selected before 3, playhead 1; with Shift: same
+  notes playing 0 follow 1 held 0: accepted True, steps changed [6] (to [3]), selected before 6, playhead 1; with Shift: same
+  notes playing 0 follow 1 held 1: accepted True, steps changed [3] (to [3]), selected before 3, playhead 1; with Shift: same
+  notes playing 1 follow 0 held 0: accepted False, steps changed [] (to []), selected before 1, playhead 1; with Shift: same
+  notes playing 1 follow 0 held 1: accepted True, steps changed [3] (to [3]), selected before 3, playhead 1; with Shift: same
+  notes playing 1 follow 1 held 0: accepted True, steps changed [6] (to [3]), selected before 6, playhead 1; with Shift: same
+  notes playing 1 follow 1 held 1: accepted True, steps changed [3] (to [3]), selected before 3, playhead 1; with Shift: same
+  drums playing 0 follow 0 held 0: accepted True, steps changed [6] (to [3]), selected before 6, playhead 1; with Shift: same
+  drums playing 0 follow 0 held 1: accepted True, steps changed [3] (to [3]), selected before 3, playhead 1; with Shift: same
+  drums playing 0 follow 1 held 0: accepted True, steps changed [6] (to [3]), selected before 6, playhead 1; with Shift: same
+  drums playing 0 follow 1 held 1: accepted True, steps changed [3] (to [3]), selected before 3, playhead 1; with Shift: same
+  drums playing 1 follow 0 held 0: accepted False, steps changed [] (to []), selected before 1, playhead 1; with Shift: same
+  drums playing 1 follow 0 held 1: accepted True, steps changed [3] (to [3]), selected before 3, playhead 1; with Shift: same
+  drums playing 1 follow 1 held 0: accepted True, steps changed [6] (to [3]), selected before 6, playhead 1; with Shift: same
+  drums playing 1 follow 1 held 1: accepted True, steps changed [3] (to [3]), selected before 3, playhead 1; with Shift: same
+Shift + row 3 = row 3 in every case: True

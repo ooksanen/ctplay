@@ -1,0 +1,6 @@
+stock, Shift+Record off (reference) [('4+5+0ms', ['s4/micro5']), ('8+5+3ms', ['s8/micro5']), ('12+5+6ms', ['s13/micro0']), ('16+5+8ms', ['s17/micro0']), ('20+2+0ms', ['s20/micro2'])]
+   pattern: s4:v96/m100000/p7 s8:v96/m100000/p7 s13:v96/m000001/p7 s17:v96/m000001/p7 s20:v96/m000100/p7
+patched cave + override [('4+5+0ms', ['s4/micro5']), ('8+5+3ms', ['s8/micro5']), ('12+5+6ms', ['s13/micro0']), ('16+5+8ms', ['s17/micro0']), ('20+2+0ms', ['s20/micro2'])]
+   pattern: s4:v96/m100000/p7 s8:v96/m100000/p7 s13:v96/m000001/p7 s17:v96/m000001/p7 s20:v96/m000100/p7
+no patch, rewrite 0 every ms [('4+5+0ms', ['s4/micro5']), ('8+5+3ms', ['s8/micro5']), ('12+5+6ms', ['s13/micro1']), ('16+5+8ms', ['s17/micro1']), ('20+2+0ms', ['s20/micro2'])]
+   pattern: s4:v96/m100000/p7 s8:v96/m100000/p7 s13:v96/m000010/p7 s17:v96/m000010/p7 s20:v96/m000100/p7

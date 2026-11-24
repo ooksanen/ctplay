@@ -1,0 +1,475 @@
+<!doctype html>
+<!--
+CTPlay uploader: the public page (bring your own firmware). Written by playbuild/uploader.py (write_public) from
+playbuild/public_uploader.html. Based on CIRCUIT-HACKS-RC's uploader by Ghillermo (tools/make_rc_uploader.py):
+
+MIT License
+
+Copyright (c) 2026 Ghillermo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CTPlay uploader</title>
+<style>
+  :root { --bg:#111317; --panel:#1a1d23; --line:#2b2f38; --ink:#e8e9ec; --dim:#9aa0ab; --ok:#7ee787; --warn:#ffb86b; --bad:#ff7b72; --acc:#79c0ff; }
+  * { box-sizing:border-box; }
+  [hidden] { display:none !important; }
+  body { margin:0; padding:24px 16px 64px; background:var(--bg); color:var(--ink); font:15px/1.55 system-ui,"Segoe UI",sans-serif; }
+  main { max-width:760px; margin:0 auto; }
+  h1 { font-size:1.4rem; margin:0 0 4px; }
+  .sub { color:var(--dim); margin:6px 0; }
+  section { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-bottom:12px; }
+  h2 { font-size:.8rem; letter-spacing:.08em; text-transform:uppercase; color:var(--dim); margin:0 0 10px; }
+  button { font:inherit; font-weight:600; background:var(--acc); color:#0b0d10; border:0; border-radius:7px; padding:8px 14px; cursor:pointer; }
+  button:disabled { background:#363b45; color:#7c838f; cursor:not-allowed; }
+  select, input[type=file] { font:inherit; color:var(--ink); background:#0f1114; border:1px solid var(--line); border-radius:7px; padding:6px; width:100%; }
+  .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .tick { display:flex; gap:8px; align-items:flex-start; margin-top:10px; }
+  .tick input { margin-top:5px; }
+  .mono { font-family:ui-monospace,Consolas,monospace; font-size:.82rem; word-break:break-all; }
+  .ok { color:var(--ok); } .bad { color:var(--bad); } .warn { color:var(--warn); }
+  #log { height:200px; overflow:auto; background:#0b0d10; border:1px solid var(--line); border-radius:7px; padding:8px; white-space:pre-wrap; }
+  progress { width:100%; height:14px; }
+  ol, ul { margin:0; padding-left:20px; } a { color:var(--acc); }
+  .note { border-left:4px solid var(--warn); padding-left:10px; }
+  footer { color:var(--dim); font-size:.85rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>CTPlay uploader</h1>
+  <p class="sub">This page turns the official Circuit Tracks firmware into CTPlay and sends it to your Circuit Tracks.
+    It all happens in your browser. No Novation code is included: your own firmware file is changed on your computer,
+    for a device you own.</p>
+
+  <section>
+    <h2>Before you start</h2>
+    <ul>
+      <li class="note"><b>Back up.</b> Save your projects and samples with Novation Components. Copy the microSD card to
+        your computer.</li>
+      <li>Use desktop Chrome or Edge. Other browsers can't send firmware.</li>
+      <li>Close Components, any DAW and other MIDI pages. On Windows only one app can use a MIDI port, and Chrome keeps
+        a tab's port until you close the tab.</li>
+      <li>Use this page only on a Circuit Tracks you own.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>1 · Get the official firmware</h2>
+    <p>Download <b>Circuit Tracks 1.2.1 (build 4486)</b> from Novation:
+      <a href="https://components.novationmusic.com/api/v2/firmwares/168/file" target="_blank" rel="noopener">circuittracks-firmware-4486.syx</a>.
+      This is Novation's own download, the one Components uses. If the link stops working, use a copy you kept.</p>
+    <p>Then pick the file here. A <code>.syx</code> file or a <code>.bin</code> image both work. The file stays on your
+      computer.</p>
+    <input type="file" id="file" accept=".syx,.bin">
+    <div id="fileInfo" style="margin-top:8px"></div>
+  </section>
+
+  <section>
+    <h2>2 · Choose what to install</h2>
+    <select id="ver"></select>
+    <p id="verDesc" class="sub"></p>
+    <div id="verInfo"></div>
+  </section>
+
+  <section>
+    <h2>3 · Connect</h2>
+    <p>Connect the Circuit Tracks with USB and switch it on as usual. Press Allow MIDI, then Identify the device: the
+      page learns which build is installed.</p>
+    <p>Then put it in bootloader mode: switch it off, hold <b>Scales + Preset + Note</b> and switch it on. Press Identify
+      the device again.</p>
+    <div class="row"><button id="btnMidi">Allow MIDI</button><span id="midiState" class="warn"></span></div>
+    <p class="sub">Output to the Circuit Tracks</p><select id="outSel"></select>
+    <p class="sub">Input from the Circuit Tracks</p><select id="inSel"></select>
+    <div class="row" style="margin-top:10px"><button id="btnId" disabled>Identify the device</button><span id="idState"></span></div>
+    <div id="ctplayNote" style="margin-top:8px"></div>
+    <label class="tick"><input type="checkbox" id="running"><span>I know what I'm doing: send to the running firmware.</span></label>
+    <p class="sub">Without this box the page sends only in bootloader mode. A send to the running firmware once
+      reported success while the device kept its old firmware.</p>
+  </section>
+
+  <section>
+    <h2>4 · Send</h2>
+    <label class="tick"><input type="checkbox" id="backup"><span>I have backed up my projects and my SD card.</span></label>
+    <label class="tick" id="riskRow"><input type="checkbox" id="risk"><span>I understand that CTPlay is unofficial firmware and I install it at my own risk. If something goes wrong, my Circuit Tracks may need the recovery steps below, and Novation does not support CTPlay.</span></label>
+    <div class="row" style="margin-top:12px"><button id="btnSend" disabled>Send</button><button id="btnAbort" disabled>Abort</button></div>
+    <p id="sendWhy" class="sub"></p>
+    <p id="phase"></p>
+    <progress id="prog" value="0" max="100"></progress>
+    <p class="sub">When the device asks, press <b>Play</b> on the Circuit Tracks. Once it has received everything, it
+      restarts. It installs the file only if it is a different version from the one installed. Don't unplug it until it
+      has started again.</p>
+  </section>
+
+  <section>
+    <h2>If it goes wrong</h2>
+    <ul>
+      <li>A failed or aborted send changes nothing. The Circuit Tracks keeps its old firmware.</li>
+      <li>If the Circuit Tracks doesn't start:
+        <ol>
+          <li>Unplug it.</li>
+          <li>Hold the power button for 15–30 s.</li>
+          <li>Hold <b>Scales + Preset + Note</b> and switch it on. This is bootloader mode.</li>
+          <li>On this page, choose <b>Official 1.2.1</b> and send it.</li>
+        </ol></li>
+      <li>More in the guide: <a href="__GUIDE__#going-back-to-the-official-firmware">Going back to the official firmware</a>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Log</h2>
+    <div id="log" class="mono"></div>
+  </section>
+
+  <footer>
+    <p>CTPlay is not affiliated with Novation. Circuit Tracks, Components and Novation are trademarks of Focusrite Audio Engineering Ltd.</p>
+    <p>This page holds no Novation code: only CTPlay's own bytes, places in your file and SHA-256 hashes.</p>
+    <p>MIT licence: based on CIRCUIT-HACKS-RC's uploader by Ghillermo. Copyright (c) 2026 Ghillermo.</p>
+  </footer>
+</main>
+<script>
+"use strict";
+// ---------- the core: playbuild/uploader_core.js (decode, patch, encode, checks, the Send gate)
+__CORE__
+// ---------- the page
+const RELEASES = __RELEASES__;
+const STOCK = __STOCK__;
+const OFFICIAL = "official";
+const NO_MIDI = "This browser has no Web MIDI with SysEx. Use desktop Chrome or Edge.";
+const UNKNOWN_BUILD = "The page doesn't know which build is installed. If it is already this version, the Circuit Tracks keeps it unchanged. To check, Identify the device while it runs normally.";
+const RECEIVED = "The Circuit Tracks received the file and restarts. It installs the file only if it is a different version from the one installed. When it runs normally again, press Allow MIDI and Identify the device to check.";
+const NO_CTPLAY_AFTER_OFFICIAL = "No CTPlay answered: the official firmware or another firmware is running.";
+const PORT_BUSY = "Close Components, any DAW and other MIDI pages, then press Allow MIDI again.";
+const openFailed = e => `Could not open the port: ${String(e.message).replace(/\.$/, "")}. ${PORT_BUSY}`;
+const $ = id => document.getElementById(id);
+const hx = a => Array.from(a, b => b.toString(16).padStart(2, "0")).join(" ");
+const log = (m, cls) => { const d = document.createElement("div"); if (cls) d.className = cls;
+  d.textContent = new Date().toLocaleTimeString() + "  " + m; $("log").appendChild(d); $("log").scrollTop = 1e9; };
+const say = (id, text, cls) => { $(id).textContent = text; $(id).className = cls || ""; };
+async function sha256(u8) { return hx(new Uint8Array(await crypto.subtle.digest("SHA-256", u8))).replace(/ /g, ""); }
+
+let midi = null, xfer = null, idPending = null;
+let file = null;          // the checked official file: { name, u8, image }
+let packets = null;       // the chosen build's SysEx messages, every hash checked
+let mode = null;          // "bootloader" | "firmware" from Identify; null = not identified since the last connect
+let installed = null;     // the installed CTPlay's marker from its link hello; "" = no CTPlay reply; null = not known
+let sent = null;          // after the device's "received": { marker ("" = Official), name, before (installed then), mode }
+let gen = 0;              // a newer file or choice makes an older check's result void
+
+// ---------- what to install
+for (const r of RELEASES) $("ver").add(new Option(r.name, r.marker));
+$("ver").add(new Option("Official 1.2.1 (Novation's firmware, unchanged)", OFFICIAL));
+const chosen = () => $("ver").value;
+const release = () => RELEASES.find(r => r.marker === chosen()) || null;
+function showChoice() {
+  const r = release();
+  $("verDesc").textContent = r ? r.description : "Your own file, unchanged: the way back to the official firmware.";
+}
+
+// ---------- the file
+$("file").onchange = async () => {
+  const my = ++gen; file = null; packets = null; say("fileInfo", ""); say("verInfo", ""); update();
+  const f = $("file").files[0]; if (!f) return;
+  const u8 = new Uint8Array(await f.arrayBuffer());
+  let sha = null;
+  try { sha = await sha256(imageOf(f.name, u8)); } catch (e) { sha = null; }
+  const r = checkFirmware(f.name, u8, sha);
+  if (my !== gen) return;
+  if (!r.ok) {
+    say("fileInfo", `${f.name}: ${r.message} Download the right file with the link above.`, "bad");
+    say("verInfo", "Pick the official firmware file first (step 1).");
+    log(`${f.name}: refused. ${r.message}`, "bad"); return;
+  }
+  file = { name: f.name, u8, image: r.image };
+  say("fileInfo", `${f.name}: ${r.message}`, "ok"); log(`${f.name}: ${r.message}`, "ok");
+  build();
+};
+
+// ---------- the build: patch, then check the image and the .syx against their published SHA-256
+function splitMessages(u8) {
+  const msgs = [];
+  for (let i = 0; i < u8.length;) {
+    const s = u8.indexOf(0xF0, i); if (s < 0) break;
+    const e = u8.indexOf(0xF7, s); if (e < 0) break;
+    msgs.push(u8.slice(s, e + 1)); i = e + 1;
+  }
+  return msgs;
+}
+async function build() {
+  const my = ++gen; packets = null; update();
+  if (!file) { say("verInfo", "Pick the official firmware file first (step 1)."); return; }
+  const r = release(), name = r ? r.name : "Official 1.2.1";
+  try {
+    let syx;
+    if (!r) {
+      syx = isSyxName(file.name) ? file.u8 : encodeSyx(file.image);
+      const hs = await sha256(syx);
+      if (hs !== STOCK.syx_sha256) throw new Error(`the official .syx has SHA-256 ${hs.slice(0, 16)}…, not the published one`);
+    } else {
+      const img = applyPatch(file.image, r.ops);
+      if (img.length !== r.size) throw new Error(`the image is ${img.length} bytes, not ${r.size}`);
+      const hi = await sha256(img);
+      if (hi !== r.image_sha256) throw new Error(`the image has SHA-256 ${hi.slice(0, 16)}…, not the published one`);
+      syx = encodeSyx(img);
+      const hs = await sha256(syx);
+      if (hs !== r.syx_sha256) throw new Error(`the .syx has SHA-256 ${hs.slice(0, 16)}…, not the published one`);
+    }
+    if (my !== gen) return;
+    packets = splitMessages(syx);
+    say("verInfo", `Ready: ${name}. ${r ? "Its image and .syx match" : "Its .syx matches"} the published SHA-256 (${packets.length} messages).`, "ok");
+    log(`${name}: built and checked.`, "ok");
+  } catch (e) {
+    if (my !== gen) return;
+    say("verInfo", `This page or your file is not what we expected; nothing was sent. (${e.message})`, "bad");
+    log(`${name}: ${e.message}`, "bad");
+  }
+  update();
+}
+$("ver").onchange = () => { showChoice(); ctplayCheck(); build(); };
+
+// ---------- MIDI (as the dev uploader, fork/ct_uploader.en.html)
+// Chrome can hang while closing or reloading the tab if MIDI ports are still open (above all after the Circuit Tracks
+// restarts and its ports vanish). Ports are opened only while in use, closed right after, and released before the page goes.
+function closePort(p) {
+  if (!p) return;
+  try { if (p.type === "input") p.onmidimessage = null; } catch (e) {}
+  if (p.state === "disconnected") return;
+  try { if (p.type === "output" && p.clear) p.clear(); } catch (e) {}
+  try { if (p.connection !== "closed") Promise.resolve(p.close()).catch(() => {}); } catch (e) {}
+}
+function openPorts(inp, out, ms = 6000) {
+  return Promise.race([Promise.all([inp.open(), out.open()]),
+    new Promise((_, rej) => setTimeout(() => rej(new Error("the port does not answer (is the device restarting?)")), ms))]);
+}
+function dropMidi(msg) {
+  releaseAll(); midi = null; mode = null;
+  for (const id of ["outSel", "inSel"]) $(id).innerHTML = "";
+  $("btnId").disabled = true; say("midiState", msg, "warn"); say("idState", ""); $("btnMidi").disabled = false; update();
+}
+function releaseAll() {
+  if (idPending) { clearTimeout(idPending.t); idPending.inp.removeEventListener("midimessage", idPending.h); idPending = null; }
+  if (xfer) { clearTimeout(xfer.timer); xfer.inp.removeEventListener("midimessage", onMsg); xfer = null; }
+  if (!midi) return;
+  midi.onstatechange = null;
+  for (const p of midi.inputs.values()) closePort(p);
+  for (const p of midi.outputs.values()) closePort(p);
+}
+window.addEventListener("pagehide", () => { try { releaseAll(); } catch (e) {} midi = null; });
+window.addEventListener("beforeunload", e => { if (xfer) { e.preventDefault(); e.returnValue = ""; return; } releaseAll(); });
+$("btnMidi").onclick = async () => {
+  if (midi) releaseAll();
+  try { midi = await navigator.requestMIDIAccess({ sysex: true }); }
+  catch (e) { say("midiState", "MIDI access was refused: " + e.message, "bad"); return; }
+  say("midiState", "MIDI access granted.", "ok");
+  log(`MIDI: ${midi.inputs.size} inputs, ${midi.outputs.size} outputs: ` + [...midi.inputs.values(), ...midi.outputs.values()].map(p => `"${p.name}"`).join(", "));
+  midi.onstatechange = onState; fillPorts(); $("btnId").disabled = false; update();
+};
+let portsTimer = null;
+function onState(ev) {
+  const p = ev.port;
+  log(`MIDI: ${p.type} "${p.name}" ${p.state} / ${p.connection}`);
+  if (p.state === "disconnected") {
+    if (xfer && (p === xfer.out || p === xfer.inp)) { finish("The Circuit Tracks port went away (did it restart or get unplugged?).", "warn"); dropMidi("The device is restarting. When it has started, press Allow MIDI."); return; }
+    if (idPending && (p === idPending.out || p === idPending.inp)) idDone("The device went away.", "bad");
+    closePort(p);
+    if (/circuit tracks/i.test(p.name || "")) { dropMidi("The Circuit Tracks was unplugged or restarted. When it is ready, press Allow MIDI."); return; }
+  }
+  clearTimeout(portsTimer); portsTimer = setTimeout(() => { if (midi) fillPorts(); }, 400);
+}
+function score(name) { if (!/circuit tracks/i.test(name)) return -1; if (/midi ?[23]|midiin2|midiout2|midiin3|midiout3|din|daw/i.test(name)) return 0; return 2; }
+// A selection that changed under the user (its port went away) is a port nobody identified: forget the mode,
+// as a change in the list does. The installed marker stays (the restart into bootloader mode drops the ports).
+function fillPorts() {
+  if (!midi) return;
+  for (const [sel, map] of [[$("outSel"), midi.outputs], [$("inSel"), midi.inputs]]) {
+    const prev = sel.value; sel.innerHTML = "";
+    const ports = [...map.values()].sort((a, b) => score(b.name) - score(a.name));
+    for (const p of ports) sel.add(new Option(p.name + (score(p.name) === 2 ? "  ← recommended" : ""), p.id));
+    if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
+    if (sel.value !== prev) portChanged();
+  }
+  update();
+}
+const outPort = () => midi && midi.outputs.get($("outSel").value);
+const inPort = () => midi && midi.inputs.get($("inSel").value);
+function portChanged() { mode = null; say("idState", ""); }
+$("outSel").onchange = $("inSel").onchange = () => { portChanged(); update(); };
+
+// ---------- Identify: stock's identity reply gives the mode; in firmware mode the CTPlay link's hello gives the build
+function idDone(msg, cls) {
+  if (!idPending) return; const { t, inp, out, h } = idPending; idPending = null;
+  clearTimeout(t); inp.removeEventListener("midimessage", h); closePort(inp); closePort(out);
+  if (msg) say("idState", msg, cls);
+  update();
+}
+$("btnId").onclick = () => {
+  const out = outPort(), inp = inPort(); if (!out || !inp || idPending || xfer) return;
+  mode = null; say("idState", "Waiting for a reply…");
+  function h(ev) { const d = ev.data, id = parseIdentity(d);
+    if (id) {
+      log("Identity: " + hx(d));
+      if (!id.tracks || !id.mode) { idDone(`This device is not a Circuit Tracks this page knows (reply ${hx(d.slice(5, 12))}).`, "bad"); return; }
+      mode = id.mode;
+      if (mode === "bootloader") idDone(`Circuit Tracks in bootloader mode (build ${id.build}).`, "ok");
+      else ctplayHello(`Circuit Tracks running its firmware (build ${id.build}).`);
+    } }
+  idPending = { inp, out, h, t: setTimeout(() => idDone("No reply. Check the ports and the cable.", "bad"), 2000) };
+  inp.addEventListener("midimessage", h);
+  update();
+  openPorts(inp, out).then(() => { if (idPending && idPending.h === h) out.send([0xF0, 0x7E, 0x7F, 0x06, 0x01, 0xF7]); })
+    .catch(e => idDone(openFailed(e), "bad"));
+};
+// After stock's identity reply: the link's hello (F0 7D 53 4C 10 F7 -> 50, proto, 6-byte marker, ...; PL12 on).
+// The marker stays known through a restart into bootloader mode, so the same-version warning still shows there.
+function ctplayHello(msg) {
+  const p = idPending; if (!p) return;
+  const done = (m, text) => { installed = m; idDone(`${msg} ${text}`, "ok"); ctplayCheck(); afterSend(m); };
+  clearTimeout(p.t); p.inp.removeEventListener("midimessage", p.h);
+  p.h = ev => { const d = ev.data;
+    if (d.length >= 16 && d[d.length - 1] === 0xF7 && d[0] === 0xF0 && d[1] === 0x7D && d[2] === 0x53 && d[3] === 0x4C && d[4] === 0x50) {
+      const m = String.fromCharCode(...d.slice(6, 12)).trim();
+      log("CTPlay hello: " + hx(d)); done(m, `CTPlay ${m} is installed.`);
+    } };
+  p.t = setTimeout(() => done("", "No CTPlay reply: the official firmware or another build."), 1000);
+  p.inp.addEventListener("midimessage", p.h);
+  p.out.send([0xF0, 0x7D, 0x53, 0x4C, 0x10, 0xF7]);
+}
+function ctplayCheck() {
+  const r = release(), same = !!r && r.marker === installed;
+  if (same) say("ctplayNote", `${r.marker} is already installed. The Circuit Tracks would take this file and then keep ${r.marker} without installing it again (same version).`, "warn");
+  else say("ctplayNote", r && installed === null ? UNKNOWN_BUILD : "", "sub");
+}
+// The first Identify in firmware mode after a send: what the page can know from the link's hello (stock has none).
+function afterSend(m) {
+  if (!sent) return;
+  const s = sent, now = m ? `CTPlay ${m}` : "a firmware without CTPlay";
+  let text, cls = "bad";
+  sent = null;
+  if (!s.marker) {
+    if (m) text = `The Circuit Tracks still runs CTPlay ${m}: the firmware was not changed.`;
+    else { text = NO_CTPLAY_AFTER_OFFICIAL; cls = "ok"; }
+  } else if (m !== s.marker) text = `The Circuit Tracks still runs ${now}: the firmware was not changed.`;
+  else if (s.before === s.marker) text = `The Circuit Tracks still runs CTPlay ${m}: that version was installed before, so the firmware was not changed.`;
+  else if (s.before === null) { text = `CTPlay ${m} is running. The page didn't know the build before the send: if it was ${m} already, the old copy was kept.`; cls = "warn"; }
+  else { text = `Installed: ${s.name}.`; cls = "ok"; }
+  say("phase", text, cls); log(text, cls);
+}
+
+// ---------- the Send gate: canSend() alone decides; the hint only says what is missing
+function state() {
+  return { fileOk: !!file, built: !!packets, port: !!(outPort() && inPort()), mode, runningOverride: $("running").checked,
+           backup: $("backup").checked, risk: $("risk").checked, official: chosen() === OFFICIAL, busy: !!xfer || !!idPending };
+}
+function missing(s) {
+  const m = [];
+  if (!s.fileOk) m.push("the official firmware file (step 1)");
+  else if (!s.built) m.push("a checked build (step 2)");
+  if (!s.port) m.push("MIDI ports (step 3)");
+  else if (!s.mode) m.push("Identify the device (step 3)");
+  else if (s.mode === "firmware" && !s.runningOverride) m.push("bootloader mode, or the box in step 3");
+  if (!s.backup) m.push("the backup box");
+  if (!s.official && !s.risk) m.push("the risk box");
+  return m;
+}
+function update() {
+  const s = state(), ok = canSend(s), m = missing(s);
+  $("btnSend").disabled = !ok;
+  $("riskRow").hidden = s.official;
+  for (const id of ["file", "ver", "running", "backup", "risk"]) $(id).disabled = !!xfer;
+  $("sendWhy").textContent = ok || s.busy || !m.length ? "" : "Send needs: " + m.join(", ") + ".";
+}
+for (const id of ["running", "backup", "risk"]) $(id).onchange = update;
+
+// ---------- the transfer (pull protocol, as Components does)
+const STATUS = { 0: "update starting", 1: "waiting for confirmation: press Play on the Circuit Tracks", 16: "cancelled on the device",
+  17: "the confirmation timed out", 124: "FAILED (composition not viable)", 125: "received (composition not viable)", 126: "FAILED (CRC)", 127: "SUCCESS" };
+$("btnSend").onclick = () => {
+  if (!canSend(state())) return;
+  const r = release(), name = r ? r.name : "Official 1.2.1";
+  if (!confirm(`Send ${name} to ${$("outSel").selectedOptions[0].textContent}?\n\nDon't unplug the Circuit Tracks until it has finished.`)) return;
+  start({ marker: r ? r.marker : "", name, before: installed, mode });
+};
+$("btnAbort").onclick = () => finish("Aborted. The Circuit Tracks drops the unfinished update and keeps its old firmware.", "warn");
+function start(what) {
+  const out = outPort(), inp = inPort(), name = what.name; if (!out || !inp || xfer) return;
+  xfer = { out, inp, next: 0, last: -1, timer: null, what };
+  // The running firmware asks for Play on the device before it takes a block, without sending status 1 (device run
+  // 2026-11-21); bootloader mode asks for nothing. So the hint shows from the start, not on status 1.
+  $("btnAbort").disabled = false;
+  say("phase", what.mode === "firmware" ? "Starting… Press Play on the Circuit Tracks when it asks." : "Starting…", what.mode === "firmware" ? "warn" : "");
+  update();
+  inp.addEventListener("midimessage", onMsg);
+  const me = xfer;
+  openPorts(inp, out).then(() => {
+    if (xfer !== me) return;
+    log(`Sending ${name}: ${packets.length} messages to ${out.name}`);
+    sendNext();                                                            // INIT
+    if (packets[xfer.next] && packets[xfer.next][5] === 0x7C) sendNext();  // HEADER right after INIT
+    arm(25000);
+  }).catch(e => finish(openFailed(e), "bad"));
+}
+function arm(ms) { clearTimeout(xfer.timer); xfer.timer = setTimeout(() => finish("No answer from the device. Nothing more was sent.", "bad"), ms); }
+function sendNext() {
+  const p = packets[xfer.next++]; xfer.out.send(p);
+  $("prog").value = Math.round(100 * xfer.next / packets.length);
+  // Every block is sent: from here the device may install it, so Abort turns grey.
+  if (xfer.next === packets.length) { $("btnAbort").disabled = true; say("phase", "Everything sent. Waiting for the device's report…"); arm(30000); }
+}
+function onMsg(ev) {
+  const d = ev.data; if (!xfer || d[0] !== 0xF0) return;
+  for (let k = 0; k < 5; k++) if (d[k] !== NOVATION_HEADER[k]) return;
+  if (d[5] === 0x72) {
+    let n = null;
+    if (d.length === 10) n = d[6] + (d[7] << 7) + (d[8] << 14);
+    else if (d.length === 15) { const s = d.slice(6, 14); n = s[7] + (s[6] << 4) + (s[5] << 8); }
+    if (n === null) return;
+    if ((n > xfer.last || n === 0) && xfer.next < packets.length) { xfer.last = n; say("phase", "Sending…"); sendNext(); if (xfer.next < packets.length) arm(10000); }
+  } else if (d[5] === 0x73 && d.length === 10) {
+    const c = d[6]; log(`← status ${c}: ${STATUS[c] || "?"} (after ${xfer.next} of ${packets.length} messages)`, c === 127 ? "ok" : (c >= 124 || c === 16 || c === 17) ? "bad" : "");
+    if (c === 1) { say("phase", "Press Play on the Circuit Tracks to confirm.", "warn"); arm(25000); }
+    else if (c === 0) arm(25000);
+    else if (c === 127) {
+      sent = xfer.what; installed = null; ctplayCheck();
+      finish(RECEIVED + (sent.mode === "firmware" ? " It was sent to the running firmware: check it with Identify." : ""), "ok");
+      dropMidi("The device is restarting. When it has started, press Allow MIDI.");
+    }
+    else if (c === 125) arm(30000);
+    else if (c === 16 || c === 17 || c === 124 || c === 126) finish("The device refused the update. Its firmware is unchanged.", "bad");
+  } else log("← device (not known to the page): " + hx(d));   // anything else the device sends, for the record
+}
+function finish(msg, cls) {
+  if (!xfer) return; const { inp, out } = xfer;
+  clearTimeout(xfer.timer); inp.removeEventListener("midimessage", onMsg); xfer = null;
+  closePort(inp); closePort(out);
+  say("phase", msg, cls); log(msg, cls);
+  $("btnAbort").disabled = true; update();
+}
+
+// ---------- start
+showChoice(); ctplayCheck(); say("verInfo", "Pick the official firmware file first (step 1).");
+if (!navigator.requestMIDIAccess) { say("midiState", NO_MIDI, "bad"); $("btnMidi").disabled = true; }
+else say("midiState", "No MIDI access yet.", "warn");
+update();
+</script>
+</body>
+</html>

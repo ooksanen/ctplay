@@ -1,0 +1,5 @@
+# Published: rebuild PL07 from git tag PL07 (features/chord changed after it); at a later commit this
+# file builds the current sources under PL07's marker, which is NOT the published PL07.
+marker = "PL07"
+description = "CTPlay chord engine with strum, bass modes, voice room and an arpeggiator on per-track play pages (Shift + a track's button; Chords, Arp), a quick view on Shift in the Note view and arpeggio notes that record at their exact length."
+features = ["chord"]

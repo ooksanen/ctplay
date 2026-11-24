@@ -1,0 +1,20 @@
+# Set up by tools/setup_dev.py and setup_toolchain.py: fetched to your machine, never committed. No trailing slash on
+# the first four: a git worktree links them in, and a link is not a folder.
+/.venv
+/ext
+/re
+/ctre
+re/
+ctre
+ext/
+build/
+__pycache__/
+.pytest_cache/
+
+# Novation's firmware: yours, downloaded from Novation. Never in this repository (tools/patch_official.py builds a
+# patched one from yours).
+/stock/*.bin
+/stock/*.syx
+firmware/*/*.bin
+firmware/*/*.syx
+firmware/*/photos/

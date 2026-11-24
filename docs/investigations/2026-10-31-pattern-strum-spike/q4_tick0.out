@@ -1,0 +1,2 @@
+Play #1: [('seq_start', 'ui', 0), ('seq_play_step', 'main', 0, 0, 0), ('seq_note_on', 'main', 0, 48), ('seq_note_on', 'main', 0, 52), ('seq_note_on', 'main', 0, 55), ('seq_play_step', 'main', 27, 0, 1), ('seq_play_step', 'main', 54, 0, 2)]
+Play #2: [('seq_start', 'ui', 80), ('seq_play_step', 'main', 80, 0, 0), ('seq_note_on', 'main', 80, 48), ('seq_note_on', 'main', 80, 52), ('seq_note_on', 'main', 80, 55), ('seq_play_step', 'main', 107, 0, 1), ('seq_play_step', 'main', 134, 0, 2)]

@@ -1,0 +1,5 @@
+# Published: rebuild PL19 from git tag PL19 (the chord sources changed after it); at a later commit this file builds
+# the current sources under PL19's marker, which is NOT the published PL19.
+marker = "PL19"
+description = "CTPlay PL18 + pattern strum (Keys page pads 3-4): played (strummed on playback) or written (a roll in the pattern)."
+features = ["chord", "countin", "saved", "link", "recfix"]

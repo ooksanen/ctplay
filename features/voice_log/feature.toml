@@ -1,0 +1,28 @@
+name = "voice_log"
+description = "Diagnostic (PL03D): records how stock picks each synth voice (spare-time reading, ARM or DSP path, voice, the synth's voices before) and answers a PC page over USB SysEx."
+sources = ["voice_log.c"]
+init = "vl_init"
+
+[budget]
+ram = 136
+stack = 96                       # vl_on_sysex 72 B (the reply struct and put()); UI / Main >= 1.5 KB free (SL00D)
+
+[[hook]]
+point = "voice_headroom"
+handler = "vl_on_headroom"
+priority = 50
+
+[[hook]]
+point = "voice_picked"
+handler = "vl_on_picked"
+priority = 50
+
+[[hook]]
+point = "main_ms"
+handler = "vl_on_ms"
+priority = 40                    # before chord (50): a note strummed in this millisecond gets its time
+
+[[hook]]
+point = "sysex_in"
+handler = "vl_on_sysex"
+priority = 50

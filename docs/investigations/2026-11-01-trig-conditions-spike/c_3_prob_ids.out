@@ -1,0 +1,56 @@
+track 0: active 0x20040db8 mode 5 track_of 0 [ctrl+0x152] 5 bottom view 0x20042890 class 0x805acd4 top class 0x805adb4; = container slot 0x20040e20: True
+   LED buffer [[view+4]] = 0x200428ac (after the row-3 press): 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 stopped      : 6c 6d 6e 6f 70 71 72 73 00 00 00 00 00 00 00 00
+   led_task pads 16-31 shift        : 6c 6d 6e 6f 70 71 72 73 00 00 00 00 00 00 00 00
+   led_task pads 16-31 row3 pressed : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 0x20039DE0=1 : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 playing      : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+track 1: active 0x20040db8 mode 5 track_of 1 [ctrl+0x152] 14 bottom view 0x200428cc class 0x805acd4 top class 0x805adb4; = container slot 0x20040e24: True
+   LED buffer [[view+4]] = 0x200428e8 (after the row-3 press): 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 stopped      : 6c 6d 6e 6f 70 71 72 73 00 00 00 00 00 00 00 00
+   led_task pads 16-31 shift        : 6c 6d 6e 6f 70 71 72 73 00 00 00 00 00 00 00 00
+   led_task pads 16-31 row3 pressed : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 0x20039DE0=1 : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 playing      : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+track 2: active 0x20040db8 mode 5 track_of 2 [ctrl+0x152] 23 bottom view 0x20042908 class 0x805acd4 top class 0x805adb4; = container slot 0x20040e28: True
+   LED buffer [[view+4]] = 0x20042924 (after the row-3 press): 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 stopped      : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 shift        : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 row3 pressed : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 0x20039DE0=1 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 playing      : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+track 3: active 0x20040db8 mode 5 track_of 3 [ctrl+0x152] 32 bottom view 0x20042944 class 0x805acd4 top class 0x805adb4; = container slot 0x20040e2c: True
+   LED buffer [[view+4]] = 0x20042960 (after the row-3 press): 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 stopped      : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 shift        : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 row3 pressed : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 0x20039DE0=1 : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 playing      : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+track 4: active 0x20040db8 mode 5 track_of 4 [ctrl+0x152] 41 bottom view 0x200438dc class 0x805ab14 top class 0x805ad0c; = container slot 0x20040e98: True
+   LED buffer [[view+4]] = 0x200438f8 (after the row-3 press): 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 stopped      : 6c 6d 6e 6f 70 71 72 73 00 00 00 00 00 00 00 00
+   led_task pads 16-31 shift        : 6c 6d 6e 6f 70 71 72 73 00 00 00 00 00 00 00 00
+   led_task pads 16-31 row3 pressed : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 0x20039DE0=1 : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 playing      : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+track 5: active 0x20040db8 mode 5 track_of 5 [ctrl+0x152] 49 bottom view 0x20043918 class 0x805ab14 top class 0x805ad0c; = container slot 0x20040e9c: True
+   LED buffer [[view+4]] = 0x20043934 (after the row-3 press): 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 stopped      : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 shift        : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 row3 pressed : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 0x20039DE0=1 : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 playing      : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+track 6: active 0x20040db8 mode 5 track_of 6 [ctrl+0x152] 57 bottom view 0x20043954 class 0x805ab14 top class 0x805ad0c; = container slot 0x20040ea0: True
+   LED buffer [[view+4]] = 0x20043970 (after the row-3 press): 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 stopped      : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 shift        : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 row3 pressed : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 0x20039DE0=1 : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 playing      : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+track 7: active 0x20040db8 mode 5 track_of 7 [ctrl+0x152] 65 bottom view 0x20043990 class 0x805ab14 top class 0x805ad0c; = container slot 0x20040ea4: True
+   LED buffer [[view+4]] = 0x200439ac (after the row-3 press): 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 stopped      : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 shift        : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 row3 pressed : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 0x20039DE0=1 : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00
+   led_task pads 16-31 playing      : 6c 6d 6e 6f 00 00 00 00 00 00 00 00 00 00 00 00

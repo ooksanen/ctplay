@@ -1,0 +1,168 @@
+# CTPlay's saved block layout (playbuild/lock.py; spec docs/specs/2026-10-17-saved-settings-design.md).
+# Committed. A field keeps its offset forever: new fields are appended by `python -m playbuild VERSION --update-lock`.
+# Retire a field by adding `tombstone = true` and `retired_in = <layout_id>`; reusing it needs layout_id + 1.
+layout_id = 1
+
+[[field]]
+feature = "chord"
+symbol = "chord_settings"
+offset = 0
+size = 4
+
+[[field]]
+feature = "chord"
+symbol = "chord_rootless"
+offset = 4
+size = 1
+
+[[field]]
+feature = "chord"
+symbol = "chord_strum"
+offset = 5
+size = 1
+
+[[field]]
+feature = "chord"
+symbol = "chord_strum_down"
+offset = 6
+size = 1
+
+[[field]]
+feature = "chord"
+symbol = "chord_mono"
+offset = 7
+size = 1
+
+[[field]]
+feature = "chord"
+symbol = "chord_arp"
+offset = 8
+size = 8
+
+[[field]]
+feature = "chord"
+symbol = "page_last"
+offset = 16
+size = 4
+tombstone = true
+retired_in = 1
+
+[[field]]
+feature = "chord"
+symbol = "page_quick"
+offset = 20
+size = 4
+
+[[field]]
+feature = "countin"
+symbol = "ci_on"
+offset = 24
+size = 1
+
+[[field]]
+feature = "chord"
+symbol = "euclid_cfg"
+offset = 25
+size = 8
+
+[[field]]
+feature = "chord"
+symbol = "page_slot"
+offset = 33
+size = 4
+
+[[field]]
+feature = "chord"
+symbol = "melody_cfg"
+offset = 37
+size = 8
+
+[[field]]
+feature = "chord"
+symbol = "melody_seed"
+offset = 45
+size = 8
+
+[[field]]
+feature = "chord"
+symbol = "rhythm_cfg"
+offset = 53
+size = 12
+
+[[field]]
+feature = "chord"
+symbol = "melody_vary"
+offset = 65
+size = 4
+
+[[field]]
+feature = "chord"
+symbol = "page_sub"
+offset = 69
+size = 4
+
+[[field]]
+feature = "chord"
+symbol = "euclid_last"
+offset = 73
+size = 4
+
+[[field]]
+feature = "chord"
+symbol = "chord_voice"
+offset = 77
+size = 4
+
+[[field]]
+feature = "chord"
+symbol = "repeat_cfg"
+offset = 81
+size = 2
+
+[[field]]
+feature = "chord"
+symbol = "drum_page"
+offset = 83
+size = 4
+
+[[field]]
+feature = "chord"
+symbol = "drum_euclid"
+offset = 87
+size = 8
+
+[[field]]
+feature = "chord"
+symbol = "drum_rhythm"
+offset = 95
+size = 12
+
+[[field]]
+feature = "chord"
+symbol = "drum_accent"
+offset = 107
+size = 4
+
+[[field]]
+feature = "chord"
+symbol = "drum_seed"
+offset = 111
+size = 4
+
+[[field]]
+feature = "chord"
+symbol = "chord_step"
+offset = 115
+size = 1
+
+[[field]]
+feature = "chord"
+symbol = "chord_pstrum"
+offset = 116
+size = 1
+
+[[field]]
+feature = "chord"
+symbol = "trig_mark"
+offset = 117
+size = 1

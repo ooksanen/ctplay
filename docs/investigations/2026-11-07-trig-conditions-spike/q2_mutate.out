@@ -1,0 +1,115 @@
+== check_mid on every span in the swap body (once per swap: after beq.w at 0x0803E78A, before the lanes loop)
+   0x0803e78e +4: 0199019a     PASS   ldr r1, [sp, #4]; ldr r2, [sp, #4]
+   0x0803e78e +6: 0199019addf8 no (6 displaced bytes do not end on an instruction boundary)  ldr r1, [sp, #4]; ldr r2, [sp, #4]; ldr.w r8, [sp, #4]
+   0x0803e790 +4: 019addf8     no (4 displaced bytes do not end on an instruction boundary)  ldr r2, [sp, #4]; ldr.w r8, [sp, #4]
+   0x0803e790 +6: 019addf80480 PASS   ldr r2, [sp, #4]; ldr.w r8, [sp, #4]
+   0x0803e792 +4: ddf80480     PASS   ldr.w r8, [sp, #4]
+   0x0803e792 +6: ddf80480019e PASS   ldr.w r8, [sp, #4]; ldr r6, [sp, #4]
+   0x0803e796 +4: 019e0198     PASS   ldr r6, [sp, #4]; ldr r0, [sp, #4]
+   0x0803e796 +6: 019e01981944 PASS   ldr r6, [sp, #4]; ldr r0, [sp, #4]; add r1, r3
+   0x0803e798 +4: 01981944     PASS   ldr r0, [sp, #4]; add r1, r3
+   0x0803e798 +6: 019819441a44 PASS   ldr r0, [sp, #4]; add r1, r3; add r2, r3
+   0x0803e79a +4: 19441a44     PASS   add r1, r3; add r2, r3
+   0x0803e79a +6: 19441a449844 PASS   add r1, r3; add r2, r3; add r8, r3
+   0x0803e79c +4: 1a449844     PASS   add r2, r3; add r8, r3
+   0x0803e79c +6: 1a449844375d PASS   add r2, r3; add r8, r3; ldrb r7, [r6, r4]
+   0x0803e79e +4: 9844375d     PASS   add r8, r3; ldrb r7, [r6, r4]
+   0x0803e79e +6: 9844375dc05c PASS   add r8, r3; ldrb r7, [r6, r4]; ldrb r0, [r0, r3]
+   0x0803e7a0 +4: 375dc05c     PASS   ldrb r7, [r6, r4]; ldrb r0, [r0, r3]
+   0x0803e7a0 +6: 375dc05c91f8 no (6 displaced bytes do not end on an instruction boundary)  ldrb r7, [r6, r4]; ldrb r0, [r0, r3]; ldrb.w r1, [r1, #0x60]
+   0x0803e7a2 +4: c05c91f8     no (4 displaced bytes do not end on an instruction boundary)  ldrb r0, [r0, r3]; ldrb.w r1, [r1, #0x60]
+   0x0803e7a2 +6: c05c91f86010 PASS   ldrb r0, [r0, r3]; ldrb.w r1, [r1, #0x60]
+   0x0803e7a4 +4: 91f86010     PASS   ldrb.w r1, [r1, #0x60]
+   0x0803e7a4 +6: 91f8601092f8 no (6 displaced bytes do not end on an instruction boundary)  ldrb.w r1, [r1, #0x60]; ldrb.w r2, [r2, #0x20]
+   0x0803e7a8 +4: 92f82020     PASS   ldrb.w r2, [r2, #0x20]
+   0x0803e7a8 +6: 92f8202098f8 no (6 displaced bytes do not end on an instruction boundary)  ldrb.w r2, [r2, #0x20]; ldrb.w r8, [r8, #0x40]
+   0x0803e7ac +4: 98f84080     PASS   ldrb.w r8, [r8, #0x40]
+   0x0803e7ac +6: 98f84080f754 PASS   ldrb.w r8, [r8, #0x40]; strb r7, [r6, r3]
+   0x0803e7b0 +4: f754ddf8     no (4 displaced bytes do not end on an instruction boundary)  strb r7, [r6, r3]; ldr.w lr, [sp, #4]
+   0x0803e7b0 +6: f754ddf804e0 PASS   strb r7, [r6, r3]; ldr.w lr, [sp, #4]
+   0x0803e7b2 +4: ddf804e0     PASS   ldr.w lr, [sp, #4]
+   0x0803e7b2 +6: ddf804e0019f PASS   ldr.w lr, [sp, #4]; ldr r7, [sp, #4]
+   0x0803e7b6 +4: 019fa644     PASS   ldr r7, [sp, #4]; add lr, r4
+   0x0803e7b6 +6: 019fa6449ef8 no (6 displaced bytes do not end on an instruction boundary)  ldr r7, [sp, #4]; add lr, r4; ldrb.w r6, [lr, #0x60]
+   0x0803e7b8 +4: a6449ef8     no (4 displaced bytes do not end on an instruction boundary)  add lr, r4; ldrb.w r6, [lr, #0x60]
+   0x0803e7b8 +6: a6449ef86060 PASS   add lr, r4; ldrb.w r6, [lr, #0x60]
+   0x0803e7ba +4: 9ef86060     PASS   ldrb.w r6, [lr, #0x60]
+   0x0803e7ba +6: 9ef860601f44 PASS   ldrb.w r6, [lr, #0x60]; add r7, r3
+   0x0803e7be +4: 1f4487f8     no (4 displaced bytes do not end on an instruction boundary)  add r7, r3; strb.w r6, [r7, #0x60]
+   0x0803e7be +6: 1f4487f86060 PASS   add r7, r3; strb.w r6, [r7, #0x60]
+   0x0803e7c0 +4: 87f86060     PASS   strb.w r6, [r7, #0x60]
+   0x0803e7c0 +6: 87f86060ddf8 no (6 displaced bytes do not end on an instruction boundary)  strb.w r6, [r7, #0x60]; ldr.w ip, [sp, #4]
+   0x0803e7c4 +4: ddf804c0     PASS   ldr.w ip, [sp, #4]
+   0x0803e7c4 +6: ddf804c0019f PASS   ldr.w ip, [sp, #4]; ldr r7, [sp, #4]
+   0x0803e7c8 +4: 019fa444     PASS   ldr r7, [sp, #4]; add ip, r4
+   0x0803e7c8 +6: 019fa4449cf8 no (6 displaced bytes do not end on an instruction boundary)  ldr r7, [sp, #4]; add ip, r4; ldrb.w r6, [ip, #0x20]
+   0x0803e7ca +4: a4449cf8     no (4 displaced bytes do not end on an instruction boundary)  add ip, r4; ldrb.w r6, [ip, #0x20]
+   0x0803e7ca +6: a4449cf82060 PASS   add ip, r4; ldrb.w r6, [ip, #0x20]
+   0x0803e7cc +4: 9cf82060     PASS   ldrb.w r6, [ip, #0x20]
+   0x0803e7cc +6: 9cf820601f44 PASS   ldrb.w r6, [ip, #0x20]; add r7, r3
+   0x0803e7d0 +4: 1f4487f8     no (4 displaced bytes do not end on an instruction boundary)  add r7, r3; strb.w r6, [r7, #0x20]
+   0x0803e7d0 +6: 1f4487f82060 PASS   add r7, r3; strb.w r6, [r7, #0x20]
+   0x0803e7d2 +4: 87f82060     PASS   strb.w r6, [r7, #0x20]
+   0x0803e7d2 +6: 87f82060ddf8 no (6 displaced bytes do not end on an instruction boundary)  strb.w r6, [r7, #0x20]; ldr.w ip, [sp, #4]
+   0x0803e7d6 +4: ddf804c0     PASS   ldr.w ip, [sp, #4]
+   0x0803e7d6 +6: ddf804c0019f PASS   ldr.w ip, [sp, #4]; ldr r7, [sp, #4]
+   0x0803e7da +4: 019fa444     PASS   ldr r7, [sp, #4]; add ip, r4
+   0x0803e7da +6: 019fa4449cf8 no (6 displaced bytes do not end on an instruction boundary)  ldr r7, [sp, #4]; add ip, r4; ldrb.w r6, [ip, #0x40]
+   0x0803e7dc +4: a4449cf8     no (4 displaced bytes do not end on an instruction boundary)  add ip, r4; ldrb.w r6, [ip, #0x40]
+   0x0803e7dc +6: a4449cf84060 PASS   add ip, r4; ldrb.w r6, [ip, #0x40]
+   0x0803e7de +4: 9cf84060     PASS   ldrb.w r6, [ip, #0x40]
+   0x0803e7de +6: 9cf840601f44 PASS   ldrb.w r6, [ip, #0x40]; add r7, r3
+   0x0803e7e2 +4: 1f4487f8     no (4 displaced bytes do not end on an instruction boundary)  add r7, r3; strb.w r6, [r7, #0x40]
+   0x0803e7e2 +6: 1f4487f84060 PASS   add r7, r3; strb.w r6, [r7, #0x40]
+   0x0803e7e4 +4: 87f84060     PASS   strb.w r6, [r7, #0x40]
+   0x0803e7e4 +6: 87f84060ddf8 no (6 displaced bytes do not end on an instruction boundary)  strb.w r6, [r7, #0x40]; ldr.w ip, [sp, #4]
+   0x0803e7e8 +4: ddf804c0     PASS   ldr.w ip, [sp, #4]
+   0x0803e7e8 +6: ddf804c00cf8 no (6 displaced bytes do not end on an instruction boundary)  ldr.w ip, [sp, #4]; strb.w r0, [ip, r4]
+   0x0803e7ec +4: 0cf80400     PASS   strb.w r0, [ip, r4]
+   0x0803e7ec +6: 0cf804000198 PASS   strb.w r0, [ip, r4]; ldr r0, [sp, #4]
+   0x0803e7f0 +4: 01982044     PASS   ldr r0, [sp, #4]; add r0, r4
+   0x0803e7f0 +6: 0198204480f8 no (6 displaced bytes do not end on an instruction boundary)  ldr r0, [sp, #4]; add r0, r4; strb.w r1, [r0, #0x60]
+   0x0803e7f2 +4: 204480f8     no (4 displaced bytes do not end on an instruction boundary)  add r0, r4; strb.w r1, [r0, #0x60]
+   0x0803e7f2 +6: 204480f86010 PASS   add r0, r4; strb.w r1, [r0, #0x60]
+   0x0803e7f4 +4: 80f86010     PASS   strb.w r1, [r0, #0x60]
+   0x0803e7f4 +6: 80f860100199 PASS   strb.w r1, [r0, #0x60]; ldr r1, [sp, #4]
+   0x0803e7f8 +4: 01992144     PASS   ldr r1, [sp, #4]; add r1, r4
+   0x0803e7f8 +6: 0199214481f8 no (6 displaced bytes do not end on an instruction boundary)  ldr r1, [sp, #4]; add r1, r4; strb.w r2, [r1, #0x20]
+   0x0803e7fa +4: 214481f8     no (4 displaced bytes do not end on an instruction boundary)  add r1, r4; strb.w r2, [r1, #0x20]
+   0x0803e7fa +6: 214481f82020 PASS   add r1, r4; strb.w r2, [r1, #0x20]
+   0x0803e7fc +4: 81f82020     PASS   strb.w r2, [r1, #0x20]
+   0x0803e7fc +6: 81f820200198 PASS   strb.w r2, [r1, #0x20]; ldr r0, [sp, #4]
+   0x0803e800 +4: 01980822     PASS   ldr r0, [sp, #4]; movs r2, #8
+   0x0803e800 +6: 019808222044 PASS   ldr r0, [sp, #4]; movs r2, #8; add r0, r4
+   0x0803e802 +4: 08222044     PASS   movs r2, #8; add r0, r4
+   0x0803e802 +6: 0822204480f8 no (6 displaced bytes do not end on an instruction boundary)  movs r2, #8; add r0, r4; strb.w r8, [r0, #0x40]
+   0x0803e804 +4: 204480f8     no (4 displaced bytes do not end on an instruction boundary)  add r0, r4; strb.w r8, [r0, #0x40]
+   0x0803e804 +6: 204480f84080 PASS   add r0, r4; strb.w r8, [r0, #0x40]
+   0x0803e806 +4: 80f84080     PASS   strb.w r8, [r0, #0x40]
+   0x0803e806 +6: 80f84080ddf8 no (6 displaced bytes do not end on an instruction boundary)  strb.w r8, [r0, #0x40]; ldr.w ip, [sp, #4]
+   0x0803e80a +4: ddf804c0     PASS   ldr.w ip, [sp, #4]
+   0x0803e80a +6: ddf804c00594 PASS   ldr.w ip, [sp, #4]; str r4, [sp, #0x14]
+   0x0803e80e +4: 05940493     PASS   str r4, [sp, #0x14]; str r3, [sp, #0x10]
+
+== emulation, handler at 0x0803e78e: r4 = step a, r3 = step b, r1 = r2 = pattern (displaced ldr r1 / r2, [sp, #4])
+   Mutate 1: swaps 30 (of 31 positions), handler calls 30 = swaps True; pattern in the handler = the shown pattern True; hits moved 9; every step's tuple (vel, prob, flip, micro, code) is one of before's: True
+   Mutate 2: swaps 26 (of 31 positions), handler calls 26 = swaps True; pattern in the handler = the shown pattern True; hits moved 9; every step's tuple (vel, prob, flip, micro, code) is one of before's: True
+   Mutate 3: swaps 26 (of 31 positions), handler calls 26 = swaps True; pattern in the handler = the shown pattern True; hits moved 8; every step's tuple (vel, prob, flip, micro, code) is one of before's: True
+   Mutate 4: swaps 26 (of 31 positions), handler calls 26 = swaps True; pattern in the handler = the shown pattern True; hits moved 8; every step's tuple (vel, prob, flip, micro, code) is one of before's: True
+   Mutate 5: swaps 27 (of 31 positions), handler calls 27 = swaps True; pattern in the handler = the shown pattern True; hits moved 9; every step's tuple (vel, prob, flip, micro, code) is one of before's: True
+   Mutate 6: swaps 29 (of 31 positions), handler calls 29 = swaps True; pattern in the handler = the shown pattern True; hits moved 9; every step's tuple (vel, prob, flip, micro, code) is one of before's: True
+   all consistent: True
+
+== emulation, handler at 0x0803e80a: r4 = step a, r3 = step b, ip = pattern (displaced ldr.w ip, [sp, #4])
+   Mutate 1: swaps 30 (of 31 positions), handler calls 30 = swaps True; pattern in the handler = the shown pattern True; hits moved 9; every step's tuple (vel, prob, flip, micro, code) is one of before's: True
+   Mutate 2: swaps 26 (of 31 positions), handler calls 26 = swaps True; pattern in the handler = the shown pattern True; hits moved 9; every step's tuple (vel, prob, flip, micro, code) is one of before's: True
+   Mutate 3: swaps 26 (of 31 positions), handler calls 26 = swaps True; pattern in the handler = the shown pattern True; hits moved 8; every step's tuple (vel, prob, flip, micro, code) is one of before's: True
+   Mutate 4: swaps 26 (of 31 positions), handler calls 26 = swaps True; pattern in the handler = the shown pattern True; hits moved 8; every step's tuple (vel, prob, flip, micro, code) is one of before's: True
+   Mutate 5: swaps 27 (of 31 positions), handler calls 27 = swaps True; pattern in the handler = the shown pattern True; hits moved 9; every step's tuple (vel, prob, flip, micro, code) is one of before's: True
+   Mutate 6: swaps 29 (of 31 positions), handler calls 29 = swaps True; pattern in the handler = the shown pattern True; hits moved 9; every step's tuple (vel, prob, flip, micro, code) is one of before's: True
+   all consistent: True
+
+== control: no handler (stock alone): the same check must fail (codes stay in place while hits move)
+   Mutate 1: swaps 30 (of 31 positions), handler calls 0 = swaps False; pattern in the handler = the shown pattern False; hits moved 9; every step's tuple (vel, prob, flip, micro, code) is one of before's: False
+   Mutate 2: swaps 26 (of 31 positions), handler calls 0 = swaps False; pattern in the handler = the shown pattern False; hits moved 9; every step's tuple (vel, prob, flip, micro, code) is one of before's: False
+   all consistent: False

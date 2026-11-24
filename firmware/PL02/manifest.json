@@ -1,0 +1,198 @@
+{
+  "base": "circuittracks-firmware-4486 (1.2.1)",
+  "slim_version": "PL02",
+  "marker": "PL02",
+  "description": "CTPlay chord engine with strum: Note-view pads play chords in the project's scale; Shift + the bottom two rows pick shape and voicing, Shift + 1-16/17-32 the strum speed.",
+  "features": [
+    "chord"
+  ],
+  "toolchain": "arm-none-eabi-gcc (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
+  "image_size": "0x4d7d4",
+  "image_sha256": "c0478a9c9ce12f5a7ed07a068abcc1f5c7339dcfbfc3180029e2406b2be013e1",
+  "syx_sha256": "6ed13b06f8767a740ce784f48ffde5e1cf5841091295caca3e8b5262d2f93e21",
+  "crc32": "0x102cf36b",
+  "flash": {
+    "start": "0x805cde0",
+    "end": "0x805d7d4",
+    "used": 2548,
+    "size": 143904
+  },
+  "ram": {
+    "start": "0x20044e00",
+    "end": "0x20044e58",
+    "used": 88,
+    "size": 240
+  },
+  "stack": {
+    "chord_on_pad": 128,
+    "chord_on_release": 48,
+    "chord_off_pad": 40,
+    "chord_on_leds": 56,
+    "chord_on_ms": 32,
+    "chord_on_button": 32,
+    "chord_init": 8
+  },
+  "stack_uncounted_callees": {
+    "chord_on_pad": [
+      "kbd_pad_ignored",
+      "note_pad_index",
+      "note_sink_off",
+      "note_sink_on",
+      "param_get"
+    ],
+    "chord_on_release": [
+      "note_sink_off"
+    ],
+    "chord_off_pad": [
+      "note_sink_off"
+    ],
+    "chord_on_leds": [
+      "kbd_pad_ignored",
+      "note_pad_index",
+      "param_get",
+      "track_of"
+    ],
+    "chord_on_ms": [
+      "note_sink_off",
+      "note_sink_on"
+    ],
+    "chord_on_button": [
+      "param_get",
+      "track_of"
+    ],
+    "chord_init": []
+  },
+  "entry_stub_stack": 32,
+  "hook_stack": {
+    "button_press": {
+      "bytes": 72,
+      "uncounted": [
+        "param_get",
+        "track_of"
+      ]
+    },
+    "led_task": {
+      "bytes": 72,
+      "uncounted": [
+        "kbd_pad_ignored",
+        "led_task",
+        "note_pad_index",
+        "param_get",
+        "track_of"
+      ]
+    },
+    "main_ms": {
+      "bytes": 72,
+      "uncounted": [
+        "note_sink_off",
+        "note_sink_on"
+      ]
+    },
+    "pad_note_off": {
+      "bytes": 80,
+      "uncounted": [
+        "note_sink_off"
+      ]
+    },
+    "pad_note_on": {
+      "bytes": 168,
+      "uncounted": [
+        "kbd_pad_ignored",
+        "note_pad_index",
+        "note_sink_off",
+        "note_sink_on",
+        "param_get"
+      ]
+    },
+    "pad_release": {
+      "bytes": 88,
+      "uncounted": [
+        "note_sink_off"
+      ]
+    }
+  },
+  "stack_uncounted_libgcc": [],
+  "patches": [
+    {
+      "addr": "0x8033320",
+      "bytes": "29f05ebd"
+    },
+    {
+      "addr": "0x8033b46",
+      "bytes": "29f0b9f9"
+    },
+    {
+      "addr": "0x803415a",
+      "bytes": "28f0affe"
+    },
+    {
+      "addr": "0x803c410",
+      "bytes": "20f0fcbc"
+    },
+    {
+      "addr": "0x804af5a",
+      "bytes": "11f06dbf"
+    },
+    {
+      "addr": "0x804aef2",
+      "bytes": "11f0b7bf"
+    },
+    {
+      "addr": "0x804acc4",
+      "bytes": "12f0e4b8"
+    }
+  ],
+  "symbols": {
+    "SHAPES": "0x805d79c",
+    "STRUM_COL": "0x805d7cc",
+    "STRUM_GAP": "0x805d7d0",
+    "__slim_bss_end": "0x20044e58",
+    "__slim_bss_start": "0x20044e00",
+    "__slim_data_end": "0x20044e00",
+    "__slim_data_start": "0x20044e00",
+    "__slim_ram_end": "0x20044e58",
+    "__slim_ram_start": "0x20044e00",
+    "__slim_ram_top": "0x20044e58",
+    "chord_init": "0x805d2e4",
+    "chord_notes": "0x805d074",
+    "chord_off_pad": "0x805d4f8",
+    "chord_on_button": "0x805d5d4",
+    "chord_on_leds": "0x805d628",
+    "chord_on_ms": "0x805d510",
+    "chord_on_pad": "0x805d318",
+    "chord_on_release": "0x805d4c4",
+    "chord_settings": "0x20044e51",
+    "chord_strum": "0x20044e50",
+    "consumed": "0x20044e04",
+    "held": "0x20044e08",
+    "kbd_pad_ignored": "0x805cfa0",
+    "led_task": "0x805cfa8",
+    "memcpy": "0x805cef8",
+    "memset": "0x805cee8",
+    "note_pad_index": "0x805cfb0",
+    "note_sink": "0x805d1ec",
+    "note_sink_off": "0x805cfb8",
+    "note_sink_on": "0x805cfc0",
+    "param_get": "0x805cfc8",
+    "release": "0x805d234",
+    "shift_held": "0x805d218",
+    "slim_call_led_task": "0x805cebc",
+    "slim_dispatch_button_press": "0x805cfd8",
+    "slim_dispatch_main_ms": "0x805cff6",
+    "slim_dispatch_pad_note_off": "0x805d012",
+    "slim_dispatch_pad_note_on": "0x805d030",
+    "slim_dispatch_pad_release": "0x805d050",
+    "slim_entry_button_press": "0x805cde0",
+    "slim_entry_main_ms": "0x805ce0c",
+    "slim_entry_pad_note_off": "0x805ce38",
+    "slim_entry_pad_note_on": "0x805ce64",
+    "slim_entry_pad_release": "0x805ce90",
+    "slim_features_init": "0x805d06e",
+    "slim_inited": "0x20044e00",
+    "slim_irq_restore": "0x805cee2",
+    "slim_irq_save": "0x805ceda",
+    "slim_ready": "0x805cf10",
+    "track_of": "0x805cfd0",
+    "visible_note_view": "0x805d2a0"
+  }
+}

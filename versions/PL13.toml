@@ -1,0 +1,5 @@
+# Published: rebuild PL13 from git tag PL13 (features/chord changed after it); at a later commit this file builds
+# the current sources under PL13's marker, which is NOT the published PL13.
+marker = "PL13"
+description = "CTPlay PL12 + a melodic generator: a Melody page and notes for the Pattern tools Write."
+features = ["chord", "countin", "saved", "link"]

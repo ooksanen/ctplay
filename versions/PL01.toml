@@ -1,0 +1,4 @@
+# Published 2026-10-11. Rebuild PL01 from git tag PL01 (this file at that commit); at later commits features/chord has strum, so building this file no longer gives PL01. Kept to reserve the marker.
+marker = "PL01"
+description = "CTPlay chord engine v1: Note-view pads play chords in the project's scale; Shift + the bottom two rows pick shape and voicing."
+features = ["chord"]

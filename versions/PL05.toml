@@ -1,0 +1,5 @@
+# Published: rebuild PL05 from git tag PL05 (features/chord changed after it); at a later commit this
+# file builds the current sources under PL05's marker, which is NOT the published PL05.
+marker = "PL05"
+description = "CTPlay chord engine with strum, bass modes and chord voice room; chord notes stay in the device's range, and releasing one of two chords re-sounds the notes the other still holds."
+features = ["chord"]

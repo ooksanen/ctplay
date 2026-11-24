@@ -1,0 +1,30 @@
+name = "countin"
+description = "Count-in: Shift + Clear steps off / click / count-in / both; with the count-in, Play from stopped with Record armed gives one bar of stock's click first."
+sources = ["countin.c"]
+init = "ci_init"
+saved_fix = "ci_saved_fix"       # PL10: after a project load (features/saved)
+link_valid = "ci_link_valid"     # PL12: the CTCtrl link; no apply (Shift + Clear only sets ci_on)
+
+[budget]
+ram = 7                         # state, count flags, clicks sent, ms since the press
+stack = 32                      # ci_on_ms / ci_on_leds (stock callees not counted)
+
+[[hook]]
+point = "button_press"
+handler = "ci_on_button"
+priority = 40                    # before chord's page buttons (50)
+
+[[hook]]
+point = "main_ms"
+handler = "ci_on_ms"
+priority = 40
+
+[[hook]]
+point = "led_task"
+handler = "ci_on_leds"
+priority = 40
+
+# Saved with the project (PL10, features/saved; position in save_layout.lock).
+[[saved]]
+symbol = "ci_on"
+bytes = 1

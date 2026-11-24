@@ -1,0 +1,340 @@
+name = "chord"
+description = "Chord engine v1: a Note-view pad (Synth 1 / 2, MIDI 1 / 2) plays a chord built in the project's scale."
+conflicts = ["diag_ram", "diag_upper"]   # PL16: the drum pages take Shift + Drum 1-4, their diagnostics Shift + Drum 3 / 4
+sources = ["chord_math.c", "arp_math.c", "euclid_math.c", "melody_math.c", "chord.c", "page.c", "arp.c", "mono.c", "euclid.c", "melody.c", "vary.c", "chord_link.c", "repeat.c", "repeat_math.c", "drum_tools.c", "step_entry.c", "roll_math.c", "pstrum.c", "pstrum_rec.c", "trig_math.c", "trig.c", "trig_ui.c", "trig_keep.c"]
+init = "chord_init"
+saved_fix = "chord_saved_fix"   # PL10: after a project load (features/saved)
+link_valid = "chord_link_valid" # PL12: the CTCtrl link (features/link): may the device hold a written payload?
+link_apply = "chord_link_apply" # PL12: the pads' side effects of a write
+
+[budget]
+itcm = 2879                     # PL20: Played strums release at once: pstrum_q.at 16 (4 x 4), trig_mark 1, the passes' counts 134 (trig_count 128, trig_ms 4, trig_restart 1, trig_scene_wait 1), playback 4 (trig_pre, trig_silent, trig_fill_hold, trig_fill_pass), the row-4 latch 16 (trig_latch), FILL 28 (trig_fill_arm 4, trig_fill_ms 16, trig_fill_started 4, trig_fill_done 4), the drum Write's Undo of the conditions 144 (drum_undo_cond 4 x 36); PL19: chord_pstrum 1, the pending step-entry spills 260 (spill 16 x 16 B, entering 4), the Played queue 112 (pstrum_q 96, pstrum_beat 12, pstrum_gen 4), recording 440 (the latch prec 192, tickets 128, inflight 8, the waiting ticket 12, pstrum_roll 32, beat_tick 4, mono_past 64); PL18: chord_step 1; PL17: the drums' Pattern tools settings 28 (drum_euclid 8, drum_rhythm 12, drum_accent 4, drum_seed 4), their Undo 516 (drum_undo_steps 512, drum_undo_at 4); PL16: repeat_cfg 2, drum_page 4, the note repeat engine 51 (rep_press_tick 16, rep_hit_tick 16, rep_last 4, rep_vel 4, rep_strike 4, 7 flag bytes), unquantized repeats 8 (rq_over 4, rq_shadow 4); PL15: chord_voice 4, chord_prev 24 + chord_prev_n 4; PL14: rhythm_cfg 12, melody_vary 4, page_sub 4; PL11: Undo 0x380 steps + 1 B where from; PL09: held 84, run 64, mono_visit 16 (spec 2026-10-17-itcm-opt-in-design.md D1)
+ram = 90                        # PL13: the pending action 2 (kind, track, pad); melody_draft 1, melody_cfg 8, melody_seed 8; PL11: euclid_cfg 8, euclid_last 4, the armed Write 1; PL09: held, run, mono_visit moved to ITCM; PL08: chord_strum_down, chord_mono, mono_visit (18 B); PL07: + page_last, page_quick (8 B); PL06: the arpeggiator 64 B run state + clock, settings, page, per-track press order; build 240 B max
+stack = 436                     # beta: chord_on_preview_end 64 B (hook preview_end 120 B). PL20: trig_keep.c's handlers 8-32 B, no ITCM (hooks drum_duplicate, drum_clear_step, drum_clear_pattern, drum_copy_half, note_step_fill 120 B, drum_paste_step 128 B, drum_mutate 152 B; param_get uncounted), trig_on_drum_step_off / trig_on_drum_remove 32 B (hooks drum_step_off / drum_remove 120 B), trig_on_drum_micro_off 24 B (mid hook drum_micro_off 152 B; param_get uncounted), step_on_press 276 B and chord_on_release 152 B with the condition drop (unchanged; trig_note_set from the spill's put), page_on_release 404 B with the drum Write's conditions and drum_undo (unchanged), trig_on_wide_press / trig_on_wide_release 16 B (hooks wide_drum_press / wide_drum_release 120 B; track_of, param_get uncounted), trig_on_pass and trig_on_step with FILL's pass state unchanged (40 B, 88 B), chord_on_leds with trig_fill_stop 368 B (unchanged); trig_on_note_view_pad / trig_on_drum_view_pad 72 B (hooks prob_view_note / prob_view_drum 120 B; param_get, track_of stock's, uncounted), trig_on_cont_release 88 B (hook cont_release 128 B; param_get, param_wptr, store_commit, track_of uncounted), chord_on_leds with trig_draw 368 B (unchanged, led_task 592 B), trig_on_step 88 B (mid hook player_tick 160 B; param_get is stock's, uncounted), trig_on_prob_note / trig_on_prob_drum / trig_on_prob_first 8 B (mid hooks prob_note, prob_drum, prob_drum_first 152 B), trig_on_pass 40 B (mid hook track_advance 152 B), trig_on_place 16 B (hook seq_place 128 B), trig_on_seq_tick 8 B (seq_tick 336 B with arp_on_seq_tick), trig_on_ms beside chord_on_ms (main_ms 432 B, unchanged). PL19: step_on_add 356 B (hook step_add 396 B), step_on_press 276 B (hook note_pad_press 316 B; the exact-roll test's roll on the stack), chord_on_release 152 B with the Written spill (hook pad_release 192 B; rec_touch is stock's, uncounted); chord_on_ms 384 B (the recording latch and note-off calls; pstrum_on_ms beside the strum walk; its seq_note_on / seq_end_entry are stock's, uncounted: main_ms 432 B with the stub), pstrum_on_off_commit 128 B (mid hook rec_off_commit 200 B), pstrum_on_pass_commit 136 B (mid hook rec_pass_commit 208 B), pstrum_on_play_step 88 B (hook seq_play_step 136 B), pstrum_on_reset 0 B (hook seq_end_all 120 B). PL18: step_on_add 308 B (chord_build -> chord_lead; its hook step_add 348 B with the stub); step_on_press 180 B (chord_notes; its hook note_pad_press 220 B). Measured in PL17: page_on_pad 436 B, the largest (melody_pick -> euclid_pick -> melody_dice -> euclid_pool -> melody_pool -> chord_notes); page_on_release 404 B (euclid_release -> euclid_write_to 380 B: pool, line and notes on the stack; a drum's Write euclid_release -> drum_write_to -> put 232 B: the hits as masks, no step image on the stack, plus stock's store calls, uncounted; drum_undo 72 B); chord_on_ms 368 B (the falling strum's position walk, PL08; the arpeggio note list 48 B and octave index 64 B, PL07); arp_on_seq_tick 288 B; repeat_on_quant 16 B (its mid hook rec_quant 128 B with the 64 B stub). From PL13 the Write, Undo and draft re-writes run on the release (460 B on the press before). Main >= 1.5 KB free (SL00D)
+
+[[hook]]
+point = "pad_note_on"
+handler = "chord_on_pad"
+priority = 50
+
+[[hook]]
+point = "pad_release"
+handler = "chord_on_release"
+priority = 50
+
+[[hook]]
+point = "pad_note_off"
+handler = "chord_off_pad"
+priority = 50
+
+[[hook]]
+point = "led_task"
+handler = "chord_on_leds"
+priority = 50
+
+[[hook]]
+point = "main_ms"
+handler = "chord_on_ms"
+priority = 50
+
+[[hook]]
+point = "button_press"
+handler = "chord_on_button"
+priority = 50
+
+[[hook]]
+point = "voice_headroom"
+handler = "chord_on_headroom"
+priority = 60                    # after voice_log (50): the log records the raw reading
+filter = true
+
+[[hook]]
+point = "ctrl_pad_press"
+handler = "page_on_pad"
+priority = 50
+
+[[hook]]
+point = "ctrl_pad_release"
+handler = "page_on_release"
+priority = 50
+
+[[hook]]
+point = "seq_tick"
+handler = "arp_on_seq_tick"
+priority = 50
+
+[[hook]]
+point = "seq_start"
+handler = "arp_on_seq_start"
+priority = 50
+
+[[hook]]
+point = "rec_commit"
+handler = "mono_on_commit"
+priority = 50
+
+[[hook]]
+point = "preview_end"            # beta: the held step's release keeps the notes a still-held chord pad sounds (match stock)
+handler = "chord_on_preview_end"
+priority = 50
+
+[[hook]]
+point = "step_add"               # PL18: stock's add of a note to the held step (both step-entry routes): the pad's chord
+handler = "step_on_add"
+priority = 50
+
+[[hook]]
+point = "note_pad_press"         # PL18: the Note view's pad press with a step held: the pad again takes its chord out
+handler = "step_on_press"
+priority = 50
+
+[[hook]]
+point = "seq_play_step"          # PL19: Played, a pattern's chord strums: stock plays the first note, the rest wait (pstrum.c)
+handler = "pstrum_on_play_step"
+priority = 50
+
+[[hook]]
+point = "seq_end_all"            # PL19: a player's reset (Stop, the Mixer's mute) drops its waiting notes
+handler = "pstrum_on_reset"
+priority = 50
+
+[[hook]]
+point = "rec_off_commit"         # PL19: a live strum recorded (pstrum_rec.c): the note-off path's commit of a converted note
+handler = "pstrum_on_off_commit"
+priority = 50
+
+[[hook]]
+point = "rec_pass_commit"        # PL19: the tick pass's commit of a released note (pstrum_rec.c)
+handler = "pstrum_on_pass_commit"
+priority = 50
+
+[[hook]]
+point = "track_advance"          # PL20: a track's pattern ends or a scene changes (a mid hook): the passes' counts (trig.c)
+handler = "trig_on_pass"
+priority = 50
+
+[[hook]]
+point = "seq_place"              # PL20: a track placed anew (Play from stop, Shift + a Patterns pad, a pick while stopped, a load): it starts over
+handler = "trig_on_place"
+priority = 50
+
+[[hook]]
+point = "seq_tick"               # PL20: the scene chain's "picked by hand, waiting", before the tick's takeover clears it
+handler = "trig_on_seq_tick"
+priority = 50
+
+[[hook]]
+point = "player_tick"            # PL20: a player's tick (a mid hook): at tick 0 the step's condition (trig.c)
+handler = "trig_on_step"
+priority = 50
+
+[[hook]]
+point = "prob_note"              # PL20: seq_units_start's probability test: a silenced step fails it
+handler = "trig_on_prob_note"
+priority = 50
+
+[[hook]]
+point = "prob_drum"              # PL20: the drum hit test's probability test: a silenced step fails it
+handler = "trig_on_prob_drum"
+priority = 50
+
+[[hook]]
+point = "prob_drum_first"        # PL20: slot 4's probability test (the flip sample's): a silenced step fails it
+handler = "trig_on_prob_first"
+priority = 50
+
+[[hook]]
+point = "prob_view_note"         # PL20: a row-4 press in a note track's probability view: latched only (trig_ui.c)
+handler = "trig_on_note_view_pad"
+priority = 50
+
+[[hook]]
+point = "prob_view_drum"         # PL20: a row-4 press in a drum's probability view: latched only
+handler = "trig_on_drum_view_pad"
+priority = 50
+
+[[hook]]
+point = "cont_release"           # PL20: the container's pad release (also its release-all at a view change): the row-4 gesture written
+handler = "trig_on_cont_release"
+priority = 50
+
+[[hook]]
+point = "wide_drum_press"        # PL20: the drum expanded view's pads 21-24 = FILL for drums 1-4: the press (flags only)
+handler = "trig_on_wide_press"
+priority = 50
+
+[[hook]]
+point = "wide_drum_release"      # PL20: their release (one per press, view changes included): a hold ends, a tap arms
+handler = "trig_on_wide_release"
+priority = 50
+
+[[hook]]
+point = "drum_duplicate"         # PL20: Duplicate (the Patterns view): the source's conditions to the target (trig_keep.c)
+handler = "trig_on_drum_duplicate"
+priority = 50
+
+[[hook]]
+point = "drum_clear_step"        # PL20: Clear + a drum step: its condition 0
+handler = "trig_on_drum_clear_step"
+priority = 50
+
+[[hook]]
+point = "drum_clear_pattern"     # PL20: Clear + a drum pattern: its 36 condition bytes 0
+handler = "trig_on_drum_clear_pattern"
+priority = 50
+
+[[hook]]
+point = "drum_copy_half"         # PL20: Duplicate + 1-16/17-32 on a drum: steps 1-16's conditions to 17-32
+handler = "trig_on_drum_copy_half"
+priority = 50
+
+[[hook]]
+point = "drum_paste_step"        # PL20: a drum step pasted (Duplicate + step A, step B): the source's condition
+handler = "trig_on_drum_paste_step"
+priority = 50
+
+[[hook]]
+point = "drum_mutate"            # PL20: Mutate on a drum (a mid hook, once per swap): the two steps' conditions swap
+handler = "trig_on_drum_mutate"
+priority = 50
+
+[[hook]]
+point = "note_step_fill"         # PL20: stock empties a note step (Clear step, Clear pattern): its condition 0
+handler = "trig_on_note_step_fill"
+priority = 50
+
+[[hook]]
+point = "drum_step_off"          # PL20: a drum step pad tapped off: the hit's condition goes with it
+handler = "trig_on_drum_step_off"
+priority = 50
+
+[[hook]]
+point = "drum_remove"            # PL20: a step held + the lower pad of its flip sample: the hit's condition goes
+handler = "trig_on_drum_remove"
+priority = 50
+
+[[hook]]
+point = "drum_micro_off"         # PL20: the micro-step view's last micro bit off (a mid hook): the condition goes
+handler = "trig_on_drum_micro_off"
+priority = 50
+
+[[hook]]
+point = "rec_quant"              # PL16: the recorders' quantise refresh (a mid hook): unquantized repeats (repeat.c)
+handler = "repeat_on_quant"
+priority = 50
+
+# Saved with the project (PL10, features/saved; positions in save_layout.lock).
+[[saved]]
+symbol = "chord_settings"
+bytes = 4
+
+[[saved]]
+symbol = "chord_rootless"
+bytes = 1
+
+[[saved]]
+symbol = "chord_strum"
+bytes = 1
+
+[[saved]]
+symbol = "chord_strum_down"
+bytes = 1
+
+[[saved]]
+symbol = "chord_mono"
+bytes = 1
+
+[[saved]]
+symbol = "chord_arp"
+bytes = 8
+default = "0008000800080008"     # gate 3/6 (GATE_DEFAULT << 2), as chord_init
+
+[[saved]]
+symbol = "page_slot"           # PL11: the page by its pad in the page list (page_last, by position, is retired)
+bytes = 4
+link = false                   # device navigation: never over the CTCtrl link (spec 2026-10-18-ctctrl-link-design.md)
+
+[[saved]]
+symbol = "page_quick"
+bytes = 4
+link = false
+
+[[saved]]
+symbol = "euclid_cfg"
+bytes = 8
+default = "2040204020402040"     # per track: no hits, velocity medium; rotation 0, gate 3/6 (PL11)
+
+[[saved]]
+symbol = "melody_cfg"            # PL13: per track order | pool | range - 1 | accent; root | octave + 2 (melody.c)
+bytes = 8
+default = "0010001000100010"     # order same, chord pool, range 1, accent off; root last pad, octave 0
+
+[[saved]]
+symbol = "melody_seed"          # PL13: per track the rhythm and notes seeds (dice results, never 0)
+bytes = 8
+default = "0101010101010101"
+link = false
+
+[[saved]]
+symbol = "rhythm_cfg"           # PL14: per track second hits | combine; second rotation | thinning; cycle (vary.c)
+bytes = 12
+
+[[saved]]
+symbol = "melody_vary"          # PL14: per track ties | octave jumps
+bytes = 4
+
+[[saved]]
+symbol = "page_sub"             # PL14: per track the two-page features' second page (device navigation)
+bytes = 4
+link = false
+
+[[saved]]
+symbol = "euclid_last"          # PL11's last played pad, saved from PL14 (the second block has room): a root "last pad"
+bytes = 4                       # reloads with the project
+default = "48484848"            # 72 = EUCLID_NOTE_DEFAULT, as euclid_init
+link = false                    # the last played pad, not a setting
+
+[[saved]]
+symbol = "chord_voice"          # PL15: per track the row-2 shape (bits 0-3) | voice leading (bits 4-5); chord.c, chord_pick_shape
+bytes = 4
+
+[[saved]]
+symbol = "repeat_cfg"           # PL16: the kit's note repeat: rate (bits 0-3), velocity shape (4-5), latch (6), unquantized (7); byte 1 = 0
+bytes = 2                       # linked (rev 1); set on the Repeat page (repeat.c)
+
+[[saved]]
+symbol = "drum_page"            # PL16: per drum the last page (bits 0-2 slot, bit 3 Pattern tools 2, 4-7 = 0); device navigation
+bytes = 4
+link = false
+
+[[saved]]
+symbol = "drum_euclid"          # PL17: per drum hits | velocity | groove (bit 7, as euclid_cfg); rotation | roll (bits 5-7)
+bytes = 8
+default = "2000200020002000"     # no hits, velocity medium; rotation 0, one hit
+
+[[saved]]
+symbol = "drum_rhythm"          # PL17: per drum the second rhythm, as rhythm_cfg
+bytes = 12
+
+[[saved]]
+symbol = "drum_accent"          # PL17: per drum the accent (bits 0-1)
+bytes = 4
+
+[[saved]]
+symbol = "drum_seed"            # PL17: per drum the rhythm seed (never 0)
+bytes = 4
+default = "01010101"
+link = false
+
+[[saved]]
+symbol = "chord_step"          # PL18: bit t = track t writes chords in step entry (Keys pad 2)
+bytes = 1
+
+[[saved]]
+symbol = "chord_pstrum"        # PL19: 2 bits per track: pattern strum 0 off, 1 played, 2 written (Keys pads 3-4)
+bytes = 1
+
+[[saved]]
+symbol = "trig_mark"           # PL20: 1 = this project's trig-condition bytes are CTPlay's (the first condition written sets it); not linked
+bytes = 1
+link = false

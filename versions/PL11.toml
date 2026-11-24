@@ -1,0 +1,5 @@
+# Published: rebuild PL11 from git tag PL11 (features/chord changed after it); at a later commit this file builds
+# the current sources under PL11's marker, which is NOT the published PL11.
+marker = "PL11"
+description = "CTPlay PL10 + Euclidean fills on a Pattern tools page."
+features = ["chord", "countin", "saved"]

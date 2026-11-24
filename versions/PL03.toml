@@ -1,0 +1,5 @@
+# Published and device-tested: rebuild PL03 from git tag PL03 (features/chord changed after it); at a later commit this
+# file builds the current sources under PL03's marker, which is NOT the published PL03.
+marker = "PL03"
+description = "CTPlay chord engine with strum and bass modes: Shift + the bottom two rows pick shape and voicing (pad 24: no bass / bass below / rootless over bass), Shift + 1-16/17-32 the strum speed."
+features = ["chord"]

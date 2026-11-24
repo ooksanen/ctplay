@@ -1,0 +1,33 @@
+== contexts
+[Play from stop] player_tick: main x328; seq_place: ui x8; track_advance: main x376
+    seq_place callers (ctx, lr): [('ui', '0x0802c1b0')]; r1 values [0, 1, 2, 3, 4, 5, 6, 7]
+[Stop, Shift + Play (continue)] player_tick: main x40; track_advance: main x48
+[Patterns tap (Synth 1 P2) and a hand chain (Drum 1 P1..P3) while playing] player_tick: main x480; track_advance: main x560
+[Shift + Patterns pad (Synth 1 P2) while playing] player_tick: main x320; seq_place: ui x1; track_advance: main x376
+    seq_place callers (ctx, lr): [('ui', '0x0802b94c')]; r1 values [0]
+[a pick while stopped] seq_place: ui x1
+    seq_place callers (ctx, lr): [('ui', '0x0802b9be')]; r1 values [0]
+[a scene recalled by hand while playing (Drum 1 16 steps, Synth 1 6)] player_tick: main x1280; track_advance: main x1496
+[a scene chain 0..1 advancing by itself] player_tick: main x3208; seq_place: ui x16; track_advance: main x3736
+    seq_place callers (ctx, lr): [('ui', '0x0802b9be'), ('ui', '0x0802c1b0')]; r1 values [0, 1, 2, 3, 4, 5, 6, 7]
+[a load, stopped] seq_place: direct:0x0802fd5c x24
+    seq_place callers (ctx, lr): [('direct:0x0802fd5c', '0x0802b9be'), ('direct:0x0802fd5c', '0x0802c1b0')]; r1 values [0, 1, 2, 3, 4, 5, 6, 7]
+[a load, playing] player_tick: main x240; seq_place: direct:0x0802fd5c x24; track_advance: main x280
+    seq_place callers (ctx, lr): [('direct:0x0802fd5c', '0x0802b94c'), ('direct:0x0802fd5c', '0x0802c1b0')]; r1 values [0, 1, 2, 3, 4, 5, 6, 7]
+[CTPlay's count-in start (PL19 image)] player_tick: main x248; seq_place: ui:led x8; track_advance: main x288
+    seq_place callers (ctx, lr): [('ui:led', '0x0802c1b0')]; r1 values [0, 1, 2, 3, 4, 5, 6, 7]
+    count-in: transport started at tick 0; first tick-0 pass in main
+
+== player_tick / track_advance outside main: none
+
+== scene takeovers (fp == 0, scene flag set)
+    hand recall: takeover tick 96: events per track {0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1} (every track exactly once: True); {0: 'cut/hand 1', 1: 'ended/hand 1', 2: 'ended/hand 1', 3: 'ended/hand 1', 4: 'ended/hand 1', 5: 'ended/hand 1', 6: 'ended/hand 1', 7: 'ended/hand 1'}
+    scene chain: takeover tick 96: events per track {0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1} (every track exactly once: True); {0: 'ended/hand 1', 1: 'cut/hand 1', 2: 'ended/hand 1', 3: 'ended/hand 1', 4: 'ended/hand 1', 5: 'ended/hand 1', 6: 'ended/hand 1', 7: 'ended/hand 1'}
+    scene chain: takeover tick 192: events per track {0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1} (every track exactly once: True); {0: 'ended/hand 1', 1: 'cut/hand 1', 2: 'ended/hand 1', 3: 'ended/hand 1', 4: 'ended/hand 1', 5: 'ended/hand 1', 6: 'ended/hand 1', 7: 'ended/hand 1'}
+    scene chain: takeover tick 288: events per track {0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1} (every track exactly once: True); {0: 'ended/hand 1', 1: 'cut/hand 1', 2: 'ended/hand 1', 3: 'ended/hand 1', 4: 'ended/hand 1', 5: 'ended/hand 1', 6: 'ended/hand 1', 7: 'ended/hand 1'}
+    scene chain: takeover tick 384: events per track {0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1} (every track exactly once: True); {0: 'ended/hand 1', 1: 'cut/hand 1', 2: 'ended/hand 1', 3: 'ended/hand 1', 4: 'ended/hand 1', 5: 'ended/hand 1', 6: 'ended/hand 1', 7: 'ended/hand 1'}
+
+== hand picks: the picked tracks' fp == 0 pass events after the tap
+    Synth 1 tap P2: (tick, old pattern, end, hand, scene) [(48, 0, 1, 1, 0)]
+    Drum 1 chain P1..P3: (tick, old pattern, end, hand, scene) [(48, 0, 1, 1, 0)]
+    other tracks with hand == 1: none

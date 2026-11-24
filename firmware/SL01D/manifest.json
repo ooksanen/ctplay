@@ -1,0 +1,100 @@
+{
+  "base": "circuittracks-firmware-4486 (1.2.1)",
+  "slim_version": "SL01D",
+  "marker": "SL01D",
+  "description": "Diagnostic: Shift + Drum 4 shows whether the RAM above the heap stays as slim filled it, how deep the main stack reaches, and whether the fill survived a power-off.",
+  "features": [
+    "diag_upper"
+  ],
+  "toolchain": "arm-none-eabi-gcc (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
+  "image_size": "0x4d190",
+  "image_sha256": "16249ccf4e8aea40e2a0491e2d5be5b2b3378e47ba08b2c1812d2a0a985064d4",
+  "syx_sha256": "804354403ccc1214aee248a9cb6fffe075de24384a8d939f6aa024637dada44b",
+  "crc32": "0xaed991d8",
+  "flash": {
+    "start": "0x805cde0",
+    "end": "0x805d190",
+    "used": 944,
+    "size": 143904
+  },
+  "ram": {
+    "start": "0x20044e20",
+    "end": "0x20044e58",
+    "used": 52,
+    "size": 240
+  },
+  "stack": {
+    "diag_upper_on_button": 36,
+    "diag_upper_on_leds": 28,
+    "diag_upper_init": 28
+  },
+  "stack_uncounted_callees": {
+    "diag_upper_on_button": [
+      "param_get"
+    ],
+    "diag_upper_on_leds": [],
+    "diag_upper_init": []
+  },
+  "entry_stub_stack": 32,
+  "hook_stack": {
+    "button_press": {
+      "bytes": 84,
+      "uncounted": [
+        "param_get"
+      ]
+    },
+    "led_task": {
+      "bytes": 60,
+      "uncounted": [
+        "led_task"
+      ]
+    }
+  },
+  "stack_uncounted_libgcc": [],
+  "patches": [
+    {
+      "addr": "0x8033320",
+      "bytes": "29f05ebd"
+    },
+    {
+      "addr": "0x8033b46",
+      "bytes": "29f061f9"
+    },
+    {
+      "addr": "0x803415a",
+      "bytes": "28f057fe"
+    }
+  ],
+  "symbols": {
+    "__slim_bss_end": "0x20044e54",
+    "__slim_bss_start": "0x20044e20",
+    "__slim_data_end": "0x20044e20",
+    "__slim_data_start": "0x20044e20",
+    "__slim_ram_end": "0x20044e54",
+    "__slim_ram_start": "0x20044e20",
+    "__slim_ram_top": "0x20044e58",
+    "block_changed": "0x20044e48",
+    "block_cursor": "0x20044e22",
+    "block_sum": "0x805cf64",
+    "block_sum_boot": "0x20044e28",
+    "carried": "0x20044e24",
+    "chunk_changed": "0x20044e4c",
+    "chunk_cursor": "0x20044e23",
+    "chunk_failed": "0x20044e50",
+    "chunk_intact": "0x805cf14",
+    "diag_upper_init": "0x805cf98",
+    "diag_upper_on_button": "0x805d010",
+    "diag_upper_on_leds": "0x805d09c",
+    "led_task": "0x805cee0",
+    "memcpy": "0x805ce3a",
+    "memset": "0x805ce2a",
+    "page_on": "0x20044e21",
+    "param_get": "0x805cee8",
+    "slim_call_led_task": "0x805ce0c",
+    "slim_dispatch_button_press": "0x805cef0",
+    "slim_entry_button_press": "0x805cde0",
+    "slim_features_init": "0x805cf0e",
+    "slim_inited": "0x20044e20",
+    "slim_ready": "0x805ce50"
+  }
+}

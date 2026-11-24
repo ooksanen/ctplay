@@ -1,0 +1,5 @@
+# Published: rebuild PL17 from git tag PL17 (the chord sources changed after it); at a later commit this file builds
+# the current sources under PL17's marker, which is NOT the published PL17.
+marker = "PL17"
+description = "CTPlay PL16 + Pattern tools for the drums (Pattern tools and Pattern tools 2 on Shift + Drum 1-4)."
+features = ["chord", "countin", "saved", "link", "recfix"]

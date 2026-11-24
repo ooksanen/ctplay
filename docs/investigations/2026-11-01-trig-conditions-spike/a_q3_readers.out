@@ -1,0 +1,38 @@
+[clean] ticks 778; endpoint note events 1102; drum player hits 187; DSP writes 2; forbidden []
+[filled] ticks 778; endpoint note events 1102; drum player hits 187; DSP writes 2; forbidden []
+[filled+watch] ticks 778; endpoint note events 1102; drum player hits 187; DSP writes 2; forbidden []
+== clean vs filled
+   endpoint log equal: True; drum hits equal: True; DSP writes equal: True; ticks equal: True
+   patterns outside the condition bytes equal: True
+   pattern-writer calls equal: True
+== filled vs filled+watch
+   endpoint log equal: True; drum hits equal: True; DSP writes equal: True; ticks equal: True
+   patterns outside the condition bytes equal: True
+   pattern-writer calls equal: True
+[filled] condition bytes unchanged: drums 32/32 patterns, notes 32/32 patterns
+[filled+watch] condition bytes unchanged: drums 32/32 patterns, notes 32/32 patterns
+[clean] condition bytes still 0: drums True, notes True
+   writer calls seen: [('command send', 164), ('drum Clear step', 1), ('drum editor write-back (store listener)', 1195), ('drum recorder write', 520), ('note Clear step', 1), ('note step add', 2), ('note step fill', 1)]
+== reads of the condition bytes (filled+watch): phase, pc, lr, kind -> count, bytes
+   edit stopped         pc 0x0801aa14 lr 0x0803dcc1 note1  x1
+   edit stopped         pc 0x0801aa14 lr 0x0803dcc1 note2  x1
+   edit stopped         pc 0x08025180 lr 0x0803dc91 note1  x2
+   edit stopped         pc 0x08025180 lr 0x0803dc91 note2  x1
+   edit while playing   pc 0x0801aa14 lr 0x0803dcc1 note0  x4
+   edit while playing   pc 0x08025180 lr 0x0803dc91 note0  x6
+   play                 pc 0x0801aa14 lr 0x0803dcc1 note0  x97
+   play                 pc 0x0801aa14 lr 0x0803dcc1 note1  x97
+   play                 pc 0x0801aa14 lr 0x0803dcc1 note2  x97
+   play                 pc 0x0801aa14 lr 0x0803dcc1 note3  x97
+   play                 pc 0x08025180 lr 0x0803dc91 note0  x107
+   play                 pc 0x08025180 lr 0x0803dc91 note1  x107
+   play                 pc 0x08025180 lr 0x0803dc91 note2  x107
+   play                 pc 0x08025180 lr 0x0803dc91 note3  x107
+   play from stop       pc 0x0801aa14 lr 0x0803dcc1 note0  x33
+   play from stop       pc 0x0801aa14 lr 0x0803dcc1 note2  x33
+   play from stop       pc 0x0801aa14 lr 0x0803dcc1 note3  x33
+   play from stop       pc 0x0801aa14 lr 0x0803dcc1 note1  x32
+   play from stop       pc 0x08025180 lr 0x0803dc91 note0  x38
+   play from stop       pc 0x08025180 lr 0x0803dc91 note1  x38
+   play from stop       pc 0x08025180 lr 0x0803dc91 note2  x38
+   play from stop       pc 0x08025180 lr 0x0803dc91 note3  x38

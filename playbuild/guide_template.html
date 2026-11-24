@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<meta name="description" content="How to use CTPlay, a modified firmware for the Novation Circuit Tracks: chords, strum, arpeggiator, mono record, count-in and saved settings.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314141a'/%3E%3Crect x='5' y='5' width='10' height='10' rx='2.5' fill='%2322c55e'/%3E%3Crect x='17' y='5' width='10' height='10' rx='2.5' fill='%233b82f6'/%3E%3Crect x='5' y='17' width='10' height='10' rx='2.5' fill='%23d946ef'/%3E%3Crect x='17' y='17' width='10' height='10' rx='2.5' fill='%23f59e0b'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap">
+<meta name="theme-color" content="#14141a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+<script>
+/* A theme the reader picked: the page and the browser's bar (theme-color, else the system's by the media above). */
+function paintTheme(t) {
+  document.documentElement.dataset.theme = t;
+  document.querySelectorAll('meta[name="theme-color"]').forEach(function (m) { m.content = t === "light" ? "#f5f5f7" : "#14141a"; });
+}
+try { var t = localStorage.getItem("ctplay-guide-theme"); if (t === "light" || t === "dark") paintTheme(t); } catch (e) {}
+</script>
+<style>
+/* CTCtrl's design tokens (its src/index.scss), dark first. */
+:root {
+  color-scheme: dark;
+  --bg-surface: #14141a;
+  --bg-surface-alt: #1a1a20;
+  --bg-secondary: #121215;
+  --bg-button: #161619;
+  --bg-button-hover: #1e1e24;
+  --bg-button-active: #252530;
+  --bg-panel: rgba(255, 255, 255, .015);
+  --bg-code: #101013;
+  --bg-pad: #18181d;
+  --bg-pad-free: linear-gradient(145deg, #1e1e24, #161619);
+  --border: #333;
+  --border-subtle: #2a2a30;
+  --border-hover: #555;
+  --text-primary: #fff;
+  --text-secondary: #ddd;
+  --text-dim: #8e8e98;
+  --color-success: #4ecdc4;
+  --accent-text: #4ecdc4;
+  --pad-w: #e8e8e8;
+  --pad-b: #3b82f6;
+  --pad-g: #22c55e;
+  --pad-m: #d946ef;
+  --pad-o: #f59e0b;
+  --pad-y: #eab308;
+  --pad-c: #22d3ee;
+  --pad-v: #a78bfa;
+  --pad-dim: 11%;
+  --pad-stripe: 45%;
+  --pad-bright: 45%;
+  --pad-on-shadow: 2px 2px 5px rgb(0 0 0 / .6);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --header: 56px;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg-surface: #f5f5f7;
+    --bg-surface-alt: #ececf0;
+    --bg-secondary: #eaeaee;
+    --bg-button: #fff;
+    --bg-button-hover: #f0f0f4;
+    --bg-button-active: #e2e2e8;
+    --bg-panel: rgba(255, 255, 255, .7);
+    --bg-code: #ebebef;
+    --bg-pad: #fff;
+    --bg-pad-free: linear-gradient(145deg, #f3f3f6, #e8e8ed);
+    --border: #c6c6ce;
+    --border-subtle: #dadae0;
+    --border-hover: #9a9aa4;
+    --text-primary: #111114;
+    --text-secondary: #2a2a30;
+    --text-dim: #5d5d67;
+    --accent-text: #0b776f;
+    --pad-w: #8a8a94;
+    --pad-b: #2563eb;
+    --pad-g: #16a34a;
+    --pad-m: #c026d3;
+    --pad-o: #d97706;
+    --pad-y: #ca8a04;
+    --pad-c: #0891b2;
+    --pad-v: #7c3aed;
+    --pad-dim: 9%;
+    --pad-stripe: 50%;
+    --pad-bright: 22%;
+    --pad-on-shadow: none;
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg-surface: #f5f5f7;
+  --bg-surface-alt: #ececf0;
+  --bg-secondary: #eaeaee;
+  --bg-button: #fff;
+  --bg-button-hover: #f0f0f4;
+  --bg-button-active: #e2e2e8;
+  --bg-panel: rgba(255, 255, 255, .7);
+  --bg-code: #ebebef;
+  --bg-pad: #fff;
+  --bg-pad-free: linear-gradient(145deg, #f3f3f6, #e8e8ed);
+  --border: #c6c6ce;
+  --border-subtle: #dadae0;
+  --border-hover: #9a9aa4;
+  --text-primary: #111114;
+  --text-secondary: #2a2a30;
+  --text-dim: #5d5d67;
+  --accent-text: #0b776f;
+  --pad-w: #8a8a94;
+  --pad-b: #2563eb;
+  --pad-g: #16a34a;
+  --pad-m: #c026d3;
+  --pad-o: #d97706;
+  --pad-y: #ca8a04;
+  --pad-c: #0891b2;
+  --pad-v: #7c3aed;
+  --pad-dim: 9%;
+  --pad-stripe: 50%;
+  --pad-bright: 22%;
+  --pad-on-shadow: none;
+}
+
+* { box-sizing: border-box; }
+html { scroll-padding-top: calc(var(--header) + 16px); -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background-color: var(--bg-surface);
+  background-image: linear-gradient(135deg, var(--bg-surface), var(--bg-surface-alt));
+  background-attachment: fixed;
+  color: var(--text-secondary);
+  font: 15.5px/1.65 var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: 12px; top: 10px; z-index: 50; }
+
+/* Header: CTCtrl's name and version block, its buttons. */
+.top {
+  position: sticky; top: 0; z-index: 30;
+  height: var(--header);
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.brand { text-decoration: none; line-height: 1.15; }
+.brand .name { display: block; font: 700 15px var(--font-mono); letter-spacing: 2px; color: var(--text-primary); }
+.brand .sub { display: block; font: 400 10px var(--font-mono); letter-spacing: .8px; color: var(--text-dim); }
+.actions { margin-left: auto; display: flex; gap: 8px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 34px; min-width: 34px; padding: 0 12px;
+  font: 500 11px var(--font-mono); letter-spacing: 1px; text-transform: uppercase; text-decoration: none;
+  color: var(--text-secondary); background: var(--bg-button);
+  border: 1px solid var(--border); border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.btn:hover { background: var(--bg-button-hover); border-color: var(--border-hover); color: var(--text-primary); }
+.btn.icon { padding: 0; }
+.btn svg { width: 16px; height: 16px; }
+:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+
+/* Menu: open beside the page on a wide screen, slides in over it on a narrow one. */
+#toc { background: var(--bg-secondary); border-right: 1px solid var(--border-subtle); padding: 14px 10px 48px; overflow-y: auto; }
+#toc ul { list-style: none; margin: 0; padding: 0; }
+#toc a {
+  display: block; padding: 5px 10px; border-radius: var(--radius-md);
+  font: 400 11px/1.4 var(--font-mono); letter-spacing: .8px; text-transform: uppercase;
+  color: var(--text-dim); text-decoration: none;
+}
+#toc li.l2 { margin-top: 6px; }
+#toc li.l3 a { padding-left: 22px; font-size: 12px; letter-spacing: .3px; text-transform: none; }
+#toc a:hover { color: var(--text-primary); background: var(--bg-button-hover); }
+#toc a[aria-current] { color: var(--text-primary); background: var(--bg-button-active); box-shadow: inset 2px 0 0 var(--accent-text); }
+.scrim { display: none; }
+@media (min-width: 960px) {
+  .layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); }
+  #toc { position: sticky; top: var(--header); height: calc(100vh - var(--header)); }
+  body.nav-closed .layout { grid-template-columns: minmax(0, 1fr); }
+  body.nav-closed #toc { display: none; }
+}
+@media (max-width: 959.98px) {
+  #toc {
+    position: fixed; top: var(--header); bottom: 0; left: 0; z-index: 25;
+    width: min(300px, 86vw);
+    transform: translateX(-100%); visibility: hidden;
+    transition: transform .2s ease, visibility .2s;
+  }
+  body.nav-open #toc { transform: none; visibility: visible; }
+  body.nav-open .scrim { display: block; position: fixed; inset: var(--header) 0 0 0; z-index: 20; background: rgba(0, 0, 0, .5); }
+}
+
+/* The guide. */
+main { min-width: 0; max-width: 900px; padding: 28px 28px 80px; }
+h1 { font: 700 20px/1.3 var(--font-mono); letter-spacing: 2px; text-transform: uppercase; color: var(--text-primary); margin: 4px 0 16px; }
+.panel { margin: 22px 0; padding: 18px 22px; background: var(--bg-panel); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); }
+h2, h3 { display: flex; align-items: center; gap: 8px; color: var(--text-primary); }
+h2 { font: 500 14px/1.4 var(--font-mono); letter-spacing: 2px; text-transform: uppercase; margin: 0 0 14px; }
+h3 { font: 500 15px/1.4 var(--font-mono); letter-spacing: .3px; margin: 28px 0 10px; }
+.hlink {
+  display: inline-grid; place-items: center; flex: none;
+  width: 26px; height: 26px; border-radius: var(--radius-md); border: 1px solid transparent;
+  color: var(--text-dim); opacity: 0; transition: opacity .15s;
+}
+h2:hover .hlink, h3:hover .hlink, .hlink:focus-visible { opacity: 1; border-color: var(--border); }
+.hlink:hover { color: var(--accent-text); }
+@media (hover: none) { .hlink { opacity: .7; } }
+.copied { font: 500 10.5px var(--font-mono); letter-spacing: .5px; text-transform: none; color: var(--accent-text); }
+p, li { max-width: 72ch; }
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 14px; padding-left: 22px; }
+li + li, li > ul { margin-top: 4px; }
+a { color: var(--accent-text); text-decoration-color: color-mix(in srgb, var(--accent-text) 40%, transparent); text-underline-offset: 2px; }
+a:hover { text-decoration-color: currentColor; }
+strong { color: var(--text-primary); font-weight: 600; }
+sup { line-height: 0; }
+sup a { font: 600 .78em var(--font-mono); text-decoration: none; }
+small { font-size: .8em; }
+code { overflow-wrap: anywhere; font: .88em var(--font-mono); background: var(--bg-code); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: .05em .35em; }
+pre { margin: 0 0 14px; padding: 12px 14px; overflow-x: auto; background: var(--bg-code); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); font: 13px/1.6 var(--font-mono); color: var(--text-secondary); }
+pre code { font: inherit; background: none; border: 0; padding: 0; }
+blockquote {
+  margin: 0 0 16px; padding: 10px 14px;
+  background: color-mix(in srgb, var(--color-success) 7%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-success) 28%, transparent);
+  border-radius: var(--radius-lg);
+}
+blockquote p { margin: 0; }
+
+/* Screenshots (docs/images/, embedded at 2x by playbuild.guide). */
+.panel img { display: block; max-width: 100%; height: auto; margin: 12px 0 18px; border-radius: var(--radius-lg); }
+/* Tables: ordinary ones quiet, pad tables as pads (stripe on tint, bright = the default). */
+.table, .pads { overflow-x: auto; margin: 12px 0 18px; }
+.table table { border-collapse: collapse; font-size: 14px; }
+.table th { padding: 8px 10px; text-align: left; font: 500 11px var(--font-mono); letter-spacing: .8px; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+.table td { padding: 8px 10px; vertical-align: top; border-bottom: 1px solid var(--border-subtle); }
+/* Pad tables are laid out as flex rows so each pad can be square (a table cell ignores aspect-ratio); cells stay
+   blocks, so <br> works, and align-content centres them. A pad whose text does not fit grows taller. */
+.pads table { --label: 112px; --gap: 5px; display: block; min-width: 640px; font: 400 12px/1.3 var(--font-mono); }
+.pads thead, .pads tbody { display: flex; flex-direction: column; gap: var(--gap); }
+.pads thead { margin-bottom: var(--gap); }
+.pads tr { display: flex; gap: var(--gap); }
+/* An explicit width: with flex-basis 0 a free pad's side borders would make it wider than the rest. min-width 0: a
+   long word must not widen its pad (with aspect-ratio, the row too); it hyphenates instead. */
+.pads th, .pads td { display: block; flex: 0 0 calc((100% - var(--label) - 8 * var(--gap)) / 8); min-width: 0; box-sizing: border-box; hyphens: auto; }
+.pads th { padding: 2px 0; text-align: center; font: 400 11px var(--font-mono); color: var(--text-dim); }
+.pads tr > :first-child { flex: 0 0 var(--label); }
+.pads th:first-child { text-align: left; }
+.pads td { padding: 4px 2px; text-align: center; align-content: center; color: var(--text-dim); font-size: 11.5px; }
+.pads td.rl { padding-left: 0; text-align: left; color: var(--text-dim); }
+.pads td.rl small { font-size: 10.5px; }
+.pads td.pad {
+  aspect-ratio: 1; padding: 9px 4px 8px; border-radius: var(--radius-md);
+  font-size: 12px; color: var(--text-secondary);
+  background: color-mix(in srgb, var(--c) var(--pad-dim), var(--bg-pad));
+  border-top: 3px solid color-mix(in srgb, var(--c) var(--pad-stripe), var(--bg-pad));
+}
+.pads td.pad.on { color: var(--text-primary); font-weight: 500; background: color-mix(in srgb, var(--c) var(--pad-bright), var(--bg-pad)); border-top-color: var(--c); text-shadow: var(--pad-on-shadow); }
+.pads td.pad.free { background: var(--bg-pad-free); border: 1px solid var(--border-subtle); color: var(--text-dim); }
+.pads td.pad a { color: inherit; text-decoration-style: dotted; }
+.pads td.pad small { font-size: 10px; color: var(--text-dim); }
+.pads td.pad.on small { color: var(--text-secondary); }
+.pad.w { --c: var(--pad-w); } .pad.b { --c: var(--pad-b); } .pad.g { --c: var(--pad-g); }
+.pad.m { --c: var(--pad-m); } .pad.o { --c: var(--pad-o); } .pad.y { --c: var(--pad-y); }
+.pad.c { --c: var(--pad-c); } .pad.v { --c: var(--pad-v); }
+.padkey { margin: -8px 0 18px; font: 400 11px var(--font-mono); letter-spacing: .3px; color: var(--text-dim); }
+
+footer { margin-top: 32px; font: 400 11px var(--font-mono); letter-spacing: .5px; color: var(--text-dim); }
+/* The site's pages: buttons in the header, at the top of the menu when the header is too narrow for them. */
+#toc ul.pages { display: none; }
+@media (max-width: 760px) {
+  .btn.pg { display: none; }
+  #toc ul.pages { display: block; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border-subtle); }
+}
+@media (max-width: 600px) {
+  main { padding: 16px 16px 60px; }
+  .panel { margin: 16px 0; padding: 14px; border-radius: var(--radius-lg); }
+  body { font-size: 15px; }
+  .brand .name { font-size: 14px; }
+}
+</style>
+</head>
+<body>
+<a class="skip btn" href="#main">Skip to the content</a>
+<header class="top">
+  <button class="btn icon" id="burger" type="button" aria-controls="toc" aria-expanded="true" aria-label="Contents">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+  <a class="brand" href="#top"><span class="name">CTPLAY</span><span class="sub">{{subtitle}} · {{version}}</span></a>
+  <div class="actions">
+    <a class="btn pg" href="/">Guide</a>
+    <a class="btn pg" href="/recipes/">Recipes</a>
+    <a class="btn pg" href="/uploader/">Uploader</a>
+    <a class="btn" href="https://ctctrl.com">CTCtrl ↗</a>
+    <button class="btn icon" id="theme" type="button" aria-label="Switch theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg>
+    </button>
+  </div>
+</header>
+<div class="layout" id="top">
+  <nav id="toc" aria-label="Contents"><ul class="pages"><li class="l2"><a href="/">Guide</a></li><li class="l2"><a href="/recipes/">Recipes</a></li><li class="l2"><a href="/uploader/">Uploader</a></li></ul><ul>{{toc}}</ul></nav>
+  <div class="scrim" id="scrim"></div>
+  <main id="main">
+{{body}}
+    <footer>Generated from <code>docs/{{source}}</code>. Questions and ideas: <a href="{{repo}}/discussions">Discussions</a> · bugs: <a href="{{repo}}/issues">Issues</a>. The official firmware is Novation's proprietary code: install it only on a Circuit Tracks. CTPlay is not affiliated with Novation. Circuit Tracks, Components and Novation are trademarks of Focusrite Audio Engineering Ltd.</footer>
+  </main>
+</div>
+<script>
+(function () {
+  var root = document.documentElement, body = document.body;
+  var wide = window.matchMedia("(min-width: 960px)");
+  var burger = document.getElementById("burger"), nav = document.getElementById("toc"), scrim = document.getElementById("scrim");
+
+  function shown() { return wide.matches ? !body.classList.contains("nav-closed") : body.classList.contains("nav-open"); }
+  function sync() { burger.setAttribute("aria-expanded", String(shown())); }
+  function closeOverlay() { body.classList.remove("nav-open"); sync(); }
+  burger.addEventListener("click", function () { body.classList.toggle(wide.matches ? "nav-closed" : "nav-open"); sync(); });
+  scrim.addEventListener("click", closeOverlay);
+  nav.addEventListener("click", function (e) { if (e.target.closest("a") && !wide.matches) closeOverlay(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && body.classList.contains("nav-open")) { closeOverlay(); burger.focus(); }
+  });
+  if (wide.addEventListener) wide.addEventListener("change", sync); else wide.addListener(sync);
+  sync();
+
+  /* Theme: the system's unless the reader picked one (remembered when the browser allows it). */
+  var themeBtn = document.getElementById("theme"), light = window.matchMedia("(prefers-color-scheme: light)");
+  function theme() { return root.dataset.theme || (light.matches ? "light" : "dark"); }
+  function label() { themeBtn.setAttribute("aria-label", theme() === "dark" ? "Switch to light theme" : "Switch to dark theme"); }
+  themeBtn.addEventListener("click", function () {
+    var next = theme() === "dark" ? "light" : "dark";
+    paintTheme(next);
+    try { localStorage.setItem("ctplay-guide-theme", next); } catch (e) {}
+    label();
+  });
+  if (light.addEventListener) light.addEventListener("change", label);
+  label();
+
+  /* The menu marks the section being read. */
+  var links = {}, current = null;
+  nav.querySelectorAll('a[href^="#"]').forEach(function (a) { links[a.getAttribute("href").slice(1)] = a; });
+  var heads = Array.prototype.slice.call(document.querySelectorAll("main h2[id], main h3[id]"));
+  function mark() {
+    var line = 90, id = null;
+    for (var i = 0; i < heads.length; i++) { if (heads[i].getBoundingClientRect().top <= line) id = heads[i].id; else break; }
+    /* At the bottom the last short sections never reach the line: the linked one, else the last one on screen. */
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+      var target = document.getElementById(location.hash.slice(1)), shown = null;
+      for (var j = 0; j < heads.length; j++) { if (heads[j].getBoundingClientRect().top < window.innerHeight) shown = heads[j]; }
+      if (target && heads.indexOf(target) >= 0 && target.getBoundingClientRect().top < window.innerHeight) id = target.id;
+      else if (shown) id = shown.id;
+    }
+    var a = id && links[id];
+    if (a === current) return;
+    if (current) current.removeAttribute("aria-current");
+    current = a || null;
+    if (current) {
+      current.setAttribute("aria-current", "true");
+      var top = current.offsetTop;
+      if (top < nav.scrollTop + 40 || top > nav.scrollTop + nav.clientHeight - 60) nav.scrollTop = top - nav.clientHeight / 3;
+    }
+  }
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(mark, { rootMargin: "-80px 0px -60% 0px" });
+    heads.forEach(function (h) { io.observe(h); });
+  }
+  window.addEventListener("load", mark);
+  window.addEventListener("hashchange", mark);
+  window.addEventListener("scroll", function () { if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) mark(); }, { passive: true });
+  mark();
+
+  /* A heading's link icon copies the section's link; without the clipboard it is a plain link. */
+  function flash(a, text) {
+    var s = a.parentNode.querySelector(".copied");
+    if (!s) { s = document.createElement("span"); s.className = "copied"; s.setAttribute("role", "status"); a.parentNode.insertBefore(s, a.nextSibling); }
+    s.textContent = text;
+    clearTimeout(s._t);
+    s._t = setTimeout(function () { s.remove(); }, 1500);
+  }
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("a.hlink");
+    if (!a || !navigator.clipboard || !window.isSecureContext) return;
+    var id = a.getAttribute("href").slice(1), url = location.href.split("#")[0] + "#" + id;
+    e.preventDefault();
+    try { history.replaceState(null, "", "#" + id); } catch (err) {}
+    try {
+      navigator.clipboard.writeText(url).then(function () { flash(a, "Link copied"); }, function () { location.hash = id; });
+    } catch (err) { location.hash = id; }
+  });
+})();
+</script>
+</body>
+</html>

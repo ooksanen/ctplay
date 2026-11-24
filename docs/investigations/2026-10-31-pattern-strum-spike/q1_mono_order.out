@@ -1,0 +1,8 @@
+FAIL mono written q on medium falling triad + bass: order [55, 51, 48, 36], first 7/0 start 42; tasks ['main:note-off', 'main:note-off', 'main:note-off', 'main:note-off']
+        note 55: want (7, 0, 21), got []
+        note 51: want (7, 2, 19), got []
+        mono steps: {4: [30, 31], 5: [30, 31], 6: [30, 31], 7: [48], 8: [36], 9: [30, 31], 10: [30, 31], 11: [30, 31]}
+        commit order: [55, 51, 36, 48]
+OK   mono written q on slow falling triad + bass: order [55, 51, 48, 36], first 7/0 start 42; tasks ['main:note-off', 'main:note-off', 'main:note-off', 'main:note-off']
+        mono steps: {4: [30, 31], 5: [30, 31], 6: [30, 31], 7: [51, 55], 8: [48], 9: [36], 10: [30, 31], 11: [30, 31]}
+        commit order: [55, 51, 36, 48]

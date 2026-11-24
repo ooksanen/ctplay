@@ -1,0 +1,10 @@
+[Clear step: 1-16 shown, stopped, pad 3] fill calls 1 [ui], r0 = Synth [0]'s editor; r1: edit store buffer x1
+   shown 0; selected now 3; step 3: [0] = 0, [2]/[3] = 00 00; steps with [2]/[3] != 0 in pattern 0: 1 zero (others kept: True)
+[Clear step: 17-32 shown, stopped, pad 4] fill calls 1 [ui], r0 = Synth [0]'s editor; r1: edit store buffer x1
+   shown 0; selected now 20; step 20: [0] = 0, [2]/[3] = 00 00; steps with [2]/[3] != 0 in pattern 0: 1 zero (others kept: True)
+[Clear step: playing (follow), pad 6] fill calls 1 [ui], r0 = Synth [0]'s editor; r1: edit store buffer x1
+   shown 0; selected now 0; step 6: [0] = 0, [2]/[3] = 00 00; steps with [2]/[3] != 0 in pattern 0: 1 zero (others kept: True)
+[Clear pattern: shown, stopped (pattern 0)] fill calls 32 [ui], r0 = Synth [0]'s editor; r1: pattern 0 step x32 (steps 0..31)
+   pattern 0: steps with [2]/[3] != 0: []; notes left []; other patterns kept True
+[Clear pattern: not shown, playing P3 (pattern 1)] fill calls 32 [ui], r0 = Synth [0]'s editor; r1: pattern 1 step x32 (steps 0..31)
+   pattern 1: steps with [2]/[3] != 0: []; notes left []; other patterns kept True

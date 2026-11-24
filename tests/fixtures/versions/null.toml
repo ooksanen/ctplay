@@ -1,0 +1,4 @@
+marker = "SLT0"
+description = "Test only, never flashed: SL00D's hook points with handlers that change nothing."
+feature_dirs = ["../features"]
+features = ["null_hooks"]

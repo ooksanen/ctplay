@@ -1,0 +1,64 @@
+cave 0x805ce00 80f001004cf28412c2f2030200231168a94204d004320133042bf8d170474cf20001c2f20601c91808710a7802b100207047 50 B; site 0x803fe8c 1cf0b8ff
+
+== S0 stock, quantise on (snapshot) ==
+   bit12=0 rec+0x35=[1, 1, 1, 1] tick=0 LED48=0x02
+    drum 0 +0x30..+0x3F: 88 8d 03 20 08 01 f7 04 a8 cd 03 20 ac cd 03 20
+    drum 1 +0x30..+0x3F: 88 8d 03 20 08 01 61 f1 18 ce 03 20 1c ce 03 20
+    drum 2 +0x30..+0x3F: 88 8d 03 20 08 01 4f bd 88 ce 03 20 8c ce 03 20
+    drum 3 +0x30..+0x3F: 88 8d 03 20 08 01 8f 93 f8 ce 03 20 fc ce 03 20
+   hit step 5+2: ['s5/micro0'] bit12=0 rec+0x35=[1, 1, 1, 1] tick=40 LED48=0x53
+   hit step 9+4: ['s10/micro0'] bit12=0 rec+0x35=[1, 1, 1, 1] tick=64 LED48=0x53
+   pattern: s5:v96/m000001/p7 s10:v96/m000001/p7
+
+== S1 stock, Shift+Record while stopped (quantise off) ==
+   after Shift+Record: bit12=1 rec+0x35=[1, 1, 1, 1] tick=0 LED48=0x02
+    drum 0 +0x30..+0x3F: 88 8d 03 20 08 01 f7 04 a8 cd 03 20 ac cd 03 20
+    drum 1 +0x30..+0x3F: 88 8d 03 20 08 01 61 f1 18 ce 03 20 1c ce 03 20
+    drum 2 +0x30..+0x3F: 88 8d 03 20 08 01 4f bd 88 ce 03 20 8c ce 03 20
+    drum 3 +0x30..+0x3F: 88 8d 03 20 08 01 8f 93 f8 ce 03 20 fc ce 03 20
+   after Record, Play: bit12=1 rec+0x35=[1, 1, 1, 1] tick=0 LED48=0x53
+   hit step 5+2: ['s5/micro2'] bit12=1 rec+0x35=[0, 0, 0, 0] tick=40 LED48=0x53
+   hit step 9+4: ['s9/micro4'] bit12=1 rec+0x35=[0, 0, 0, 0] tick=64 LED48=0x53
+   pattern: s5:v96/m000100/p7 s9:v96/m010000/p7
+
+== S2 stock, direct write rec+0x35 = 0 mid-step (no patch) ==
+   written at step 5+1: bit12=0 rec+0x35=[0, 0, 0, 0] tick=31 LED48=0x53
+   hit step 5+2: ['s5/micro2'] bit12=0 rec+0x35=[1, 1, 1, 1] tick=40 LED48=0x53
+   hit step 9+4: ['s10/micro0'] bit12=0 rec+0x35=[1, 1, 1, 1] tick=64 LED48=0x53
+   pattern: s5:v96/m000100/p7 s10:v96/m000001/p7
+
+== S3 patched, override never set: same as S0 ==
+   hit step 5+2: ['s5/micro0'] bit12=0 rec+0x35=[1, 1, 1, 1] tick=40 LED48=0x53
+   hit step 9+4: ['s10/micro0'] bit12=0 rec+0x35=[1, 1, 1, 1] tick=64 LED48=0x53
+   pattern: s5:v96/m000001/p7 s10:v96/m000001/p7  shadow 01010101
+
+== S4 patched: stock quantise on, override, hits, restore, hits ==
+   before: bit12=0 rec+0x35=[1, 1, 1, 1] tick=0 LED48=0x53
+   override at step 3+3: bit12=0 rec+0x35=[0, 0, 0, 0] tick=21 LED48=0x53
+   hit step 5+2: ['s5/micro2'] bit12=0 rec+0x35=[0, 0, 0, 0] tick=40 LED48=0x53
+   hit step 9+4: ['s9/micro4'] bit12=0 rec+0x35=[0, 0, 0, 0] tick=64 LED48=0x53
+   hit step 12+0: ['s12/micro0'] bit12=0 rec+0x35=[0, 0, 0, 0] tick=82 LED48=0x53
+   hit step 14+5: ['s14/micro5'] bit12=0 rec+0x35=[0, 0, 0, 0] tick=94 LED48=0x53
+   note recorders' rec+0x35 during override: [1, 1, 1, 1] (stock value = !bit12)
+   restore at step 16+2: bit12=0 rec+0x35=[1, 1, 1, 1] tick=98 LED48=0x53
+   hit step 17+2: ['s17/micro0'] bit12=0 rec+0x35=[1, 1, 1, 1] tick=112 LED48=0x53
+   hit step 21+4: ['s22/micro0'] bit12=0 rec+0x35=[1, 1, 1, 1] tick=136 LED48=0x53
+   pattern: s5:v96/m000100/p7 s9:v96/m010000/p7 s12:v96/m000001/p7 s14:v96/m100000/p7 s17:v96/m000001/p7 s22:v96/m000001/p7
+
+== S5 patched vs stock: user Shift+Record during the override, restore (a) after a step boundary, (b) mid-step right after ==
+  (a) after restore: stock bit12=0 rec+0x35=[1, 1, 1, 1] tick=56 LED48=0x53
+                      patched bit12=0 rec+0x35=[1, 1, 1, 1] tick=56 LED48=0x53
+   hit step 11+2: stock ['s11/micro0']  patched ['s11/micro0']  SAME
+   hit step 13+4: stock ['s14/micro0']  patched ['s14/micro0']  SAME
+   flags equal now: True
+  (b) after restore: stock bit12=0 rec+0x35=[0, 0, 0, 0] tick=44 LED48=0x53
+                      patched bit12=0 rec+0x35=[0, 0, 0, 0] tick=44 LED48=0x53
+   hit step 11+2: stock ['s11/micro0']  patched ['s11/micro0']  SAME
+   hit step 13+4: stock ['s14/micro0']  patched ['s14/micro0']  SAME
+   flags equal now: True
+
+== S6 patched: user Shift+Record (quantise off) during override, restore -> stays unquantised (stock's own value) ==
+   stock   bit12=1 rec+0x35=[0, 0, 0, 0] tick=49 LED48=0x53
+   patched bit12=1 rec+0x35=[0, 0, 0, 0] tick=49 LED48=0x53
+   hit step 10+2: stock ['s10/micro2']  patched ['s10/micro2']  SAME
+   hit step 13+4: stock ['s13/micro4']  patched ['s13/micro4']  SAME

@@ -1,0 +1,36 @@
+notes track 1 playing 0 follow 0 step held 0 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+   row 3 / row 4 LEDs (pads 16-31) while pad 27 is held: 6c 6d 6e 6f 70 71 72 73 00 00 00 00 00 00 00 00
+notes track 1 playing 0 follow 0 step held 0 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+notes track 1 playing 0 follow 0 step held 1 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+notes track 1 playing 0 follow 0 step held 1 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+notes track 1 playing 0 follow 1 step held 0 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+notes track 1 playing 0 follow 1 step held 0 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+notes track 1 playing 0 follow 1 step held 1 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+notes track 1 playing 0 follow 1 step held 1 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+notes track 1 playing 1 follow 0 step held 0 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+notes track 1 playing 1 follow 0 step held 0 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+notes track 1 playing 1 follow 0 step held 1 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+notes track 1 playing 1 follow 0 step held 1 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+notes track 1 playing 1 follow 1 step held 0 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+notes track 1 playing 1 follow 1 step held 0 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+notes track 1 playing 1 follow 1 step held 1 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+notes track 1 playing 1 follow 1 step held 1 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 0 follow 0 step held 0 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+   row 3 / row 4 LEDs (pads 16-31) while pad 27 is held: 6c 6d 6e 6f 70 71 72 73 00 00 00 00 00 00 00 00
+drums track 4 playing 0 follow 0 step held 0 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 0 follow 0 step held 1 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 0 follow 0 step held 1 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 0 follow 1 step held 0 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 0 follow 1 step held 0 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 0 follow 1 step held 1 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 0 follow 1 step held 1 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 1 follow 0 step held 0 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 1 follow 0 step held 0 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 1 follow 0 step held 1 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 1 follow 0 step held 1 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 1 follow 1 step held 0 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 1 follow 1 step held 0 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 1 follow 1 step held 1 shift 0: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+drums track 4 playing 1 follow 1 step held 1 shift 1: NOTHING; view pad args [8, 9, 10, 11, 12, 13, 14, 15], returns 8, writes 0, view releases (no-op 0x0804759A) 8, sinks 0 vs 0, endpoints 0 vs 0, RAM diff none
+cases with a difference: 0
+control, drums, one row-3 press vs none (B -> A): 0x2001e5d0: 07 -> 03; 0x2003ad35: ff -> fe; 0x2003ad6c: 07 -> 03; 0x20043900: 70007100720073 -> 00000000000000

@@ -1,0 +1,5 @@
+# Published: rebuild PL15 from git tag PL15 (features/link changed after it); at a later commit this file builds
+# the current sources under PL15's marker, which is NOT the published PL15.
+marker = "PL15"
+description = "CTPlay PL14 + the Chords page reworked: shapes on rows 1-2 (the Quick view), five more shapes, voice leading (close, top line, bottom line); notes held past 16 steps recorded whole; and two small fixes."
+features = ["chord", "countin", "saved", "link", "recfix"]

@@ -1,0 +1,29 @@
+== the step a row-3 press edits, and the handler's reading at a row-4 press in the same state
+  notes playing 0 follow-off(p0=1) 0 held 0: handler reads pattern 0 step 5 (held flag 0); row 3 edited pattern 0 steps [5] -> MATCH; store word 0 01 07 00 00 = pattern step's word 0 True; [[view+0xC]+8] = [editor + 0x20] True
+  notes playing 0 follow-off(p0=1) 0 held 1: handler reads pattern 0 step 2 (held flag 1); row 3 edited pattern 0 steps [2] -> MATCH; store word 0 01 07 00 00 = pattern step's word 0 True; [[view+0xC]+8] = [editor + 0x20] True
+  notes playing 1 follow-off(p0=1) 0 held 1: handler reads pattern 0 step 2 (held flag 1); row 3 edited pattern 0 steps [2] -> MATCH; store word 0 01 07 00 00 = pattern step's word 0 True; [[view+0xC]+8] = [editor + 0x20] True
+  notes playing 1 follow-off(p0=1) 1 held 0: handler reads pattern 0 step 5 (held flag 0); row 3 edited pattern 0 steps [5] -> MATCH; store word 0 01 07 00 00 = pattern step's word 0 True; [[view+0xC]+8] = [editor + 0x20] True
+  notes playing 1 follow-off(p0=1) 0 held 0: handler reads pattern 0 step 0 (held flag 0); row 3 edited pattern 0 steps [] -> refused by stock; store word 0 01 07 00 00 = pattern step's word 0 True; [[view+0xC]+8] = [editor + 0x20] True
+  drums playing 0 follow-off(p0=1) 0 held 0: handler reads pattern 0 step 5 (held flag 0); row 3 edited pattern 0 steps [5] -> MATCH; [[view+0xC]+8] p0 = 0
+  drums playing 0 follow-off(p0=1) 0 held 1: handler reads pattern 0 step 2 (held flag 1); row 3 edited pattern 0 steps [2] -> MATCH; [[view+0xC]+8] p0 = 0
+  drums playing 1 follow-off(p0=1) 0 held 1: handler reads pattern 0 step 2 (held flag 1); row 3 edited pattern 0 steps [2] -> MATCH; [[view+0xC]+8] p0 = 0
+  drums playing 1 follow-off(p0=1) 1 held 0: handler reads pattern 0 step 5 (held flag 0); row 3 edited pattern 0 steps [5] -> MATCH; [[view+0xC]+8] p0 = 0
+  drums playing 1 follow-off(p0=1) 0 held 0: handler reads pattern 0 step 0 (held flag 0); row 3 edited pattern 0 steps [] -> refused by stock; [[view+0xC]+8] p0 = 0
+
+== bytes 2-3 through the store (param_wptr p0 + commit), Synth 2, each accept case
+  playing 0 follow-off 0 held 0: selected (pattern 0, step 5); pattern bytes changed: ['note track 1 pattern 0 step 5 byte 2']; step now 01 07 a5 01
+  playing 0 follow-off 0 held 1: selected (pattern 0, step 2); pattern bytes changed: ['note track 1 pattern 0 step 2 byte 2']; step now 01 07 a5 01
+  playing 1 follow-off 1 held 0: selected (pattern 0, step 5); pattern bytes changed: ['note track 1 pattern 0 step 5 byte 2']; step now 01 07 a5 01
+  playing 1 follow-off 0 held 1: selected (pattern 0, step 2); pattern bytes changed: ['note track 1 pattern 0 step 2 byte 2']; step now 01 07 a5 01
+
+== the selected step moving between a row-4 press and its release (Synth 2, playing, follow on = p0 0)
+  latched at the press (step 3 held): (0, 2); at the release 150 ms later (step pad let go first): selected (0, 1): a write through the store would land on step 1, not 2
+
+== the first write's clear-all: bytes 2-3 of each note track's edit store word 0 -> 0, commit
+  stopped, synced stores: pattern bytes changed by the 4 commits: none; outside patterns and the stores: none
+     stores' word 0 bytes 2-3 now: ['00 00', '00 00', '00 00', '00 00']
+  playing: pattern bytes changed by the 4 commits: none; outside patterns and the stores: none
+     stores' word 0 bytes 2-3 now: ['00 00', '00 00', '00 00', '00 00']
+  stopped, a stale store (pattern edited raw): pattern bytes changed by the 4 commits: ['note track 2 pattern 0 step 0 byte 0']; outside patterns and the stores: none
+     stores' word 0 bytes 2-3 now: ['00 00', '00 00', '00 00', '00 00']
+     the stale step (track 2 pattern 0 step 0): raw edit kept True (unit 0 3c 06 00 63 -> 3c 06 00 63; [0] 0x1 -> 0x0)

@@ -1,0 +1,5 @@
+# Published and device-tested: rebuild PL04D from git tag PL04D (features/chord changed after it); at a later commit this
+# file builds the current sources under PL04D's marker, which is NOT the published PL04D.
+marker = "PL04D"
+description = "Diagnostic: PL04 plus the voice log read over USB SysEx (slim/pages/voice_log.html)."
+features = ["chord", "voice_log"]

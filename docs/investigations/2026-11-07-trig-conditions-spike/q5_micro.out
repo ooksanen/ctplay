@@ -1,0 +1,15 @@
+== hook sites
+   entry 0x0804f036 +4: 06292de9     no: 4 displaced bytes do not end on an instruction boundary
+   entry 0x0804f036 +6: 06292de9f047 PASS
+   mid   0x0804f0fe +4: 384600f0     no: 4 displaced bytes do not end on an instruction boundary
+   mid   0x0804f104 +4: f8684146     PASS
+   mid   0x0804f106 +4: 4146e6f7     no: 4 displaced bytes do not end on an instruction boundary
+
+== emulation: the site at 0x0804F104 (mid, after the micro byte is written back, before the velocity clear)
+   drum 1 step 4, micro 0x01, pad 16 (bit 0 off: empties): velocity 90 -> 0, micro 0x01 -> 0x00; site reached 1x view 0x2004364c (class 0x805aaa4), sl = step 3, drum 0, shown pattern 0
+   drum 1 step 4, micro 0x03, pad 16 (bit 0 off, bit 1 left): velocity 90 -> 90, micro 0x03 -> 0x02; site reached 0x 
+   drum 1 step 4, micro 0x04, pad 18 (bit 2 off: empties): velocity 90 -> 0, micro 0x04 -> 0x00; site reached 1x view 0x2004364c (class 0x805aaa4), sl = step 3, drum 0, shown pattern 0
+   drum 1 empty step 9, pad 17 (adds a hit, micro 0x02): velocity 0 -> 96, micro 0x00 -> 0x02; site reached 0x 
+   drum 2 step 4, micro 0x01, pad 16: velocity 90 -> 0, micro 0x01 -> 0x00; site reached 1x view 0x20043690 (class 0x805aaa4), sl = step 3, drum 1, shown pattern 0
+   drum 1 step 21 (17-32 shown), micro 0x20, pad 21: velocity 90 -> 0, micro 0x20 -> 0x00; site reached 1x view 0x2004364c (class 0x805aaa4), sl = step 20, drum 0, shown pattern 0
+   drum 1 step 4, micro 0x01, pad 16, playing (follow off): velocity 90 -> 0, micro 0x01 -> 0x00; site reached 1x view 0x2004364c (class 0x805aaa4), sl = step 3, drum 0, shown pattern 0

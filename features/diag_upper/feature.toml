@@ -1,0 +1,18 @@
+name = "diag_upper"
+description = "SL01D: fills the RAM above stock's heap (0x20044E58-0x2004F000) with an address pattern at the first hook call, watches it and the top 4 KB of RAM (the main stack) all session; Shift + Drum 4 shows the result on the pads."
+sources = ["diag_upper.c"]
+init = "diag_upper_init"
+
+[budget]
+ram = 96
+stack = 96
+
+[[hook]]
+point = "button_press"
+handler = "diag_upper_on_button"
+priority = 50
+
+[[hook]]
+point = "led_task"
+handler = "diag_upper_on_leds"
+priority = 50

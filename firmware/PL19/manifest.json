@@ -1,0 +1,1034 @@
+{
+  "base": "circuittracks-firmware-4486 (1.2.1)",
+  "slim_version": "PL19",
+  "marker": "PL19",
+  "description": "CTPlay PL18 + pattern strum (Keys page pads 3-4): played (strummed on playback) or written (a roll in the pattern).",
+  "features": [
+    "chord",
+    "countin",
+    "recfix",
+    "saved",
+    "link"
+  ],
+  "toolchain": "arm-none-eabi-gcc (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
+  "image_size": "0x55380",
+  "image_sha256": "29830d5ef20cb36d4410609baa36b16540a4a1edc7a25bb5b1009a21bc8c0383",
+  "syx_sha256": "e6ccb9775d10d2c1ea89302c998a87d791321ca986257a9f80d7423018ef91d5",
+  "crc32": "0xd8d02b1",
+  "flash": {
+    "start": "0x805cde0",
+    "end": "0x8065380",
+    "used": 34208,
+    "size": 143904
+  },
+  "ram": {
+    "start": "0x20044de0",
+    "end": "0x20044e58",
+    "used": 116,
+    "size": 240
+  },
+  "stack": {
+    "chord_on_pad": 316,
+    "chord_on_release": 152,
+    "chord_off_pad": 144,
+    "chord_on_leds": 368,
+    "chord_on_ms": 384,
+    "chord_on_button": 56,
+    "chord_on_headroom": 12,
+    "page_on_pad": 436,
+    "page_on_release": 404,
+    "arp_on_seq_tick": 288,
+    "arp_on_seq_start": 0,
+    "mono_on_commit": 56,
+    "step_on_add": 356,
+    "step_on_press": 276,
+    "pstrum_on_play_step": 88,
+    "pstrum_on_reset": 0,
+    "pstrum_on_off_commit": 128,
+    "pstrum_on_pass_commit": 136,
+    "repeat_on_quant": 16,
+    "chord_init": 48,
+    "ci_on_button": 24,
+    "ci_on_ms": 32,
+    "ci_on_leds": 32,
+    "ci_init": 0,
+    "recfix_on_commit": 24,
+    "recfix_after_commit": 80,
+    "saved_on_save": 52,
+    "saved_on_applied": 8,
+    "saved_on_leds": 92,
+    "saved_init": 8,
+    "link_on_sysex": 32,
+    "link_on_leds": 576
+  },
+  "stack_uncounted_callees": {
+    "chord_on_pad": [
+      "kbd_pad_ignored",
+      "note_pad_index",
+      "note_sink_off",
+      "note_sink_on",
+      "param_get"
+    ],
+    "chord_on_release": [
+      "note_sink_off",
+      "note_sink_on",
+      "rec_touch"
+    ],
+    "chord_off_pad": [
+      "note_sink_off",
+      "note_sink_on"
+    ],
+    "chord_on_leds": [
+      "kbd_pad_ignored",
+      "note_pad_index",
+      "param_get",
+      "track_of"
+    ],
+    "chord_on_ms": [
+      "note_sink_off",
+      "note_sink_on",
+      "param_get",
+      "seq_end_entry",
+      "seq_note_on"
+    ],
+    "chord_on_button": [
+      "cont_select_track",
+      "cont_track_view",
+      "ctrl_set_view",
+      "param_get",
+      "track_of"
+    ],
+    "chord_on_headroom": [],
+    "page_on_pad": [
+      "param_get",
+      "track_of"
+    ],
+    "page_on_release": [
+      "param_get",
+      "rec_touch",
+      "store_commit",
+      "store_touch_all"
+    ],
+    "arp_on_seq_tick": [
+      "note_sink_off",
+      "note_sink_on",
+      "param_get"
+    ],
+    "arp_on_seq_start": [],
+    "mono_on_commit": [],
+    "step_on_add": [
+      "param_get",
+      "param_wptr",
+      "store_commit"
+    ],
+    "step_on_press": [
+      "kbd_pad_ignored",
+      "note_pad_index",
+      "note_sink_off",
+      "param_get",
+      "param_wptr",
+      "scale_snap",
+      "step_sounds",
+      "store_commit"
+    ],
+    "pstrum_on_play_step": [
+      "param_get"
+    ],
+    "pstrum_on_reset": [],
+    "pstrum_on_off_commit": [
+      "param_get"
+    ],
+    "pstrum_on_pass_commit": [
+      "param_get"
+    ],
+    "repeat_on_quant": [],
+    "chord_init": [],
+    "ci_on_button": [
+      "metro_set",
+      "param_get"
+    ],
+    "ci_on_ms": [
+      "param_get",
+      "synth_note_on"
+    ],
+    "ci_on_leds": [
+      "ctrl_press",
+      "ctrl_release",
+      "param_get"
+    ],
+    "ci_init": [],
+    "recfix_on_commit": [],
+    "recfix_after_commit": [],
+    "saved_on_save": [],
+    "saved_on_applied": [],
+    "saved_on_leds": [],
+    "saved_init": [],
+    "link_on_sysex": [],
+    "link_on_leds": [
+      "param_get",
+      "sysex_out"
+    ]
+  },
+  "entry_stub_stack": 32,
+  "hook_stack": {
+    "button_press": {
+      "bytes": 128,
+      "uncounted": [
+        "cont_select_track",
+        "cont_track_view",
+        "ctrl_set_view",
+        "metro_set",
+        "param_get",
+        "track_of"
+      ]
+    },
+    "ctrl_pad_press": {
+      "bytes": 476,
+      "uncounted": [
+        "param_get",
+        "track_of"
+      ]
+    },
+    "ctrl_pad_release": {
+      "bytes": 444,
+      "uncounted": [
+        "param_get",
+        "rec_touch",
+        "store_commit",
+        "store_touch_all"
+      ]
+    },
+    "led_task": {
+      "bytes": 592,
+      "uncounted": [
+        "ctrl_press",
+        "ctrl_release",
+        "kbd_pad_ignored",
+        "led_task",
+        "note_pad_index",
+        "param_get",
+        "sysex_out",
+        "track_of"
+      ]
+    },
+    "main_ms": {
+      "bytes": 432,
+      "uncounted": [
+        "note_sink_off",
+        "note_sink_on",
+        "param_get",
+        "seq_end_entry",
+        "seq_note_on",
+        "synth_note_on"
+      ]
+    },
+    "note_pad_press": {
+      "bytes": 316,
+      "uncounted": [
+        "kbd_pad_ignored",
+        "note_pad_index",
+        "note_sink_off",
+        "param_get",
+        "param_wptr",
+        "scale_snap",
+        "step_sounds",
+        "store_commit"
+      ]
+    },
+    "pad_note_off": {
+      "bytes": 184,
+      "uncounted": [
+        "note_sink_off",
+        "note_sink_on"
+      ]
+    },
+    "pad_note_on": {
+      "bytes": 356,
+      "uncounted": [
+        "kbd_pad_ignored",
+        "note_pad_index",
+        "note_sink_off",
+        "note_sink_on",
+        "param_get"
+      ]
+    },
+    "pad_release": {
+      "bytes": 192,
+      "uncounted": [
+        "note_sink_off",
+        "note_sink_on",
+        "rec_touch"
+      ]
+    },
+    "rec_commit": {
+      "bytes": 128,
+      "uncounted": []
+    },
+    "rec_committed": {
+      "bytes": 104,
+      "uncounted": [
+        "rec_write"
+      ]
+    },
+    "rec_off_commit": {
+      "bytes": 200,
+      "uncounted": [
+        "param_get"
+      ]
+    },
+    "rec_pass_commit": {
+      "bytes": 208,
+      "uncounted": [
+        "param_get"
+      ]
+    },
+    "rec_quant": {
+      "bytes": 152,
+      "uncounted": []
+    },
+    "seq_end_all": {
+      "bytes": 120,
+      "uncounted": []
+    },
+    "seq_play_step": {
+      "bytes": 136,
+      "uncounted": [
+        "param_get"
+      ]
+    },
+    "seq_start": {
+      "bytes": 120,
+      "uncounted": []
+    },
+    "seq_tick": {
+      "bytes": 328,
+      "uncounted": [
+        "note_sink_off",
+        "note_sink_on",
+        "param_get"
+      ]
+    },
+    "session_applied": {
+      "bytes": 96,
+      "uncounted": [
+        "session_refresh"
+      ]
+    },
+    "session_save": {
+      "bytes": 88,
+      "uncounted": [
+        "session_blobs"
+      ]
+    },
+    "step_add": {
+      "bytes": 396,
+      "uncounted": [
+        "param_get",
+        "param_wptr",
+        "store_commit"
+      ]
+    },
+    "sysex_in": {
+      "bytes": 120,
+      "uncounted": []
+    },
+    "voice_headroom": {
+      "bytes": 96,
+      "uncounted": [
+        "dsp_read"
+      ]
+    }
+  },
+  "stack_uncounted_libgcc": [],
+  "patches": [
+    {
+      "addr": "0x8033320",
+      "bytes": "29f05ebd"
+    },
+    {
+      "addr": "0x8033282",
+      "bytes": "29f0c3bd"
+    },
+    {
+      "addr": "0x80332ce",
+      "bytes": "29f0b3bd00bf"
+    },
+    {
+      "addr": "0x8033b46",
+      "bytes": "29f0d9fa"
+    },
+    {
+      "addr": "0x803415a",
+      "bytes": "28f0cfff"
+    },
+    {
+      "addr": "0x803c410",
+      "bytes": "20f028bd"
+    },
+    {
+      "addr": "0x804ab5a",
+      "bytes": "12f099b9"
+    },
+    {
+      "addr": "0x804af5a",
+      "bytes": "11f0afbf"
+    },
+    {
+      "addr": "0x804aef2",
+      "bytes": "11f0f9bf"
+    },
+    {
+      "addr": "0x804acc4",
+      "bytes": "12f026b9"
+    },
+    {
+      "addr": "0x803f7be",
+      "bytes": "1df0bfbb00bf"
+    },
+    {
+      "addr": "0x803f60c",
+      "bytes": "1df091fd"
+    },
+    {
+      "addr": "0x803f6a2",
+      "bytes": "1df046fd"
+    },
+    {
+      "addr": "0x803f78c",
+      "bytes": "1df0d1fc"
+    },
+    {
+      "addr": "0x803f606",
+      "bytes": "1df0b3bc"
+    },
+    {
+      "addr": "0x803f786",
+      "bytes": "1df009bc"
+    },
+    {
+      "addr": "0x803fe8c",
+      "bytes": "1df09cb8"
+    },
+    {
+      "addr": "0x8040d36",
+      "bytes": "1cf05db9"
+    },
+    {
+      "addr": "0x8040e5a",
+      "bytes": "1cf0e1b8"
+    },
+    {
+      "addr": "0x802c008",
+      "bytes": "31f020b8"
+    },
+    {
+      "addr": "0x802c418",
+      "bytes": "30f02ebe"
+    },
+    {
+      "addr": "0x802f5b4",
+      "bytes": "2df0cffd"
+    },
+    {
+      "addr": "0x802fe5e",
+      "bytes": "2df08bf9"
+    },
+    {
+      "addr": "0x804b094",
+      "bytes": "12f006b8"
+    },
+    {
+      "addr": "0x801eb30",
+      "bytes": "3ef0ceba"
+    },
+    {
+      "addr": "0x80217ea",
+      "bytes": "3bf0d2fc"
+    }
+  ],
+  "symbols": {
+    "AMOUNT_LIMIT": "0x806530a",
+    "BASE": "0x8065301",
+    "COL_DRUM": "0x806534e",
+    "COL_STATE": "0x8065366",
+    "CYCLE_LEN": "0x8065305",
+    "DRUM_COL": "0x8065324",
+    "MAGIC": "0x806536e",
+    "MAGIC2": "0x806536a",
+    "PAGE_COL": "0x8065334",
+    "PARAM_ARRAY": "0x806535b",
+    "QUICK_ROW": "0x806531c",
+    "ROLL_COL": "0x8065344",
+    "ROLL_MICRO": "0x806535f",
+    "SHAPES": "0x80652b3",
+    "SIG": "0x8065379",
+    "STRUM_GAP": "0x8065318",
+    "TICKS": "0x8065352",
+    "WALK": "0x806530e",
+    "WRITTEN_GAP": "0x8065362",
+    "__slim_bss_end": "0x20044e54",
+    "__slim_bss_start": "0x20044de0",
+    "__slim_data_end": "0x20044de0",
+    "__slim_data_start": "0x20044de0",
+    "__slim_itcm_end": "0x4000",
+    "__slim_itcm_start": "0x3578",
+    "__slim_ram_end": "0x20044e54",
+    "__slim_ram_start": "0x20044de0",
+    "__slim_ram_top": "0x20044e58",
+    "above_root": "0x805e30c",
+    "act": "0x20044e20",
+    "active": "0x8063970",
+    "add": "0x805fe94",
+    "armed": "0x20044e22",
+    "arp_acc": "0x20044e1a",
+    "arp_free": "0x805e7f0",
+    "arp_gate_ms": "0x805da74",
+    "arp_gate_ticks": "0x805da44",
+    "arp_index": "0x805daa6",
+    "arp_init": "0x806022c",
+    "arp_on_ms": "0x8060324",
+    "arp_on_seq_start": "0x806049c",
+    "arp_on_seq_tick": "0x80604ac",
+    "arp_on_tick": "0x806026c",
+    "arp_rate_ticks": "0x805da14",
+    "arp_rng": "0x20044e18",
+    "arp_sounding": "0x8060474",
+    "arp_start": "0x20044e16",
+    "arp_tick": "0x20044e1c",
+    "beat_tick": "0x3578",
+    "block": "0x8064acc",
+    "check": "0x8064b08",
+    "check2": "0x8064b4e",
+    "chord_arp": "0x20044df3",
+    "chord_build": "0x805e9f8",
+    "chord_degree_class": "0x805d8a8",
+    "chord_init": "0x805e474",
+    "chord_lead": "0x805d8cc",
+    "chord_link_apply": "0x8061f1c",
+    "chord_link_valid": "0x8061db2",
+    "chord_mono": "0x20044dff",
+    "chord_note_sink": "0x805e5a0",
+    "chord_notes": "0x805d6bc",
+    "chord_off_pad": "0x805ee4c",
+    "chord_on_button": "0x805f1f8",
+    "chord_on_headroom": "0x805f110",
+    "chord_on_leds": "0x805f1fc",
+    "chord_on_ms": "0x805ee64",
+    "chord_on_pad": "0x805eaa4",
+    "chord_on_release": "0x805ee0c",
+    "chord_order": "0x20044dfb",
+    "chord_page": "0x20044e14",
+    "chord_pick_shape": "0x805e9c8",
+    "chord_prev": "0x35d6",
+    "chord_prev_n": "0x35d2",
+    "chord_pstrum": "0x35d0",
+    "chord_room_last": "0x20044dee",
+    "chord_room_n": "0x20044de8",
+    "chord_room_prev": "0x20044dea",
+    "chord_rootless": "0x20044e02",
+    "chord_saved_fix": "0x805e7f4",
+    "chord_send_on": "0x805e5ec",
+    "chord_sending": "0x20044df2",
+    "chord_settings": "0x20044e03",
+    "chord_shape_index": "0x805d690",
+    "chord_shape_tones": "0x805d6a8",
+    "chord_shift_held": "0x805ea88",
+    "chord_step": "0x35d1",
+    "chord_strum": "0x20044e01",
+    "chord_strum_down": "0x20044e00",
+    "chord_track_settings": "0x805e99c",
+    "chord_track_sink": "0x805e5cc",
+    "chord_visible_view": "0x805f1b4",
+    "chord_voice": "0x35f4",
+    "ci_beat": "0x20044e43",
+    "ci_count": "0x20044e45",
+    "ci_done": "0x20044e44",
+    "ci_init": "0x806458c",
+    "ci_link_valid": "0x80645e4",
+    "ci_ms": "0x20044e40",
+    "ci_on": "0x20044e46",
+    "ci_on_button": "0x80645fc",
+    "ci_on_leds": "0x8064720",
+    "ci_on_ms": "0x8064698",
+    "ci_pass": "0x20044e42",
+    "ci_saved_fix": "0x80645c0",
+    "consumed": "0x20044de4",
+    "cont_select_track": "0x805d30c",
+    "cont_track_view": "0x805d314",
+    "crc16": "0x8064b26",
+    "crc8": "0x8064ae4",
+    "ctrl_press": "0x805d31c",
+    "ctrl_release": "0x805d324",
+    "ctrl_set_view": "0x805d32c",
+    "def_chord_arp": "0x806526d",
+    "def_chord_mono": "0x8065275",
+    "def_chord_pstrum": "0x806520c",
+    "def_chord_rootless": "0x8065278",
+    "def_chord_settings": "0x8065279",
+    "def_chord_step": "0x806520d",
+    "def_chord_strum": "0x8065277",
+    "def_chord_strum_down": "0x8065276",
+    "def_chord_voice": "0x8065230",
+    "def_ci_on": "0x8065268",
+    "def_drum_accent": "0x8065212",
+    "def_drum_euclid": "0x8065222",
+    "def_drum_page": "0x806522a",
+    "def_drum_rhythm": "0x8065216",
+    "def_drum_seed": "0x806520e",
+    "def_euclid_cfg": "0x8065260",
+    "def_euclid_last": "0x8065234",
+    "def_melody_cfg": "0x8065254",
+    "def_melody_seed": "0x806524c",
+    "def_melody_vary": "0x806523c",
+    "def_page_quick": "0x8065269",
+    "def_page_slot": "0x806525c",
+    "def_page_sub": "0x8065238",
+    "def_repeat_cfg": "0x806522e",
+    "def_rhythm_cfg": "0x8065240",
+    "degrees_up": "0x805d664",
+    "draw": "0x805f504",
+    "drum_accent": "0x3c63",
+    "drum_euclid": "0x3c73",
+    "drum_has_undo": "0x8062b24",
+    "drum_link_apply": "0x8062c9c",
+    "drum_link_valid": "0x8062bf0",
+    "drum_page": "0x35ee",
+    "drum_put": "0x805d1c8",
+    "drum_rec": "0x8062710",
+    "drum_refresh": "0x8062a74",
+    "drum_rhythm": "0x3c67",
+    "drum_seed": "0x3c5f",
+    "drum_sink": "0x8062000",
+    "drum_slot_exists": "0x805f8f4",
+    "drum_target": "0x8062a3c",
+    "drum_tools_init": "0x80629dc",
+    "drum_tools_saved_fix": "0x8062b3c",
+    "drum_undo": "0x8062aa0",
+    "drum_undo_at": "0x3a5b",
+    "drum_undo_steps": "0x3a5f",
+    "drum_write_to": "0x8062a8a",
+    "dsp_read": "0x805d334",
+    "due": "0x20044e15",
+    "end": "0x805fe24",
+    "entering": "0x3c7c",
+    "euclid_cfg": "0x20044e27",
+    "euclid_cycle": "0x8060894",
+    "euclid_disarm": "0x8060828",
+    "euclid_draw": "0x806117c",
+    "euclid_draw_actions": "0x806128c",
+    "euclid_hits": "0x8060910",
+    "euclid_init": "0x80607a4",
+    "euclid_last": "0x20044e23",
+    "euclid_line": "0x8060a7c",
+    "euclid_link_apply": "0x8061328",
+    "euclid_link_valid": "0x80612e4",
+    "euclid_mask": "0x805db4c",
+    "euclid_pick": "0x8060ec8",
+    "euclid_pool": "0x8060a14",
+    "euclid_release": "0x8061054",
+    "euclid_saved_fix": "0x8061398",
+    "euclid_second": "0x80608cc",
+    "euclid_stamp": "0x806085c",
+    "euclid_target": "0x80607cc",
+    "euclid_unarm": "0x806083c",
+    "euclid_undo_at": "0x3688",
+    "euclid_undo_steps": "0x3689",
+    "euclid_velocity": "0x8065347",
+    "euclid_write_to": "0x8060c08",
+    "hard_of": "0x80627dc",
+    "has_hits": "0x80609f0",
+    "held": "0x357c",
+    "held_at": "0x8062e2c",
+    "hello_port": "0x20044e47",
+    "hit": "0x80620ac",
+    "in_list": "0x8063d80",
+    "in_visit": "0x80604c4",
+    "inflight": "0x3e1c",
+    "kbd_pad_ignored": "0x805d33c",
+    "led_task": "0x805d344",
+    "link_image": "0x8064d6c",
+    "link_on_leds": "0x8064f40",
+    "link_on_sysex": "0x8064e30",
+    "linked_at": "0x8064d40",
+    "lit_others": "0x805e3f8",
+    "mask_ok": "0x8061d9c",
+    "melody_accent": "0x805e158",
+    "melody_accent_col": "0x806534a",
+    "melody_after_pick": "0x8060878",
+    "melody_amount_limit": "0x805d1b8",
+    "melody_cfg": "0x20044e38",
+    "melody_combine": "0x805e26c",
+    "melody_cycle_len": "0x805e230",
+    "melody_dice": "0x8061544",
+    "melody_draft": "0x20044e2f",
+    "melody_draft_end": "0x80614f4",
+    "melody_draft_start": "0x80614e8",
+    "melody_draw": "0x805e1bc",
+    "melody_draw_actions": "0x806178c",
+    "melody_groove": "0x805dbfc",
+    "melody_in_draft": "0x8061500",
+    "melody_init": "0x8061410",
+    "melody_jump": "0x805e2a8",
+    "melody_jumps": "0x805e2a2",
+    "melody_line": "0x805ded8",
+    "melody_link_apply": "0x8061928",
+    "melody_link_valid": "0x80618ec",
+    "melody_new_in_use": "0x8061444",
+    "melody_next_len": "0x805e190",
+    "melody_page_draw": "0x80617c0",
+    "melody_pick": "0x80616d0",
+    "melody_pool": "0x805dd40",
+    "melody_repeat": "0x805e240",
+    "melody_root": "0x805dcf8",
+    "melody_saved_fix": "0x806189c",
+    "melody_seed": "0x20044e30",
+    "melody_seed_next": "0x805dbee",
+    "melody_thin": "0x805e28c",
+    "melody_ties": "0x805e29c",
+    "melody_vary": "0x3a0d",
+    "memcpy": "0x805d1f6",
+    "memset": "0x805d1e6",
+    "metro_set": "0x805d34c",
+    "mono_init": "0x8060510",
+    "mono_on_commit": "0x8060538",
+    "mono_past": "0x3638",
+    "mono_visit": "0x3678",
+    "move": "0x8063dd4",
+    "note_pad_index": "0x805d354",
+    "note_sink_off": "0x805d35c",
+    "note_sink_on": "0x805d364",
+    "owned": "0x805e394",
+    "owns": "0x805e2bc",
+    "page_close": "0x805f32c",
+    "page_draw": "0x805fd38",
+    "page_exists": "0x805f8d8",
+    "page_go": "0x805f808",
+    "page_init": "0x805f8a8",
+    "page_of": "0x805f910",
+    "page_on_button": "0x805f9a8",
+    "page_on_pad": "0x805fadc",
+    "page_on_release": "0x805fc60",
+    "page_quick": "0x20044e0c",
+    "page_quick_draw": "0x805fca8",
+    "page_quick_pad": "0x805fab8",
+    "page_shift_leds": "0x805fce0",
+    "page_slot": "0x20044e10",
+    "page_step": "0x805f94c",
+    "page_sub": "0x3a09",
+    "page_taken": "0x20044e08",
+    "param_get": "0x805d36c",
+    "param_wptr": "0x805d374",
+    "pattern_for": "0x8060764",
+    "pend": "0x8062dbc",
+    "phrasing_draw": "0x8061c54",
+    "phrasing_pick": "0x8061bec",
+    "pick": "0x805e1e0",
+    "pick_arp": "0x805f348",
+    "pick_chords": "0x805f420",
+    "plan": "0x8060b40",
+    "prec": "0x3ea4",
+    "pstrum_beat": "0x3d84",
+    "pstrum_gen": "0x3d80",
+    "pstrum_init": "0x806399c",
+    "pstrum_mode": "0x8063d54",
+    "pstrum_on_ms": "0x8063c40",
+    "pstrum_on_off_commit": "0x8064404",
+    "pstrum_on_pass_commit": "0x8064464",
+    "pstrum_on_play_step": "0x80639cc",
+    "pstrum_on_reset": "0x8063c10",
+    "pstrum_q": "0x3d90",
+    "pstrum_rec_before": "0x80640fc",
+    "pstrum_rec_init": "0x806403c",
+    "pstrum_rec_off": "0x80641ec",
+    "pstrum_rec_off_end": "0x8064324",
+    "pstrum_rec_on_ms": "0x806408c",
+    "pstrum_rec_sent": "0x8064114",
+    "pstrum_recording": "0x8064088",
+    "pstrum_roll": "0x3df0",
+    "put": "0x8062854",
+    "range_of": "0x80606c0",
+    "rec_touch": "0x805d37c",
+    "rec_write": "0x805d384",
+    "recfix_after_commit": "0x8064850",
+    "recfix_latch": "0x3f68",
+    "recfix_on_commit": "0x80647cc",
+    "recfix_picking": "0x3f64",
+    "recording": "0x8063d9c",
+    "release": "0x805e6d8",
+    "rep_due_hits": "0x3a51",
+    "rep_held": "0x3a56",
+    "rep_hit_tick": "0x3a28",
+    "rep_last": "0x3a38",
+    "rep_latched": "0x3a54",
+    "rep_new": "0x3a55",
+    "rep_playing": "0x3a50",
+    "rep_press_tick": "0x3a3c",
+    "rep_run": "0x3a52",
+    "rep_snd": "0x3a53",
+    "rep_strike": "0x3a4c",
+    "rep_vel": "0x3a57",
+    "repeat_cfg": "0x35f2",
+    "repeat_draw": "0x80625e0",
+    "repeat_due": "0x80626d4",
+    "repeat_on_ms": "0x80622c8",
+    "repeat_on_quant": "0x8062280",
+    "repeat_on_tick": "0x80623e0",
+    "repeat_pick": "0x8062584",
+    "repeat_press": "0x80621cc",
+    "repeat_release": "0x8062230",
+    "repeat_release_all": "0x8062254",
+    "repeat_stop_all": "0x806226c",
+    "repeat_stop_latched": "0x8062260",
+    "repeat_ticks": "0x806268c",
+    "repeat_vel": "0x806269c",
+    "req": "0x20044e53",
+    "req_port": "0x20044e52",
+    "resound": "0x805e60c",
+    "rhythm_cfg": "0x3a11",
+    "roll_order": "0x806392a",
+    "roll_sixths": "0x80638e0",
+    "roll_step": "0x80638f4",
+    "root_lit": "0x805e334",
+    "root_next": "0x805e364",
+    "rq_over": "0x3a21",
+    "rq_shadow": "0x3a1d",
+    "run": "0x35f8",
+    "saved_init": "0x8064b82",
+    "saved_on_applied": "0x8064b90",
+    "saved_on_leds": "0x8064c48",
+    "saved_on_save": "0x8064ba0",
+    "scale_snap": "0x805d38c",
+    "send_state": "0x8064dbc",
+    "sent": "0x3f88",
+    "seq_end_entry": "0x805d394",
+    "seq_note_on": "0x805d39c",
+    "session_blobs": "0x805d3a4",
+    "session_refresh": "0x805d3ac",
+    "shift_held": "0x8064548",
+    "slim_call_led_task": "0x805d0fc",
+    "slim_call_rec_committed": "0x805d132",
+    "slim_call_session_applied": "0x805d156",
+    "slim_call_session_save": "0x805d178",
+    "slim_call_voice_headroom": "0x805d192",
+    "slim_dispatch_button_press": "0x805d3e4",
+    "slim_dispatch_ctrl_pad_press": "0x805d412",
+    "slim_dispatch_ctrl_pad_release": "0x805d432",
+    "slim_dispatch_main_ms": "0x805d450",
+    "slim_dispatch_note_pad_press": "0x805d47a",
+    "slim_dispatch_pad_note_off": "0x805d49a",
+    "slim_dispatch_pad_note_on": "0x805d4b8",
+    "slim_dispatch_pad_release": "0x805d4d8",
+    "slim_dispatch_rec_commit": "0x805d4f6",
+    "slim_dispatch_rec_off_commit": "0x805d528",
+    "slim_dispatch_rec_pass_commit": "0x805d53e",
+    "slim_dispatch_rec_quant": "0x805d554",
+    "slim_dispatch_seq_end_all": "0x805d56a",
+    "slim_dispatch_seq_play_step": "0x805d586",
+    "slim_dispatch_seq_start": "0x805d5ac",
+    "slim_dispatch_seq_tick": "0x805d5c8",
+    "slim_dispatch_step_add": "0x805d5e4",
+    "slim_dispatch_sysex_in": "0x805d604",
+    "slim_entry_button_press": "0x805cde0",
+    "slim_entry_ctrl_pad_press": "0x805ce0c",
+    "slim_entry_ctrl_pad_release": "0x805ce38",
+    "slim_entry_main_ms": "0x805ce64",
+    "slim_entry_note_pad_press": "0x805ce90",
+    "slim_entry_pad_note_off": "0x805cebc",
+    "slim_entry_pad_note_on": "0x805cee8",
+    "slim_entry_pad_release": "0x805cf14",
+    "slim_entry_rec_commit": "0x805cf40",
+    "slim_entry_rec_off_commit": "0x805cf70",
+    "slim_entry_rec_pass_commit": "0x805cf9c",
+    "slim_entry_rec_quant": "0x805cfc8",
+    "slim_entry_seq_end_all": "0x805cff4",
+    "slim_entry_seq_play_step": "0x805d020",
+    "slim_entry_seq_start": "0x805d04c",
+    "slim_entry_seq_tick": "0x805d078",
+    "slim_entry_step_add": "0x805d0a4",
+    "slim_entry_sysex_in": "0x805d0d0",
+    "slim_features_init": "0x805d624",
+    "slim_inited": "0x20044de0",
+    "slim_irq_restore": "0x805d1e0",
+    "slim_irq_save": "0x805d1d8",
+    "slim_link_apply": "0x805d660",
+    "slim_link_fields": "0x806527d",
+    "slim_link_valid": "0x805d644",
+    "slim_ready": "0x805d20c",
+    "slim_saved_fields": "0x80650e0",
+    "slim_saved_fix": "0x805d636",
+    "spill": "0x3c80",
+    "state": "0x8064520",
+    "step": "0x805ff18",
+    "step_entry_init": "0x8062edc",
+    "step_on_add": "0x8062efc",
+    "step_on_press": "0x8063240",
+    "step_sounds": "0x805d3b4",
+    "step_spill_release": "0x8063690",
+    "stopped_and_armed": "0x8064564",
+    "store_commit": "0x805d3bc",
+    "store_put": "0x8062750",
+    "store_touch_all": "0x805d3c4",
+    "strum_off": "0x805e3c4",
+    "sub_bit": "0x805f7bc",
+    "sub_of": "0x805f7d4",
+    "synth_note_on": "0x805d3cc",
+    "sysex_out": "0x805d3d4",
+    "take": "0x8062144",
+    "target": "0x8060710",
+    "tickets": "0x3e24",
+    "tools2_draw": "0x8061b24",
+    "tools2_pick": "0x8061b18",
+    "tools2_set": "0x8061964",
+    "track_of": "0x805d3dc",
+    "track_visible": "0x805f864",
+    "unlatch": "0x805e424",
+    "unquant": "0x8062038",
+    "vary_init": "0x8061a78",
+    "vary_link_apply": "0x8061d0c",
+    "vary_link_valid": "0x8061c9c",
+    "vary_saved_fix": "0x8061aa8",
+    "w_cnt": "0x20044e50",
+    "w_data": "0x20044e48",
+    "w_off": "0x20044e51",
+    "waiting": "0x3e10"
+  },
+  "saved": {
+    "layout_id": 1,
+    "payload": 117,
+    "block": "record + 0x27324",
+    "fields": [
+      {
+        "symbol": "chord_settings",
+        "offset": 0,
+        "size": 4
+      },
+      {
+        "symbol": "chord_rootless",
+        "offset": 4,
+        "size": 1
+      },
+      {
+        "symbol": "chord_strum",
+        "offset": 5,
+        "size": 1
+      },
+      {
+        "symbol": "chord_strum_down",
+        "offset": 6,
+        "size": 1
+      },
+      {
+        "symbol": "chord_mono",
+        "offset": 7,
+        "size": 1
+      },
+      {
+        "symbol": "chord_arp",
+        "offset": 8,
+        "size": 8
+      },
+      {
+        "symbol": "page_quick",
+        "offset": 20,
+        "size": 4
+      },
+      {
+        "symbol": "ci_on",
+        "offset": 24,
+        "size": 1
+      },
+      {
+        "symbol": "euclid_cfg",
+        "offset": 25,
+        "size": 8
+      },
+      {
+        "symbol": "page_slot",
+        "offset": 33,
+        "size": 4
+      },
+      {
+        "symbol": "melody_cfg",
+        "offset": 37,
+        "size": 8
+      },
+      {
+        "symbol": "melody_seed",
+        "offset": 45,
+        "size": 8
+      },
+      {
+        "symbol": "rhythm_cfg",
+        "offset": 53,
+        "size": 12
+      },
+      {
+        "symbol": "melody_vary",
+        "offset": 65,
+        "size": 4
+      },
+      {
+        "symbol": "page_sub",
+        "offset": 69,
+        "size": 4
+      },
+      {
+        "symbol": "euclid_last",
+        "offset": 73,
+        "size": 4
+      },
+      {
+        "symbol": "chord_voice",
+        "offset": 77,
+        "size": 4
+      },
+      {
+        "symbol": "repeat_cfg",
+        "offset": 81,
+        "size": 2
+      },
+      {
+        "symbol": "drum_page",
+        "offset": 83,
+        "size": 4
+      },
+      {
+        "symbol": "drum_euclid",
+        "offset": 87,
+        "size": 8
+      },
+      {
+        "symbol": "drum_rhythm",
+        "offset": 95,
+        "size": 12
+      },
+      {
+        "symbol": "drum_accent",
+        "offset": 107,
+        "size": 4
+      },
+      {
+        "symbol": "drum_seed",
+        "offset": 111,
+        "size": 4
+      },
+      {
+        "symbol": "chord_step",
+        "offset": 115,
+        "size": 1
+      },
+      {
+        "symbol": "chord_pstrum",
+        "offset": 116,
+        "size": 1
+      }
+    ],
+    "block2": "record + 0x27364"
+  },
+  "itcm": {
+    "start": "0x3578",
+    "end": "0x4000",
+    "used": 2696,
+    "size": 15360
+  }
+}

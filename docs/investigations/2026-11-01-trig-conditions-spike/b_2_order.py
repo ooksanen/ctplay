@@ -1,0 +1,30 @@
+"""B2 / B4: the order of events around Play (seq_start, the first tick-0 calls, the first seq_tick) and Shift + Play."""
+from b_lib import *
+from b_3_hand import fresh
+
+h = fresh()
+h.clear_logs()
+h.play()
+print("during the Play press:", h.order[:12], "...", len(h.order), "events")
+h.order.clear()
+h.heartbeat(1)
+print("first heartbeat:", h.order[:40])
+h.run_ticks(30)
+h.press(PLAY)
+h.heartbeat(20)
+h.order.clear()
+h.press(PLAY, shift=True)
+print("Shift + Play from stop, during the press:", h.order[:12], "transport", h.transport())
+h.order.clear()
+h.heartbeat(1)
+print("  first heartbeat:", h.order[:20])
+t = h.tick
+h.heartbeat(200)
+print("  200 heartbeats after Shift + Play: ticks", h.tick - t, "events", len(h.order), h.order[:6], "playing", [h.playing(x) for x in range(2)])
+h.press(PLAY)
+h.heartbeat(20)
+print("  Play again: transport", h.transport())
+h.order.clear()
+h.press(PLAY)
+h.heartbeat(5)
+print("  Play: transport", h.transport(), "events", h.order[:3])

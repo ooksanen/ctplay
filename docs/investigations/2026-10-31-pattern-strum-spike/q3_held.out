@@ -1,0 +1,8 @@
+pattern 0, 1-16, step first, step pad 3: (pattern, step, held) = (0, 3, 1); step_add ran 1x
+pattern 0, 1-16, pad first, step pad 3: (pattern, step, held) = (0, 3, 1); step_add ran 1x
+pattern 0, 17-32, step first, step pad 15: (pattern, step, held) = (0, 31, 1); step_add ran 1x
+pattern 0, 17-32, pad first, step pad 15: (pattern, step, held) = (0, 31, 1); step_add ran 1x
+pattern 2, 1-16, step first, step pad 3: (pattern, step, held) = (2, 3, 1); step_add ran 1x
+pattern 2, 1-16, pad first, step pad 3: (pattern, step, held) = (2, 3, 1); step_add ran 1x
+pattern 2, 17-32, step first, step pad 15: (pattern, step, held) = (2, 31, 1); step_add ran 1x
+pattern 2, 17-32, pad first, step pad 15: (pattern, step, held) = (2, 31, 1); step_add ran 1x

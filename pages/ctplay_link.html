@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CTPlay link test</title>
+<style>
+  body { font: 14px/1.4 system-ui, sans-serif; margin: 16px; background: #fff; color: #111; }
+  button { margin: 4px 4px 4px 0; }
+  input { width: 8em; margin-right: 8px; }
+  table { border-collapse: collapse; margin-top: 12px; }
+  th, td { border: 1px solid #ccc; padding: 2px 8px; text-align: left; font-variant-numeric: tabular-nums; }
+  th { background: #f2f2f2; }
+  #state { margin-left: 8px; }
+  #log { margin-top: 12px; font: 12px/1.4 ui-monospace, monospace; white-space: pre-wrap; max-height: 40vh; overflow: auto; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #111; color: #eee; } th { background: #222; } th, td { border-color: #444; }
+  }
+</style>
+</head>
+<body>
+<h1>CTPlay link test (protocol 2)</h1>
+<p>Chrome or Edge, the Circuit Tracks connected over USB with <b>PL21</b> or later installed. <b>Hello</b> asks which build and
+settings it has, <b>Read</b> shows the settings, <b>Write</b> sets payload bytes (offset and bytes both in hex). Link protocol 2: the state comes in chunks of up to 64 bytes. Every chunk the device sends, asked for or pushed after a change on the device, is logged below.</p>
+<button id="connect">Allow MIDI access</button><span id="state"></span><br>
+<button id="hello" disabled>Hello</button><button id="read" disabled>Read</button><br>
+<label>Offset (hex) <input id="offset" value="5"></label><label>Bytes (hex) <input id="bytes" value="04"></label>
+<button id="write" disabled>Write</button>
+<table id="fields"><thead><tr><th>field</th><th>offset</th><th>bytes</th></tr></thead><tbody></tbody></table>
+<div id="log"></div>
+<script>
+// <decode> pure functions, no DOM: unit-tested in Node (tests/test_link_page.py)
+const CL_SIG = [0xF0, 0x7D, 0x53, 0x4C];
+const CL_NAMES = {                                  // (offset/size/rev) -> name, the linked fields up to PL18
+  "0/4/1": "chord settings", "4/1/1": "rootless", "5/1/1": "strum", "6/1/1": "strum falling", "7/1/1": "mono",
+  "8/8/1": "arp", "24/1/1": "count-in", "25/8/1": "euclid", "37/8/1": "melody",
+  "53/12/1": "rhythm", "65/4/1": "melody vary", "77/4/1": "chord voice", "81/2/1": "repeat",
+  "87/8/1": "drum euclid", "95/12/1": "drum rhythm", "107/4/1": "drum accent", "115/1/1": "step chords", "116/1/1": "pattern strum",
+};
+
+function clHello() { return [...CL_SIG, 0x10, 0xF7]; }
+function clRead() { return [...CL_SIG, 0x11, 0xF7]; }
+function clWrite(offset, bytes) {
+  return [...CL_SIG, 0x12, offset & 0x7F, offset >> 7, bytes.length, ...bytes.flatMap(b => [b >> 4, b & 0xF]), 0xF7];
+}
+
+function clHexBytes(text) {                         // "3c 01" / "3C,1" -> [0x3C, 1]; null when empty or not bytes
+  const parts = text.split(/[\s,]+/).filter(p => p);
+  if (!parts.length || parts.some(p => !/^[0-9a-f]{1,2}$/i.test(p))) return null;
+  return parts.map(p => parseInt(p, 16));
+}
+
+function clParse(bytes) {                           // a hello reply or a chunk of the state, else null
+  const b = Array.from(bytes);
+  if (b.length < 6 || b[b.length - 1] !== 0xF7) return null;
+  for (let k = 0; k < 4; k++) if (b[k] !== CL_SIG[k]) return null;
+  if (b[4] === 0x50 && b.length >= 17) {          // proto, marker (6), layout, len (2), n, n x (offset (2), size, rev)
+    const n = b[15], fields = [];
+    for (let i = 0; i < n; i++) {
+      const o = 16 + 4 * i;
+      fields.push({ offset: b[o] | (b[o + 1] << 7), size: b[o + 2], rev: b[o + 3] });
+    }
+    return { kind: "hello", proto: b[5], marker: String.fromCharCode(...b.slice(6, 12)).trim(), layout: b[12],
+             len: b[13] | (b[14] << 7), fields };
+  }
+  if (b[4] === 0x51 && b.length >= 12) {          // layout, len (2), offset (2), count, 2 x count nibbles
+    const nib = b.slice(11, -1), payload = [];
+    for (let i = 0; i + 1 < nib.length; i += 2) payload.push((nib[i] << 4) | nib[i + 1]);
+    return { kind: "chunk", layout: b[5], len: b[6] | (b[7] << 7), offset: b[8] | (b[9] << 7), payload };
+  }
+  return null;
+}
+
+// Keeps the state's payload (len bytes) and a per-byte mark; the payload when every byte has arrived, else null.
+function clAssemble(state, chunk) {
+  if (!state.bytes || state.len !== chunk.len || state.layout !== chunk.layout) {
+    state.len = chunk.len; state.layout = chunk.layout;
+    state.bytes = new Array(chunk.len).fill(0); state.seen = new Array(chunk.len).fill(false); state.have = 0;
+  }
+  chunk.payload.forEach((v, i) => {
+    const at = chunk.offset + i;
+    if (at >= state.len) return;
+    state.bytes[at] = v;
+    if (!state.seen[at]) { state.seen[at] = true; state.have++; }
+  });
+  return state.have === state.len ? state.bytes.slice() : null;
+}
+
+function clHex(bytes) { return bytes.map(x => x.toString(16).toUpperCase().padStart(2, "0")).join(" "); }
+
+function clRows(fields, payload) {                  // one row per field: name, offset, its bytes in hex
+  return fields.map(f => [CL_NAMES[f.offset + "/" + f.size + "/" + f.rev] || "offset " + f.offset + " (rev " + f.rev + ")",
+                          String(f.offset), clHex(payload.slice(f.offset, f.offset + f.size))]);
+}
+
+// The device shows several ports: as the uploader's score(), MIDI 2 / 3, DIN and DAW ones are not the SysEx port.
+function clPortScore(name) {
+  if (!/circuit tracks/i.test(name)) return -1;
+  return /midi ?[23]|midiin2|midiout2|midiin3|midiout3|din|daw/i.test(name) ? 0 : 2;
+}
+function clPickPort(names) {
+  let best = -1;
+  names.forEach((n, i) => { if (clPortScore(n) >= 0 && (best < 0 || clPortScore(n) > clPortScore(names[best]))) best = i; });
+  return best;
+}
+// </decode>
+
+const $ = id => document.getElementById(id);
+let out = null, inp = null, fields = [], assembling = {};
+
+function say(msg) { $("state").textContent = msg; }
+function log(msg) {
+  const line = document.createElement("div");
+  line.textContent = new Date().toLocaleTimeString() + "  " + msg;
+  $("log").prepend(line);
+}
+function port(map) { const ps = [...map.values()], i = clPickPort(ps.map(p => p.name || "")); return i < 0 ? null : ps[i]; }
+
+function show(payload) {
+  const body = $("fields").tBodies[0];
+  body.textContent = "";
+  for (const row of clRows(fields, payload)) { const tr = body.insertRow(); for (const c of row) tr.insertCell().textContent = c; }
+}
+
+function received(ev) {
+  const m = clParse(ev.data);
+  if (!m) return;
+  if (m.kind === "hello") {
+    fields = m.fields;
+    assembling = {};
+    say("Connected: " + m.marker + ", protocol " + m.proto + ", layout " + m.layout + ", " + m.len + " B, " + fields.length + " fields.");
+    log("hello: " + m.marker + ", " + fields.length + " fields");
+  } else {
+    log("chunk: offset " + m.offset + ", " + clHex(m.payload));
+    const whole = clAssemble(assembling, m);
+    if (whole) show(whole);
+  }
+}
+
+$("connect").onclick = async () => {
+  let midi;
+  try { midi = await navigator.requestMIDIAccess({ sysex: true }); }
+  catch (e) { say("MIDI access denied: " + e.message); return; }
+  out = port(midi.outputs); inp = port(midi.inputs);
+  if (!out || !inp) { say("Circuit Tracks not found: connect it over USB, then try again."); return; }
+  inp.onmidimessage = received;
+  $("hello").disabled = $("read").disabled = $("write").disabled = false;
+  say("Ports: " + out.name + " / " + inp.name + ". Press Hello.");
+  setTimeout(() => { if (!fields.length) say("No hello reply yet: is PL21 or later installed? (" + out.name + ")"); }, 1500);
+  out.send(clHello());
+};
+$("hello").onclick = () => out.send(clHello());
+$("read").onclick = () => out.send(clRead());
+$("write").onclick = () => {
+  const off = parseInt($("offset").value, 16), bytes = clHexBytes($("bytes").value);
+  if (!(off >= 0 && off < 16384) || !bytes || bytes.length > 8) { say("Offset 0-3FFF (hex) and 1-8 hex bytes."); return; }
+  out.send(clWrite(off, bytes));
+  log("write: offset " + off.toString(16) + " (hex), " + clHex(bytes));
+};
+</script>
+</body>
+</html>

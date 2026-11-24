@@ -1,0 +1,18 @@
+name = "diag_ram"
+description = "SL00D: Shift + Drum 4 shows on pads 1-16 whether each 1 KB block of the ITCM (0x00000000-0x00003FFF) is free (pad 32 white = slim runtime alive); Shift + Drum 3 shows the unused-stack runs of the RTOS task stacks."
+sources = ["diag_ram.c"]
+init = "diag_ram_init"
+
+[budget]
+ram = 128
+stack = 96
+
+[[hook]]
+point = "button_press"
+handler = "diag_ram_on_button"
+priority = 50
+
+[[hook]]
+point = "led_task"
+handler = "diag_ram_on_leds"
+priority = 50
